@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Manuel Stanković – web stranice za firme na Kvarneru</title>
-<meta name="description" content="Moderne web stranice za male firme u Rijeci i na Kvarneru: prilagođene mobitelima, vidljive na Googleu, s online rezervacijama. Besplatan koncept bez obveze.">
-<meta property="og:title" content="Manuel Stanković – web stranice za firme na Kvarneru">
+<title>Manuel Stanković – web stranice za firme diljem Hrvatske</title>
+<meta name="description" content="Moderne web stranice za male firme diljem Hrvatske: prilagođene mobitelima, vidljive na Googleu, s online rezervacijama. Besplatan koncept bez obveze.">
+<meta property="og:title" content="Manuel Stanković – web stranice za firme diljem Hrvatske">
 <meta property="og:description" content="Nova web stranica za vašu firmu za oko tjedan dana. Besplatan koncept bez obveze.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,14 +13,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sea: #0E4D64;
-    --sea-deep: #08313F;
-    --stone: #EEF1F0;
-    --buoy: #F2C14E;
-    --ink: #14232B;
-    --mist: #5B6B72;
+    --orange: #F26B1D;
+    --orange-deep: #D9560C;
+    --black: #000000;
     --white: #FFFFFF;
-    --line: #D3DADB;
+    --petrol: #13606B;
+    --petrol-soft: #E3EFEF;
+    --paper: #F5F5F3;
+    --mist: #4A4A4A;
+    --line: #DEDEDA;
     --display: "Bricolage Grotesque", system-ui, sans-serif;
     --body: "Atkinson Hyperlegible", system-ui, sans-serif;
   }
@@ -28,15 +29,15 @@
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--stone);
-    color: var(--ink);
+    background: var(--white);
+    color: var(--black);
     font-family: var(--body);
     font-size: 1.125rem;
     line-height: 1.6;
   }
   a { color: inherit; }
   a:focus-visible, button:focus-visible {
-    outline: 3px solid var(--buoy);
+    outline: 3px solid var(--petrol);
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -49,7 +50,7 @@
   }
   .brand { font-family: var(--display); font-weight: 700; font-size: 1.15rem; text-decoration: none; }
   .brand span { color: var(--mist); font-weight: 500; }
-  .top-link { font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .top-link { font-weight: 700; text-decoration-color: var(--orange); text-decoration-thickness: 3px; text-underline-offset: 5px; }
 
   /* Hero */
   .hero {
@@ -60,34 +61,38 @@
     font-family: var(--display); font-weight: 800;
     font-size: clamp(2.4rem, 5.2vw, 4.1rem);
     line-height: 1.02; letter-spacing: -0.02em;
-    margin: 0 0 24px; color: var(--sea-deep);
+    margin: 0 0 24px; color: var(--black);
   }
-  .hero p.lead { font-size: 1.25rem; max-width: 34ch; margin: 0 0 32px; color: var(--ink); }
+  .hero h1::after {
+    content: ""; display: block; width: 88px; height: 8px; margin-top: 22px;
+    background: var(--orange); border-radius: 4px;
+  }
+  .hero p.lead { font-size: 1.25rem; max-width: 34ch; margin: 0 0 32px; }
   .actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
   .btn {
     display: inline-block; font-family: var(--body); font-weight: 700; font-size: 1.1rem;
     padding: 16px 28px; border-radius: 999px; text-decoration: none;
-    background: var(--sea); color: var(--white); border: 2px solid var(--sea);
+    background: var(--orange); color: var(--black); border: 2px solid var(--orange);
     transition: background .15s ease;
   }
-  .btn:hover { background: var(--sea-deep); }
-  .btn.ghost { background: transparent; color: var(--sea); }
-  .btn.ghost:hover { background: var(--white); }
+  .btn:hover { background: var(--orange-deep); border-color: var(--orange-deep); }
+  .btn.ghost { background: transparent; color: var(--black); border-color: var(--black); }
+  .btn.ghost:hover { background: var(--paper); }
 
   /* Before / after phones */
   .compare { display: flex; gap: 20px; justify-content: center; align-items: flex-end; }
   .phone {
     width: 210px; flex: 0 0 auto;
     border-radius: 30px; padding: 10px;
-    background: var(--ink);
-    box-shadow: 0 30px 60px -30px rgba(8, 49, 63, .55);
+    background: var(--black);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .5);
   }
   .screen { border-radius: 22px; overflow: hidden; height: 400px; position: relative; }
   .tag {
     display: block; text-align: center; font-family: var(--display); font-weight: 700;
-    font-size: 1rem; margin: 10px 0 4px; color: #A9BCC2;
+    font-size: 1rem; margin: 10px 0 4px; color: #A3A3A3;
   }
-  .after .tag { color: var(--buoy); }
+  .after .tag { color: var(--orange); }
 
   /* Old site: tiny, desktop-only layout squeezed onto a phone */
   .old { background: #fff; font-family: "Times New Roman", serif; color: #333; }
@@ -99,29 +104,29 @@
   .old .notice { font-size: 7px; color: #a00; margin-top: 4px; }
 
   /* New site */
-  .new { background: var(--sea-deep); color: var(--white); font-family: var(--body); display: flex; flex-direction: column; }
+  .new { background: var(--black); color: var(--white); font-family: var(--body); display: flex; flex-direction: column; }
   .new .pic {
     height: 150px;
     background:
-      radial-gradient(circle at 75% 30%, #F7D57E 0 16px, transparent 17px),
-      linear-gradient(180deg, #3E8EA8 0%, #7FB9C9 55%, #0E4D64 56%, #0B3C4F 100%);
+      radial-gradient(circle at 75% 32%, #FFB27A 0 16px, transparent 17px),
+      linear-gradient(180deg, #F26B1D 0%, #F59A5A 54%, #13606B 55%, #0E4950 100%);
   }
   .new .in { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .new .name { font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1.05; }
-  .new .sub { font-size: 11px; color: #BFD3DA; }
-  .new .meta { font-size: 10.5px; color: #DCE7EA; margin-top: 4px; }
+  .new .sub { font-size: 11px; color: #CFCFCF; }
+  .new .meta { font-size: 10.5px; color: #E6E6E6; margin-top: 4px; }
   .new .cta {
-    margin-top: auto; background: var(--buoy); color: var(--ink); font-weight: 700;
+    margin-top: auto; background: var(--orange); color: var(--black); font-weight: 700;
     font-size: 13px; text-align: center; border-radius: 999px; padding: 10px;
   }
-  .new .cta2 { border: 1.5px solid #5F8E9C; color: #fff; font-size: 12px; text-align: center; border-radius: 999px; padding: 8px; }
+  .new .cta2 { border: 1.5px solid #5E5E5E; color: #fff; font-size: 12px; text-align: center; border-radius: 999px; padding: 8px; }
   .demo-note { text-align: center; font-size: .9rem; color: var(--mist); margin: 18px 0 0; }
 
   /* Sections */
   section.block { padding: 88px 0; }
-  section.block.white { background: var(--white); }
+  section.block.white { background: var(--paper); }
   h2 {
-    font-family: var(--display); font-weight: 800; color: var(--sea-deep);
+    font-family: var(--display); font-weight: 800; color: var(--black);
     font-size: clamp(1.9rem, 3.6vw, 2.75rem); line-height: 1.08; letter-spacing: -0.015em;
     margin: 0 0 16px; max-width: 22ch;
   }
@@ -129,7 +134,7 @@
 
   /* What you get: two-column definition list */
   .gets { display: grid; grid-template-columns: 1fr 1fr; gap: 0 64px; margin: 0; }
-  .gets div { border-top: 2px solid var(--line); padding: 22px 0 26px; }
+  .gets div { border-top: 3px solid var(--black); padding: 22px 0 26px; }
   .gets dt { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin-bottom: 6px; }
   .gets dd { margin: 0; color: var(--mist); max-width: 46ch; }
 
@@ -140,12 +145,13 @@
     content: counter(step);
     display: grid; place-items: center;
     width: 48px; height: 48px; border-radius: 50%;
-    background: var(--buoy); color: var(--ink);
+    background: var(--orange); color: var(--black);
     font-family: var(--display); font-weight: 800; font-size: 1.3rem;
     margin-bottom: 18px;
   }
   .steps h3 { font-family: var(--display); font-weight: 700; font-size: 1.25rem; margin: 0 0 8px; }
   .steps p { margin: 0; color: var(--mist); }
+  .steps a { color: var(--petrol); font-weight: 700; }
 
   /* Prices */
   .prices { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
@@ -153,27 +159,29 @@
     border-radius: 24px; padding: 36px;
     background: var(--white); border: 2px solid var(--line);
   }
-  .price.main { background: var(--sea); color: var(--white); border-color: var(--sea); }
+  .price.main { background: var(--black); color: var(--white); border-color: var(--black); }
+  .price.main .amount { color: var(--orange); }
+  .price.side { background: var(--petrol-soft); border-color: var(--petrol-soft); }
+  .price.side .amount { color: var(--petrol); }
   .price h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin: 0 0 12px; }
   .amount { font-family: var(--display); font-weight: 800; font-size: 3.4rem; line-height: 1; margin: 0 0 6px; }
-  .amount small { font-size: 1.1rem; font-weight: 500; }
+  .amount small { font-size: 1.1rem; font-weight: 500; color: var(--white); }
+  .price.side .amount small { color: var(--black); }
   .price ul { margin: 24px 0 0; padding-left: 20px; }
   .price li { margin-bottom: 6px; }
-  .price.main .note { color: #CFE0E6; }
+  .price.main .note { color: #CFCFCF; }
   .note { font-size: .98rem; color: var(--mist); margin: 0; }
 
   /* Contact */
-  .contact { background: var(--sea-deep); color: var(--white); padding: 96px 0; }
+  .contact { background: var(--black); color: var(--white); padding: 96px 0; }
   .contact h2 { color: var(--white); }
-  .contact p { max-width: 52ch; color: #CFE0E6; margin: 0 0 32px; }
-  .contact .btn { background: var(--buoy); color: var(--ink); border-color: var(--buoy); }
-  .contact .btn:hover { background: #F7D57E; }
-  .btn.ghost-light { background: transparent; color: var(--white); border-color: #5F8E9C; }
-  .btn.ghost-light:hover { background: #12465A; }
-  .mail { display: block; margin-top: 20px; font-size: 1.05rem; color: #CFE0E6; }
+  .contact p { max-width: 52ch; color: #D6D6D6; margin: 0 0 32px; }
+  .btn.ghost-light { background: transparent; color: var(--white); border-color: var(--white); }
+  .btn.ghost-light:hover { background: #1F1F1F; }
+  .mail { display: block; margin-top: 20px; font-size: 1.05rem; color: #D6D6D6; }
 
-  footer { background: var(--sea-deep); color: #8FB0BB; font-size: .95rem; padding: 0 0 40px; }
-  footer .wrap { border-top: 1px solid #1E4B5B; padding-top: 24px; }
+  footer { background: var(--black); color: #A3A3A3; font-size: .95rem; padding: 0 0 40px; }
+  footer .wrap { border-top: 1px solid #2E2E2E; padding-top: 24px; }
 
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: 48px; padding-bottom: 72px; }
@@ -210,7 +218,7 @@
   <div class="wrap hero">
     <div>
       <h1>Nova web stranica za vašu firmu, gotova za tjedan dana.</h1>
-      <p class="lead">Izrađujem stranice za konobe, servise, ordinacije, salone i obrte u Rijeci i na Kvarneru. Prije bilo kakvog dogovora dobijete besplatan koncept, pa vidite što dobivate.</p>
+      <p class="lead">Izrađujem stranice za konobe, servise, ordinacije, salone i obrte diljem Hrvatske. Prije bilo kakvog dogovora dobijete besplatan koncept, pa vidite što dobivate.</p>
       <div class="actions">
         <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Besplatan%20koncept%20stranice">Zatražite besplatan koncept</a>
         <a class="btn ghost" href="#cijene">Pogledajte cijene</a>
@@ -295,7 +303,7 @@
             <li>Postavljanje na vašu domenu</li>
           </ul>
         </div>
-        <div class="price">
+        <div class="price side">
           <h3>Hosting i održavanje</h3>
           <p class="amount">25 € <small>mjesečno</small></p>
           <p class="note">Nije obavezno, ali tako ne morate brinuti ni o čemu.</p>
