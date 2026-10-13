@@ -4,6 +4,7 @@ Edit the texts in T below (or the layout in src/template.html), then run:
     python3 build.py
 It writes index.html (Croatian) and en/, de/, ru/, es/ index.html files.
 """
+import json
 import os
 import re
 from urllib.parse import quote
@@ -429,6 +430,140 @@ T = {
 }
 
 
+# Package builder ("Složite svoj paket") texts.
+PK = {
+    "hr": {
+        "pk_h2": "Složite svoj paket",
+        "pk_intro": "Odaberite što vašoj firmi treba. Sve se može uz novu stranicu ili zasebno, na stranici koju već imate.",
+        "pk_badge": "Novo",
+        "pk_web_t": "Nova web stranica",
+        "pk_web_d": "Moderna, brza i prilagođena mobitelima i Googleu.",
+        "pk_web_p": "od 350 €",
+        "pk_book_t": "Online rezervacije i podsjetnici",
+        "pk_book_d": "Klijenti se sami naruče u slobodan termin, a dan prije dobiju podsjetnik. Manje propuštenih termina i manje telefoniranja.",
+        "pk_book_p": "od 150 € + 20 €/mj.",
+        "pk_auto_t": "Automatski odgovori na upite",
+        "pk_auto_d": "Česta pitanja o cijenama, radnom vremenu i terminima dobiju odgovor odmah, a svi upiti s weba slažu se na jedno mjesto.",
+        "pk_auto_p": "od 150 € + 20 €/mj.",
+        "pk_host_t": "Hosting i održavanje",
+        "pk_host_d": "Brz i siguran hosting, izmjene cijena, slika i teksta.",
+        "pk_host_p": "25 €/mj.",
+        "pk_sum_h": "Vaš paket",
+        "pk_once": "Jednokratno",
+        "pk_month": "Mjesečno",
+        "pk_note": "Okvirne cijene. Točnu cijenu dogovaramo nakon besplatnog koncepta.",
+        "pk_none": "Odaberite barem jednu opciju.",
+        "pk_send": "Pošaljite upit za ovaj paket",
+        "pk_from": "od",
+        "pk_subject": "Upit za paket – Fresh Front",
+        "pk_body": "Pozdrav, zanima me ovaj paket:",
+    },
+    "en": {
+        "pk_h2": "Build your package",
+        "pk_intro": "Choose what your business needs. Everything works with a new website or on its own, on the website you already have.",
+        "pk_badge": "New",
+        "pk_web_t": "New website",
+        "pk_web_d": "Modern, fast and built for phones and Google.",
+        "pk_web_p": "from 350 €",
+        "pk_book_t": "Online booking and reminders",
+        "pk_book_d": "Customers book a free slot themselves and get a reminder the day before. Fewer no-shows and fewer phone calls.",
+        "pk_book_p": "from 150 € + 20 €/mo",
+        "pk_auto_t": "Automatic replies to inquiries",
+        "pk_auto_d": "Common questions about prices, opening hours and availability get answered at once, and every inquiry from your website lands in one place.",
+        "pk_auto_p": "from 150 € + 20 €/mo",
+        "pk_host_t": "Hosting and maintenance",
+        "pk_host_d": "Fast, secure hosting plus updates to prices, photos and text.",
+        "pk_host_p": "25 €/mo",
+        "pk_sum_h": "Your package",
+        "pk_once": "One-off",
+        "pk_month": "Monthly",
+        "pk_note": "Guide prices. We agree the exact price after the free concept.",
+        "pk_none": "Choose at least one option.",
+        "pk_send": "Send an inquiry for this package",
+        "pk_from": "from",
+        "pk_subject": "Package inquiry – Fresh Front",
+        "pk_body": "Hello, I'm interested in this package:",
+    },
+    "de": {
+        "pk_h2": "Stellen Sie Ihr Paket zusammen",
+        "pk_intro": "Wählen Sie, was Ihr Unternehmen braucht. Alles gibt es mit einer neuen Website oder einzeln für Ihre bestehende Website.",
+        "pk_badge": "Neu",
+        "pk_web_t": "Neue Website",
+        "pk_web_d": "Modern, schnell und optimiert für Smartphones und Google.",
+        "pk_web_p": "ab 350 €",
+        "pk_book_t": "Online-Buchung und Erinnerungen",
+        "pk_book_d": "Kunden buchen selbst einen freien Termin und bekommen am Vortag eine Erinnerung. Weniger verpasste Termine, weniger Telefonate.",
+        "pk_book_p": "ab 150 € + 20 €/Monat",
+        "pk_auto_t": "Automatische Antworten auf Anfragen",
+        "pk_auto_d": "Häufige Fragen zu Preisen, Öffnungszeiten und freien Terminen werden sofort beantwortet, und alle Anfragen von der Website landen an einem Ort.",
+        "pk_auto_p": "ab 150 € + 20 €/Monat",
+        "pk_host_t": "Hosting und Wartung",
+        "pk_host_d": "Schnelles, sicheres Hosting und Änderungen an Preisen, Fotos und Texten.",
+        "pk_host_p": "25 €/Monat",
+        "pk_sum_h": "Ihr Paket",
+        "pk_once": "Einmalig",
+        "pk_month": "Monatlich",
+        "pk_note": "Richtpreise. Den genauen Preis vereinbaren wir nach dem kostenlosen Entwurf.",
+        "pk_none": "Wählen Sie mindestens eine Option.",
+        "pk_send": "Anfrage für dieses Paket senden",
+        "pk_from": "ab",
+        "pk_subject": "Paketanfrage – Fresh Front",
+        "pk_body": "Hallo, ich interessiere mich für dieses Paket:",
+    },
+    "ru": {
+        "pk_h2": "Соберите свой пакет",
+        "pk_intro": "Выберите, что нужно вашему бизнесу. Всё доступно вместе с новым сайтом или отдельно, для сайта, который у вас уже есть.",
+        "pk_badge": "Новое",
+        "pk_web_t": "Новый сайт",
+        "pk_web_d": "Современный, быстрый, удобный на телефоне и заметный в Google.",
+        "pk_web_p": "от 350 €",
+        "pk_book_t": "Онлайн-запись и напоминания",
+        "pk_book_d": "Клиенты сами записываются на свободное время и накануне получают напоминание. Меньше пропущенных визитов и звонков.",
+        "pk_book_p": "от 150 € + 20 €/мес.",
+        "pk_auto_t": "Автоответы на запросы",
+        "pk_auto_d": "На частые вопросы о ценах, часах работы и свободном времени клиенты сразу получают ответ, а все заявки с сайта собираются в одном месте.",
+        "pk_auto_p": "от 150 € + 20 €/мес.",
+        "pk_host_t": "Хостинг и поддержка",
+        "pk_host_d": "Быстрый и надёжный хостинг, изменения цен, фото и текста.",
+        "pk_host_p": "25 €/мес.",
+        "pk_sum_h": "Ваш пакет",
+        "pk_once": "Разово",
+        "pk_month": "Ежемесячно",
+        "pk_note": "Ориентировочные цены. Точную цену согласуем после бесплатного макета.",
+        "pk_none": "Выберите хотя бы один вариант.",
+        "pk_send": "Отправить запрос на этот пакет",
+        "pk_from": "от",
+        "pk_subject": "Запрос пакета – Fresh Front",
+        "pk_body": "Здравствуйте, меня интересует этот пакет:",
+    },
+    "es": {
+        "pk_h2": "Arme su paquete",
+        "pk_intro": "Elija lo que necesita su negocio. Todo funciona con una página nueva o por separado, en la página que ya tiene.",
+        "pk_badge": "Nuevo",
+        "pk_web_t": "Nueva página web",
+        "pk_web_d": "Moderna, rápida y adaptada al móvil y a Google.",
+        "pk_web_p": "desde 350 €",
+        "pk_book_t": "Reservas online y recordatorios",
+        "pk_book_d": "Los clientes reservan solos un hueco libre y reciben un recordatorio el día antes. Menos citas perdidas y menos llamadas.",
+        "pk_book_p": "desde 150 € + 20 €/mes",
+        "pk_auto_t": "Respuestas automáticas a consultas",
+        "pk_auto_d": "Las preguntas frecuentes sobre precios, horarios y disponibilidad se responden al momento, y todas las consultas de la web llegan a un solo lugar.",
+        "pk_auto_p": "desde 150 € + 20 €/mes",
+        "pk_host_t": "Alojamiento y mantenimiento",
+        "pk_host_d": "Alojamiento rápido y seguro, y cambios de precios, fotos y textos.",
+        "pk_host_p": "25 €/mes",
+        "pk_sum_h": "Su paquete",
+        "pk_once": "Pago único",
+        "pk_month": "Mensual",
+        "pk_note": "Precios orientativos. El precio exacto lo acordamos tras el diseño previo gratis.",
+        "pk_none": "Elija al menos una opción.",
+        "pk_send": "Enviar consulta por este paquete",
+        "pk_from": "desde",
+        "pk_subject": "Consulta de paquete – Fresh Front",
+        "pk_body": "Hola, me interesa este paquete:",
+    },
+}
+
 def flags_html(current):
     out = []
     for code in LANGS:
@@ -452,6 +587,10 @@ def build():
     keys = set(re.findall(r"\{\{(\w+)\}\}", template))
     for code in LANGS:
         t = dict(T[code])
+        t.update(PK[code])
+        t['pk_from_js'] = json.dumps(PK[code]['pk_from'], ensure_ascii=False)
+        t['pk_subject_js'] = json.dumps(PK[code]['pk_subject'], ensure_ascii=False)
+        t['pk_body_js'] = json.dumps(PK[code]['pk_body'], ensure_ascii=False)
         missing = keys - set(t) - {
             "lang", "url", "alternates", "font_url", "font_display", "font_body", "style", "flags", "home",
         }

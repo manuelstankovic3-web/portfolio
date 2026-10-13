@@ -222,11 +222,52 @@
     outline-offset: 3px; opacity: .8; transition: opacity .15s ease;
     box-shadow: 0 0 0 1px rgba(0,0,0,.18);
   }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .langbar a:hover { opacity: 1; }
   .langbar a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--orange); }
   .langbar svg { width: 30px; height: 20px; border-radius: 4px; display: block; }
   @media (max-width: 640px) {
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
+  }
+
+  /* Package builder */
+  .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
+  .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
+  .opt {
+    display: grid; grid-template-columns: 28px 1fr auto; gap: 16px; align-items: start;
+    background: var(--white); border: 2px solid var(--line); border-radius: 18px;
+    padding: 20px 22px; cursor: pointer; transition: border-color .15s ease;
+  }
+  .opt:hover { border-color: #BDBDB8; }
+  .opt:has(input:checked) { border-color: var(--orange); }
+  .opt input { width: 22px; height: 22px; margin: 3px 0 0; accent-color: var(--orange); cursor: pointer; }
+  .opt input:focus-visible { outline: 3px solid var(--petrol); outline-offset: 3px; }
+  .opt-title { display: block; font-family: var(--display); font-weight: 700; font-size: 1.2rem; }
+  .opt-desc { display: block; color: var(--mist); margin-top: 4px; max-width: 48ch; }
+  .opt-price { font-weight: 700; white-space: nowrap; text-align: right; }
+  .badge {
+    display: inline-block; margin-left: 8px; vertical-align: 3px;
+    font-family: var(--body); font-size: .75rem; font-weight: 700; line-height: 1.4;
+    background: var(--petrol-soft); color: var(--petrol); padding: 2px 9px; border-radius: 999px;
+  }
+  .sum {
+    position: sticky; top: 24px;
+    background: var(--black); color: var(--white); border-radius: 24px; padding: 30px;
+  }
+  .sum h3 { font-family: var(--display); font-weight: 700; font-size: 1.2rem; margin: 0 0 18px; }
+  .sum-row { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 8px; color: #D6D6D6; }
+  .sum-row strong { font-family: var(--display); font-size: 1.6rem; color: var(--orange); }
+  .sum-row.month strong { color: #8FD0D6; }
+  .sum .note { color: #A3A3A3; margin: 14px 0 22px; font-size: .95rem; }
+  .sum .btn { display: block; text-align: center; }
+  .sum .empty { color: #F5A47A; font-weight: 700; margin: 0 0 14px; }
+  @media (max-width: 900px) {
+    .pack { grid-template-columns: 1fr; }
+    .sum { position: static; }
+  }
+  @media (max-width: 640px) {
+    .opt { grid-template-columns: 24px 1fr; padding: 18px; }
+    .opt-price { grid-column: 2; text-align: left; }
   }
 </style>
 </head>
@@ -348,6 +389,46 @@
     </div>
   </section>
 
+  <section class="block" id="paket">
+    <div class="wrap">
+      <h2>Složite svoj paket</h2>
+      <p class="intro">Odaberite što vašoj firmi treba. Sve se može uz novu stranicu ili zasebno, na stranici koju već imate.</p>
+      <form class="pack" id="pack" onsubmit="return false">
+        <fieldset class="opts">
+          <legend class="sr">Složite svoj paket</legend>
+          <label class="opt">
+            <input type="checkbox" value="web" data-once="350" data-month="0" data-label="Nova web stranica" checked>
+            <span><span class="opt-title">Nova web stranica</span><span class="opt-desc">Moderna, brza i prilagođena mobitelima i Googleu.</span></span>
+            <span class="opt-price">od 350 €</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="booking" data-once="150" data-month="20" data-label="Online rezervacije i podsjetnici">
+            <span><span class="opt-title">Online rezervacije i podsjetnici<span class="badge">Novo</span></span><span class="opt-desc">Klijenti se sami naruče u slobodan termin, a dan prije dobiju podsjetnik. Manje propuštenih termina i manje telefoniranja.</span></span>
+            <span class="opt-price">od 150 € + 20 €/mj.</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="replies" data-once="150" data-month="20" data-label="Automatski odgovori na upite">
+            <span><span class="opt-title">Automatski odgovori na upite<span class="badge">Novo</span></span><span class="opt-desc">Česta pitanja o cijenama, radnom vremenu i terminima dobiju odgovor odmah, a svi upiti s weba slažu se na jedno mjesto.</span></span>
+            <span class="opt-price">od 150 € + 20 €/mj.</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="hosting" data-once="0" data-month="25" data-label="Hosting i održavanje">
+            <span><span class="opt-title">Hosting i održavanje</span><span class="opt-desc">Brz i siguran hosting, izmjene cijena, slika i teksta.</span></span>
+            <span class="opt-price">25 €/mj.</span>
+          </label>
+        </fieldset>
+        <div class="sum" aria-live="polite">
+          <h3>Vaš paket</h3>
+          <p class="sum-row"><span>Jednokratno</span><strong id="sumOnce">350 €</strong></p>
+          <p class="sum-row month"><span>Mjesečno</span><strong id="sumMonth">0 €</strong></p>
+          <p class="note">Okvirne cijene. Točnu cijenu dogovaramo nakon besplatnog koncepta.</p>
+          <p class="empty" id="packEmpty" hidden>Odaberite barem jednu opciju.</p>
+          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">Pošaljite upit za ovaj paket</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <section class="contact" id="kontakt">
     <div class="wrap">
       <h2>Pogledajmo vašu stranicu</h2>
@@ -365,5 +446,35 @@
   <div class="wrap">© 2026 Fresh Front, Pula</div>
 </footer>
 
+<script>
+(function () {
+  var form = document.getElementById('pack');
+  if (!form) return;
+  var boxes = form.querySelectorAll('input[type=checkbox]');
+  var once = document.getElementById('sumOnce');
+  var month = document.getElementById('sumMonth');
+  var send = document.getElementById('packSend');
+  var empty = document.getElementById('packEmpty');
+  var prefix = "od";
+  var subject = "Upit za paket – Fresh Front";
+  var bodyIntro = "Pozdrav, zanima me ovaj paket:";
+  function update() {
+    var o = 0, m = 0, names = [];
+    boxes.forEach(function (b) {
+      if (!b.checked) return;
+      o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
+    });
+    once.textContent = (o ? prefix + ' ' : '') + o + ' €';
+    month.textContent = (m ? prefix + ' ' : '') + m + ' €';
+    empty.hidden = names.length > 0;
+    send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
+    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+  }
+  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  boxes.forEach(function (b) { b.addEventListener('change', update); });
+  update();
+})();
+</script>
 </body>
 </html>

@@ -23,11 +23,52 @@
     outline-offset: 3px; opacity: .8; transition: opacity .15s ease;
     box-shadow: 0 0 0 1px rgba(0,0,0,.18);
   }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .langbar a:hover { opacity: 1; }
   .langbar a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--orange); }
   .langbar svg { width: 30px; height: 20px; border-radius: 4px; display: block; }
   @media (max-width: 640px) {
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
+  }
+
+  /* Package builder */
+  .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
+  .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
+  .opt {
+    display: grid; grid-template-columns: 28px 1fr auto; gap: 16px; align-items: start;
+    background: var(--white); border: 2px solid var(--line); border-radius: 18px;
+    padding: 20px 22px; cursor: pointer; transition: border-color .15s ease;
+  }
+  .opt:hover { border-color: #BDBDB8; }
+  .opt:has(input:checked) { border-color: var(--orange); }
+  .opt input { width: 22px; height: 22px; margin: 3px 0 0; accent-color: var(--orange); cursor: pointer; }
+  .opt input:focus-visible { outline: 3px solid var(--petrol); outline-offset: 3px; }
+  .opt-title { display: block; font-family: var(--display); font-weight: 700; font-size: 1.2rem; }
+  .opt-desc { display: block; color: var(--mist); margin-top: 4px; max-width: 48ch; }
+  .opt-price { font-weight: 700; white-space: nowrap; text-align: right; }
+  .badge {
+    display: inline-block; margin-left: 8px; vertical-align: 3px;
+    font-family: var(--body); font-size: .75rem; font-weight: 700; line-height: 1.4;
+    background: var(--petrol-soft); color: var(--petrol); padding: 2px 9px; border-radius: 999px;
+  }
+  .sum {
+    position: sticky; top: 24px;
+    background: var(--black); color: var(--white); border-radius: 24px; padding: 30px;
+  }
+  .sum h3 { font-family: var(--display); font-weight: 700; font-size: 1.2rem; margin: 0 0 18px; }
+  .sum-row { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 8px; color: #D6D6D6; }
+  .sum-row strong { font-family: var(--display); font-size: 1.6rem; color: var(--orange); }
+  .sum-row.month strong { color: #8FD0D6; }
+  .sum .note { color: #A3A3A3; margin: 14px 0 22px; font-size: .95rem; }
+  .sum .btn { display: block; text-align: center; }
+  .sum .empty { color: #F5A47A; font-weight: 700; margin: 0 0 14px; }
+  @media (max-width: 900px) {
+    .pack { grid-template-columns: 1fr; }
+    .sum { position: static; }
+  }
+  @media (max-width: 640px) {
+    .opt { grid-template-columns: 24px 1fr; padding: 18px; }
+    .opt-price { grid-column: 2; text-align: left; }
   }
 </style>
 </head>
@@ -145,6 +186,46 @@
     </div>
   </section>
 
+  <section class="block" id="paket">
+    <div class="wrap">
+      <h2>{{pk_h2}}</h2>
+      <p class="intro">{{pk_intro}}</p>
+      <form class="pack" id="pack" onsubmit="return false">
+        <fieldset class="opts">
+          <legend class="sr">{{pk_h2}}</legend>
+          <label class="opt">
+            <input type="checkbox" value="web" data-once="350" data-month="0" data-label="{{pk_web_t}}" checked>
+            <span><span class="opt-title">{{pk_web_t}}</span><span class="opt-desc">{{pk_web_d}}</span></span>
+            <span class="opt-price">{{pk_web_p}}</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="booking" data-once="150" data-month="20" data-label="{{pk_book_t}}">
+            <span><span class="opt-title">{{pk_book_t}}<span class="badge">{{pk_badge}}</span></span><span class="opt-desc">{{pk_book_d}}</span></span>
+            <span class="opt-price">{{pk_book_p}}</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="replies" data-once="150" data-month="20" data-label="{{pk_auto_t}}">
+            <span><span class="opt-title">{{pk_auto_t}}<span class="badge">{{pk_badge}}</span></span><span class="opt-desc">{{pk_auto_d}}</span></span>
+            <span class="opt-price">{{pk_auto_p}}</span>
+          </label>
+          <label class="opt">
+            <input type="checkbox" value="hosting" data-once="0" data-month="25" data-label="{{pk_host_t}}">
+            <span><span class="opt-title">{{pk_host_t}}</span><span class="opt-desc">{{pk_host_d}}</span></span>
+            <span class="opt-price">{{pk_host_p}}</span>
+          </label>
+        </fieldset>
+        <div class="sum" aria-live="polite">
+          <h3>{{pk_sum_h}}</h3>
+          <p class="sum-row"><span>{{pk_once}}</span><strong id="sumOnce">350 €</strong></p>
+          <p class="sum-row month"><span>{{pk_month}}</span><strong id="sumMonth">0 €</strong></p>
+          <p class="note">{{pk_note}}</p>
+          <p class="empty" id="packEmpty" hidden>{{pk_none}}</p>
+          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">{{pk_send}}</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <section class="contact" id="kontakt">
     <div class="wrap">
       <h2>{{contact_h2}}</h2>
@@ -162,5 +243,35 @@
   <div class="wrap">© 2026 Fresh Front, Pula</div>
 </footer>
 
+<script>
+(function () {
+  var form = document.getElementById('pack');
+  if (!form) return;
+  var boxes = form.querySelectorAll('input[type=checkbox]');
+  var once = document.getElementById('sumOnce');
+  var month = document.getElementById('sumMonth');
+  var send = document.getElementById('packSend');
+  var empty = document.getElementById('packEmpty');
+  var prefix = {{pk_from_js}};
+  var subject = {{pk_subject_js}};
+  var bodyIntro = {{pk_body_js}};
+  function update() {
+    var o = 0, m = 0, names = [];
+    boxes.forEach(function (b) {
+      if (!b.checked) return;
+      o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
+    });
+    once.textContent = (o ? prefix + ' ' : '') + o + ' €';
+    month.textContent = (m ? prefix + ' ' : '') + m + ' €';
+    empty.hidden = names.length > 0;
+    send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
+    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+  }
+  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  boxes.forEach(function (b) { b.addEventListener('change', update); });
+  update();
+})();
+</script>
 </body>
 </html>
