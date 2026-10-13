@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{og_description}}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{url}}">
+<link rel="canonical" href="{{url}}">
+{{alternates}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{{font_url}}" rel="stylesheet">
+{{style}}
+<style>
+  :root { --display: {{font_display}}; --body: {{font_body}}; }
+  .langbar { display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; }
+  .langbar a {
+    display: inline-flex; border-radius: 4px; line-height: 0;
+    outline-offset: 3px; opacity: .8; transition: opacity .15s ease;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.18);
+  }
+  .langbar a:hover { opacity: 1; }
+  .langbar a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--orange); }
+  .langbar svg { width: 30px; height: 20px; border-radius: 4px; display: block; }
+  @media (max-width: 640px) {
+    .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="wrap langbar" aria-label="{{lang_nav_label}}">
+{{flags}}
+</nav>
+
+<header class="wrap top">
+  <a class="brand" href="{{home}}">Fresh Front <span>{{brand_sub}}</span></a>
+  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject={{subj_inquiry}}">{{nav_inquiry}}</a>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>{{h1}}</h1>
+      <p class="lead">{{lead}}</p>
+      <div class="actions">
+        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject={{subj_concept}}">{{cta_concept}}</a>
+        <a class="btn ghost" href="#cijene">{{cta_prices}}</a>
+      </div>
+    </div>
+
+    <figure style="margin:0">
+      <div class="compare" aria-label="{{compare_label}}">
+        <div class="phone before">
+          <div class="screen old" aria-hidden="true">
+            <div class="bar">{{old_bar}}</div>
+            <div class="nav">{{old_nav}}</div>
+            <div class="body">
+              {{old_body}}
+              <div class="img"></div>
+              {{old_price}}
+              <div class="notice">{{old_notice}}</div>
+            </div>
+            <div class="foot">{{old_foot}}</div>
+          </div>
+          <span class="tag">{{tag_before}}</span>
+        </div>
+        <div class="phone after">
+          <div class="screen new" aria-hidden="true">
+            <div class="pic"></div>
+            <div class="in">
+              <div class="name">Konoba Mul</div>
+              <div class="sub">{{new_sub}}</div>
+              <div class="meta">{{new_meta}}</div>
+              <div class="cta">{{new_cta}}</div>
+              <div class="cta2">{{new_cta2}}</div>
+            </div>
+          </div>
+          <span class="tag">{{tag_after}}</span>
+        </div>
+      </div>
+      <figcaption class="demo-note">{{demo_note}}</figcaption>
+    </figure>
+  </div>
+
+  <section class="block white">
+    <div class="wrap">
+      <h2>{{gets_h2}}</h2>
+      <p class="intro">{{gets_intro}}</p>
+      <dl class="gets">
+        <div><dt>{{g1t}}</dt><dd>{{g1d}}</dd></div>
+        <div><dt>{{g2t}}</dt><dd>{{g2d}}</dd></div>
+        <div><dt>{{g3t}}</dt><dd>{{g3d}}</dd></div>
+        <div><dt>{{g4t}}</dt><dd>{{g4d}}</dd></div>
+        <div><dt>{{g5t}}</dt><dd>{{g5d}}</dd></div>
+        <div><dt>{{g6t}}</dt><dd>{{g6d}}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>{{steps_h2}}</h2>
+      <p class="intro">{{steps_intro}}</p>
+      <ol class="steps">
+        <li><h3>{{s1t}}</h3><p>{{s1d}}</p></li>
+        <li><h3>{{s2t}}</h3><p>{{s2d}}</p></li>
+        <li><h3>{{s3t}}</h3><p>{{s3d}}</p></li>
+        <li><h3>{{s4t}}</h3><p>{{s4d}}</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block white" id="cijene">
+    <div class="wrap">
+      <h2>{{prices_h2}}</h2>
+      <p class="intro">{{prices_intro}}</p>
+      <div class="prices">
+        <div class="price main">
+          <h3>{{p1h}}</h3>
+          <p class="amount">{{p1amount}} <small>{{p1unit}}</small></p>
+          <p class="note">{{p1note}}</p>
+          <ul>
+            <li>{{p1a}}</li>
+            <li>{{p1b}}</li>
+            <li>{{p1c}}</li>
+            <li>{{p1d}}</li>
+          </ul>
+        </div>
+        <div class="price side">
+          <h3>{{p2h}}</h3>
+          <p class="amount">25 € <small>{{p2unit}}</small></p>
+          <p class="note">{{p2note}}</p>
+          <ul>
+            <li>{{p2a}}</li>
+            <li>{{p2b}}</li>
+            <li>{{p2c}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="kontakt">
+    <div class="wrap">
+      <h2>{{contact_h2}}</h2>
+      <p>{{contact_p}}</p>
+      <div class="actions">
+        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject={{subj_concept}}">{{cta_concept}}</a>
+        <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">{{cta_call}}</a>
+      </div>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Fresh Front, Pula</div>
+</footer>
+
+</body>
+</html>

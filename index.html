@@ -8,9 +8,17 @@
 <meta property="og:title" content="Fresh Front – web stranice za firme diljem Hrvatske">
 <meta property="og:description" content="Nova web stranica za vašu firmu za oko tjedan dana. Besplatan koncept bez obveze.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://freshfront.eu/">
+<link rel="canonical" href="https://freshfront.eu/">
+<link rel="alternate" hreflang="hr" href="https://freshfront.eu/">
+<link rel="alternate" hreflang="en" href="https://freshfront.eu/en/">
+<link rel="alternate" hreflang="de" href="https://freshfront.eu/de/">
+<link rel="alternate" hreflang="ru" href="https://freshfront.eu/ru/">
+<link rel="alternate" hreflang="es" href="https://freshfront.eu/es/">
+<link rel="alternate" hreflang="x-default" href="https://freshfront.eu/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
 <style>
   :root {
     --orange: #F26B1D;
@@ -206,11 +214,34 @@
     * { transition: none !important; }
   }
 </style>
+<style>
+  :root { --display: "Bricolage Grotesque", system-ui, sans-serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; }
+  .langbar { display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; }
+  .langbar a {
+    display: inline-flex; border-radius: 4px; line-height: 0;
+    outline-offset: 3px; opacity: .8; transition: opacity .15s ease;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.18);
+  }
+  .langbar a:hover { opacity: 1; }
+  .langbar a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--orange); }
+  .langbar svg { width: 30px; height: 20px; border-radius: 4px; display: block; }
+  @media (max-width: 640px) {
+    .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
+  }
+</style>
 </head>
 <body>
 
+<nav class="wrap langbar" aria-label="Odaberite jezik">
+  <a href="/" hreflang="hr" lang="hr" title="Hrvatski" aria-label="Hrvatski" aria-current="true"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#171796"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#FF0000"/><path d="M11.5 5.2h7v6.3c0 2.3-1.6 3.6-3.5 4.3-1.9-.7-3.5-2-3.5-4.3z" fill="#fff" stroke="#171796" stroke-width=".4"/><path d="M11.5 5.2h1.4v1.4h-1.4zM14.3 5.2h1.4v1.4h-1.4zM17.1 5.2h1.4v1.4h-1.4zM12.9 6.6h1.4V8h-1.4zM15.7 6.6h1.4V8h-1.4zM11.5 8h1.4v1.4h-1.4zM14.3 8h1.4v1.4h-1.4zM17.1 8h1.4v1.4h-1.4zM12.9 9.4h1.4v1.4h-1.4zM15.7 9.4h1.4v1.4h-1.4zM11.6 10.8h1.3v1.3h-1.1zM14.3 10.8h1.4v1.4h-1.4zM17.1 10.8h1.3l-.1 1.3h-1.2zM12.9 12.2h1.4v1.4h-1.4zM15.7 12.2h1.4v1.4h-1.4zM14.3 13.6h1.4v1.5l-.7.4-.7-.4z" fill="#FF0000"/></svg></a>
+  <a href="/en/" hreflang="en" lang="en" title="English" aria-label="English"><svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="ukc"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" clip-path="url(#ukc)" stroke="#C8102E" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg></a>
+  <a href="/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#FFCE00"/><rect width="30" height="13.33" fill="#DD0000"/><rect width="30" height="6.67" fill="#000"/></svg></a>
+  <a href="/ru/" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#D52B1E"/><rect width="30" height="13.33" fill="#0039A6"/><rect width="30" height="6.67" fill="#fff"/></svg></a>
+  <a href="/es/" hreflang="es" lang="es" title="Español" aria-label="Español"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/></svg></a>
+</nav>
+
 <header class="wrap top">
-  <a class="brand" href="#">Fresh Front <span>web stranice</span></a>
+  <a class="brand" href="/">Fresh Front <span>web stranice</span></a>
   <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject=Upit%20za%20web%20stranicu">Pošaljite upit</a>
 </header>
 
