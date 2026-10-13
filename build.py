@@ -564,6 +564,75 @@ PK = {
     },
 }
 
+# Inquiry form texts.
+FORM = {
+    "hr": {
+        "f_subject": "Novi upit s freshfront.eu",
+        "f_name": "Ime i prezime",
+        "f_site": "Vaša stranica ili ime firme",
+        "f_email": "Email",
+        "f_msg": "Poruka (nije obavezno)",
+        "f_msg_ph": "Npr. što vam najviše treba ili kada vas je najlakše dobiti",
+        "f_send": "Zatražite besplatan koncept",
+        "f_sending": "Šaljem…",
+        "f_ok": "Hvala! Upit je stigao, javit ću vam se u roku od dan-dva.",
+        "f_err": "Upit nije poslan. Pokušajte ponovno ili pišite izravno na manuelstankovic3@gmail.com.",
+        "f_or_email": "Ili pišite izravno:",
+    },
+    "en": {
+        "f_subject": "New inquiry from freshfront.eu",
+        "f_name": "Your name",
+        "f_site": "Your website or business name",
+        "f_email": "Email",
+        "f_msg": "Message (optional)",
+        "f_msg_ph": "E.g. what you need most or when it's easiest to reach you",
+        "f_send": "Ask for a free concept",
+        "f_sending": "Sending…",
+        "f_ok": "Thank you! Your inquiry arrived. I'll get back to you within a day or two.",
+        "f_err": "Your inquiry wasn't sent. Please try again or write directly to manuelstankovic3@gmail.com.",
+        "f_or_email": "Or write directly:",
+    },
+    "de": {
+        "f_subject": "Neue Anfrage über freshfront.eu",
+        "f_name": "Ihr Name",
+        "f_site": "Ihre Website oder Ihr Firmenname",
+        "f_email": "E-Mail",
+        "f_msg": "Nachricht (optional)",
+        "f_msg_ph": "Z. B. was Sie am meisten brauchen oder wann Sie am besten erreichbar sind",
+        "f_send": "Kostenlosen Entwurf anfragen",
+        "f_sending": "Wird gesendet…",
+        "f_ok": "Danke! Ihre Anfrage ist angekommen. Ich melde mich innerhalb von ein bis zwei Tagen.",
+        "f_err": "Die Anfrage wurde nicht gesendet. Bitte versuchen Sie es erneut oder schreiben Sie direkt an manuelstankovic3@gmail.com.",
+        "f_or_email": "Oder schreiben Sie direkt:",
+    },
+    "ru": {
+        "f_subject": "Новый запрос с freshfront.eu",
+        "f_name": "Ваше имя",
+        "f_site": "Ваш сайт или название бизнеса",
+        "f_email": "Email",
+        "f_msg": "Сообщение (необязательно)",
+        "f_msg_ph": "Например, что вам нужнее всего или когда с вами удобнее связаться",
+        "f_send": "Получить бесплатный макет",
+        "f_sending": "Отправляю…",
+        "f_ok": "Спасибо! Запрос получен, я свяжусь с вами в течение одного-двух дней.",
+        "f_err": "Запрос не отправлен. Попробуйте ещё раз или напишите напрямую на manuelstankovic3@gmail.com.",
+        "f_or_email": "Или напишите напрямую:",
+    },
+    "es": {
+        "f_subject": "Nueva consulta desde freshfront.eu",
+        "f_name": "Su nombre",
+        "f_site": "Su página web o el nombre de su negocio",
+        "f_email": "Email",
+        "f_msg": "Mensaje (opcional)",
+        "f_msg_ph": "P. ej., qué necesita más o cuándo es más fácil contactarle",
+        "f_send": "Pedir diseño previo gratis",
+        "f_sending": "Enviando…",
+        "f_ok": "¡Gracias! Su consulta ha llegado. Le responderé en uno o dos días.",
+        "f_err": "La consulta no se envió. Inténtelo de nuevo o escriba directamente a manuelstankovic3@gmail.com.",
+        "f_or_email": "O escriba directamente:",
+    },
+}
+
 def flags_html(current):
     out = []
     for code in LANGS:
@@ -588,6 +657,10 @@ def build():
     for code in LANGS:
         t = dict(T[code])
         t.update(PK[code])
+        t.update(FORM[code])
+        for k in ('f_sending', 'f_ok', 'f_err', 'f_send'):
+            t[k + '_js'] = json.dumps(FORM[code][k], ensure_ascii=False)
+        t['pk_month_js'] = json.dumps(PK[code]['pk_month'].lower(), ensure_ascii=False)
         t['pk_from_js'] = json.dumps(PK[code]['pk_from'], ensure_ascii=False)
         t['pk_subject_js'] = json.dumps(PK[code]['pk_subject'], ensure_ascii=False)
         t['pk_body_js'] = json.dumps(PK[code]['pk_body'], ensure_ascii=False)

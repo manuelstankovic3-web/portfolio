@@ -31,6 +31,24 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Lead form */
+  .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
+  .lead-form .wide { grid-column: 1 / -1; }
+  .field label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+  .field input, .field textarea {
+    width: 100%; font: inherit; font-size: 1.05rem; color: var(--black);
+    background: var(--white); border: 2px solid var(--white); border-radius: 12px; padding: 12px 14px;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 4px; }
+  .form-actions button { cursor: pointer; }
+  .form-actions button[disabled] { opacity: .6; cursor: wait; }
+  .form-status { margin: 0; font-weight: 700; }
+  .form-status.ok { color: #8FD0D6; }
+  .form-status.err { color: #F5A47A; }
+  @media (max-width: 900px) { .lead-form { grid-template-columns: 1fr; } }
+
   /* Package builder */
   .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
   .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
@@ -80,7 +98,7 @@
 
 <header class="wrap top">
   <a class="brand" href="{{home}}">Fresh Front <span>{{brand_sub}}</span></a>
-  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject={{subj_inquiry}}">{{nav_inquiry}}</a>
+  <a class="top-link" href="#kontakt">{{nav_inquiry}}</a>
 </header>
 
 <main>
@@ -89,7 +107,7 @@
       <h1>{{h1}}</h1>
       <p class="lead">{{lead}}</p>
       <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject={{subj_concept}}">{{cta_concept}}</a>
+        <a class="btn" href="#kontakt">{{cta_concept}}</a>
         <a class="btn ghost" href="#cijene">{{cta_prices}}</a>
       </div>
     </div>
@@ -220,7 +238,7 @@
           <p class="sum-row month"><span>{{pk_month}}</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">{{pk_note}}</p>
           <p class="empty" id="packEmpty" hidden>{{pk_none}}</p>
-          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">{{pk_send}}</a>
+          <a class="btn" id="packSend" href="#kontakt">{{pk_send}}</a>
         </div>
       </form>
     </div>
@@ -230,11 +248,33 @@
     <div class="wrap">
       <h2>{{contact_h2}}</h2>
       <p>{{contact_p}}</p>
-      <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject={{subj_concept}}">{{cta_concept}}</a>
-        <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">{{cta_call}}</a>
-      </div>
-      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+      <form class="lead-form" id="leadForm" action="https://formspree.io/f/xbgdzyop" method="POST">
+        <input type="hidden" name="_subject" value="{{f_subject}}">
+        <input type="hidden" name="jezik" value="{{lang}}">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <div class="field">
+          <label for="f-name">{{f_name}}</label>
+          <input id="f-name" name="ime" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-site">{{f_site}}</label>
+          <input id="f-site" name="stranica_ili_firma" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="f-email">{{f_email}}</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field wide">
+          <label for="f-msg">{{f_msg}}</label>
+          <textarea id="f-msg" name="poruka" rows="4" placeholder="{{f_msg_ph}}"></textarea>
+        </div>
+        <div class="form-actions wide">
+          <button class="btn" type="submit" id="leadSend">{{f_send}}</button>
+          <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">{{cta_call}}</a>
+        </div>
+        <p class="form-status wide" id="leadStatus" role="status" hidden></p>
+      </form>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">{{f_or_email}} manuelstankovic3@gmail.com</a>
     </div>
   </section>
 </main>
@@ -255,6 +295,7 @@
   var prefix = {{pk_from_js}};
   var subject = {{pk_subject_js}};
   var bodyIntro = {{pk_body_js}};
+  var monthWord = {{pk_month_js}};
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
@@ -265,12 +306,41 @@
     month.textContent = (m ? prefix + ' ' : '') + m + ' €';
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
-    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+    send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
+      once.textContent + ' + ' + month.textContent + ' ' + monthWord;
   }
-  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  send.addEventListener('click', function (e) {
+    if (send.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+    var msg = document.getElementById('f-msg');
+    if (msg) msg.value = send.dataset.body || '';
+    setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
+  });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
   update();
+})();
+(function () {
+  var form = document.getElementById('leadForm');
+  if (!form || !window.fetch) return;
+  var btn = document.getElementById('leadSend');
+  var status = document.getElementById('leadStatus');
+  var txt = { sending: {{f_sending_js}}, ok: {{f_ok_js}}, err: {{f_err_js}} };
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    btn.disabled = true; btn.textContent = txt.sending;
+    status.hidden = true; status.className = 'form-status wide';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('status ' + r.status);
+        form.reset();
+        status.textContent = txt.ok; status.classList.add('ok');
+      })
+      .catch(function () {
+        status.textContent = txt.err; status.classList.add('err');
+      })
+      .then(function () {
+        status.hidden = false; btn.disabled = false; btn.textContent = {{f_send_js}};
+      });
+  });
 })();
 </script>
 </body>

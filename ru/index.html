@@ -230,6 +230,24 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Lead form */
+  .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
+  .lead-form .wide { grid-column: 1 / -1; }
+  .field label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+  .field input, .field textarea {
+    width: 100%; font: inherit; font-size: 1.05rem; color: var(--black);
+    background: var(--white); border: 2px solid var(--white); border-radius: 12px; padding: 12px 14px;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 4px; }
+  .form-actions button { cursor: pointer; }
+  .form-actions button[disabled] { opacity: .6; cursor: wait; }
+  .form-status { margin: 0; font-weight: 700; }
+  .form-status.ok { color: #8FD0D6; }
+  .form-status.err { color: #F5A47A; }
+  @media (max-width: 900px) { .lead-form { grid-template-columns: 1fr; } }
+
   /* Package builder */
   .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
   .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
@@ -283,7 +301,7 @@
 
 <header class="wrap top">
   <a class="brand" href="/ru/">Fresh Front <span>сайты</span></a>
-  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject=%D0%97%D0%B0%D0%BF%D1%80%D0%BE%D1%81%20%D0%BE%20%D1%81%D0%B0%D0%B9%D1%82%D0%B5">Отправить запрос</a>
+  <a class="top-link" href="#kontakt">Отправить запрос</a>
 </header>
 
 <main>
@@ -292,7 +310,7 @@
       <h1>Новый сайт для вашего бизнеса, готовый за неделю.</h1>
       <p class="lead">Я делаю сайты для ресторанов, автосервисов, клиник, салонов и малого бизнеса по всей Хорватии. Ещё до договорённости вы получаете бесплатный макет и видите, что именно получите.</p>
       <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=%D0%91%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%8B%D0%B9%20%D0%BC%D0%B0%D0%BA%D0%B5%D1%82%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Получить бесплатный макет</a>
+        <a class="btn" href="#kontakt">Получить бесплатный макет</a>
         <a class="btn ghost" href="#cijene">Посмотреть цены</a>
       </div>
     </div>
@@ -423,7 +441,7 @@
           <p class="sum-row month"><span>Ежемесячно</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">Ориентировочные цены. Точную цену согласуем после бесплатного макета.</p>
           <p class="empty" id="packEmpty" hidden>Выберите хотя бы один вариант.</p>
-          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">Отправить запрос на этот пакет</a>
+          <a class="btn" id="packSend" href="#kontakt">Отправить запрос на этот пакет</a>
         </div>
       </form>
     </div>
@@ -433,11 +451,33 @@
     <div class="wrap">
       <h2>Давайте посмотрим ваш сайт</h2>
       <p>Пришлите адрес вашего сайта или просто название бизнеса. Я пришлю бесплатный макет новой главной страницы, а вы решите, продолжать ли. Manuel Stanković, Fresh Front</p>
-      <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=%D0%91%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%8B%D0%B9%20%D0%BC%D0%B0%D0%BA%D0%B5%D1%82%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0">Получить бесплатный макет</a>
-        <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Записаться на звонок 15 мин</a>
-      </div>
-      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+      <form class="lead-form" id="leadForm" action="https://formspree.io/f/xbgdzyop" method="POST">
+        <input type="hidden" name="_subject" value="Новый запрос с freshfront.eu">
+        <input type="hidden" name="jezik" value="ru">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <div class="field">
+          <label for="f-name">Ваше имя</label>
+          <input id="f-name" name="ime" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-site">Ваш сайт или название бизнеса</label>
+          <input id="f-site" name="stranica_ili_firma" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field wide">
+          <label for="f-msg">Сообщение (необязательно)</label>
+          <textarea id="f-msg" name="poruka" rows="4" placeholder="Например, что вам нужнее всего или когда с вами удобнее связаться"></textarea>
+        </div>
+        <div class="form-actions wide">
+          <button class="btn" type="submit" id="leadSend">Получить бесплатный макет</button>
+          <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Записаться на звонок 15 мин</a>
+        </div>
+        <p class="form-status wide" id="leadStatus" role="status" hidden></p>
+      </form>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">Или напишите напрямую: manuelstankovic3@gmail.com</a>
     </div>
   </section>
 </main>
@@ -458,6 +498,7 @@
   var prefix = "от";
   var subject = "Запрос пакета – Fresh Front";
   var bodyIntro = "Здравствуйте, меня интересует этот пакет:";
+  var monthWord = "ежемесячно";
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
@@ -468,12 +509,41 @@
     month.textContent = (m ? prefix + ' ' : '') + m + ' €';
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
-    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+    send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
+      once.textContent + ' + ' + month.textContent + ' ' + monthWord;
   }
-  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  send.addEventListener('click', function (e) {
+    if (send.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+    var msg = document.getElementById('f-msg');
+    if (msg) msg.value = send.dataset.body || '';
+    setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
+  });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
   update();
+})();
+(function () {
+  var form = document.getElementById('leadForm');
+  if (!form || !window.fetch) return;
+  var btn = document.getElementById('leadSend');
+  var status = document.getElementById('leadStatus');
+  var txt = { sending: "Отправляю…", ok: "Спасибо! Запрос получен, я свяжусь с вами в течение одного-двух дней.", err: "Запрос не отправлен. Попробуйте ещё раз или напишите напрямую на manuelstankovic3@gmail.com." };
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    btn.disabled = true; btn.textContent = txt.sending;
+    status.hidden = true; status.className = 'form-status wide';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('status ' + r.status);
+        form.reset();
+        status.textContent = txt.ok; status.classList.add('ok');
+      })
+      .catch(function () {
+        status.textContent = txt.err; status.classList.add('err');
+      })
+      .then(function () {
+        status.hidden = false; btn.disabled = false; btn.textContent = "Получить бесплатный макет";
+      });
+  });
 })();
 </script>
 </body>

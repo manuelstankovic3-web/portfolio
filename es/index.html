@@ -230,6 +230,24 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Lead form */
+  .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
+  .lead-form .wide { grid-column: 1 / -1; }
+  .field label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+  .field input, .field textarea {
+    width: 100%; font: inherit; font-size: 1.05rem; color: var(--black);
+    background: var(--white); border: 2px solid var(--white); border-radius: 12px; padding: 12px 14px;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 4px; }
+  .form-actions button { cursor: pointer; }
+  .form-actions button[disabled] { opacity: .6; cursor: wait; }
+  .form-status { margin: 0; font-weight: 700; }
+  .form-status.ok { color: #8FD0D6; }
+  .form-status.err { color: #F5A47A; }
+  @media (max-width: 900px) { .lead-form { grid-template-columns: 1fr; } }
+
   /* Package builder */
   .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
   .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
@@ -283,7 +301,7 @@
 
 <header class="wrap top">
   <a class="brand" href="/es/">Fresh Front <span>páginas web</span></a>
-  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject=Consulta%20sobre%20p%C3%A1gina%20web">Enviar consulta</a>
+  <a class="top-link" href="#kontakt">Enviar consulta</a>
 </header>
 
 <main>
@@ -292,7 +310,7 @@
       <h1>Una nueva página web para su negocio, lista en una semana.</h1>
       <p class="lead">Hago páginas web para restaurantes, talleres, clínicas, salones y pequeños negocios en toda Croacia. Antes de acordar nada, recibe un diseño previo gratis y ve exactamente lo que va a obtener.</p>
       <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Dise%C3%B1o%20previo%20gratis">Pedir diseño previo gratis</a>
+        <a class="btn" href="#kontakt">Pedir diseño previo gratis</a>
         <a class="btn ghost" href="#cijene">Ver precios</a>
       </div>
     </div>
@@ -423,7 +441,7 @@
           <p class="sum-row month"><span>Mensual</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">Precios orientativos. El precio exacto lo acordamos tras el diseño previo gratis.</p>
           <p class="empty" id="packEmpty" hidden>Elija al menos una opción.</p>
-          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">Enviar consulta por este paquete</a>
+          <a class="btn" id="packSend" href="#kontakt">Enviar consulta por este paquete</a>
         </div>
       </form>
     </div>
@@ -433,11 +451,33 @@
     <div class="wrap">
       <h2>Veamos su página web</h2>
       <p>Envíeme la dirección de su página o simplemente el nombre de su negocio. Le responderé con un diseño previo gratis de una nueva página de inicio, y usted decide si seguimos. Manuel Stanković, Fresh Front</p>
-      <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Dise%C3%B1o%20previo%20gratis">Pedir diseño previo gratis</a>
-        <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Reservar llamada de 15 min</a>
-      </div>
-      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+      <form class="lead-form" id="leadForm" action="https://formspree.io/f/xbgdzyop" method="POST">
+        <input type="hidden" name="_subject" value="Nueva consulta desde freshfront.eu">
+        <input type="hidden" name="jezik" value="es">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <div class="field">
+          <label for="f-name">Su nombre</label>
+          <input id="f-name" name="ime" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-site">Su página web o el nombre de su negocio</label>
+          <input id="f-site" name="stranica_ili_firma" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field wide">
+          <label for="f-msg">Mensaje (opcional)</label>
+          <textarea id="f-msg" name="poruka" rows="4" placeholder="P. ej., qué necesita más o cuándo es más fácil contactarle"></textarea>
+        </div>
+        <div class="form-actions wide">
+          <button class="btn" type="submit" id="leadSend">Pedir diseño previo gratis</button>
+          <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Reservar llamada de 15 min</a>
+        </div>
+        <p class="form-status wide" id="leadStatus" role="status" hidden></p>
+      </form>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">O escriba directamente: manuelstankovic3@gmail.com</a>
     </div>
   </section>
 </main>
@@ -458,6 +498,7 @@
   var prefix = "desde";
   var subject = "Consulta de paquete – Fresh Front";
   var bodyIntro = "Hola, me interesa este paquete:";
+  var monthWord = "mensual";
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
@@ -468,12 +509,41 @@
     month.textContent = (m ? prefix + ' ' : '') + m + ' €';
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
-    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+    send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
+      once.textContent + ' + ' + month.textContent + ' ' + monthWord;
   }
-  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  send.addEventListener('click', function (e) {
+    if (send.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+    var msg = document.getElementById('f-msg');
+    if (msg) msg.value = send.dataset.body || '';
+    setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
+  });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
   update();
+})();
+(function () {
+  var form = document.getElementById('leadForm');
+  if (!form || !window.fetch) return;
+  var btn = document.getElementById('leadSend');
+  var status = document.getElementById('leadStatus');
+  var txt = { sending: "Enviando…", ok: "¡Gracias! Su consulta ha llegado. Le responderé en uno o dos días.", err: "La consulta no se envió. Inténtelo de nuevo o escriba directamente a manuelstankovic3@gmail.com." };
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    btn.disabled = true; btn.textContent = txt.sending;
+    status.hidden = true; status.className = 'form-status wide';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('status ' + r.status);
+        form.reset();
+        status.textContent = txt.ok; status.classList.add('ok');
+      })
+      .catch(function () {
+        status.textContent = txt.err; status.classList.add('err');
+      })
+      .then(function () {
+        status.hidden = false; btn.disabled = false; btn.textContent = "Pedir diseño previo gratis";
+      });
+  });
 })();
 </script>
 </body>

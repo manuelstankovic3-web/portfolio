@@ -230,6 +230,24 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Lead form */
+  .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
+  .lead-form .wide { grid-column: 1 / -1; }
+  .field label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--white); }
+  .field input, .field textarea {
+    width: 100%; font: inherit; font-size: 1.05rem; color: var(--black);
+    background: var(--white); border: 2px solid var(--white); border-radius: 12px; padding: 12px 14px;
+  }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .form-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 4px; }
+  .form-actions button { cursor: pointer; }
+  .form-actions button[disabled] { opacity: .6; cursor: wait; }
+  .form-status { margin: 0; font-weight: 700; }
+  .form-status.ok { color: #8FD0D6; }
+  .form-status.err { color: #F5A47A; }
+  @media (max-width: 900px) { .lead-form { grid-template-columns: 1fr; } }
+
   /* Package builder */
   .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
   .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
@@ -283,7 +301,7 @@
 
 <header class="wrap top">
   <a class="brand" href="/en/">Fresh Front <span>websites</span></a>
-  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject=Website%20inquiry">Send an inquiry</a>
+  <a class="top-link" href="#kontakt">Send an inquiry</a>
 </header>
 
 <main>
@@ -292,7 +310,7 @@
       <h1>A new website for your business, ready in a week.</h1>
       <p class="lead">I build websites for restaurants, workshops, clinics, salons and small businesses across Croatia. Before anything is agreed, you get a free concept, so you see exactly what you're getting.</p>
       <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Free%20website%20concept">Ask for a free concept</a>
+        <a class="btn" href="#kontakt">Ask for a free concept</a>
         <a class="btn ghost" href="#cijene">See prices</a>
       </div>
     </div>
@@ -423,7 +441,7 @@
           <p class="sum-row month"><span>Monthly</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">Guide prices. We agree the exact price after the free concept.</p>
           <p class="empty" id="packEmpty" hidden>Choose at least one option.</p>
-          <a class="btn" id="packSend" href="mailto:manuelstankovic3@gmail.com">Send an inquiry for this package</a>
+          <a class="btn" id="packSend" href="#kontakt">Send an inquiry for this package</a>
         </div>
       </form>
     </div>
@@ -433,11 +451,33 @@
     <div class="wrap">
       <h2>Let's look at your website</h2>
       <p>Send me your website address or just your business name. I'll get back to you with a free concept for a new homepage, and you decide whether to go ahead. Manuel Stanković, Fresh Front</p>
-      <div class="actions">
-        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Free%20website%20concept">Ask for a free concept</a>
-        <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Book a 15-minute call</a>
-      </div>
-      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+      <form class="lead-form" id="leadForm" action="https://formspree.io/f/xbgdzyop" method="POST">
+        <input type="hidden" name="_subject" value="New inquiry from freshfront.eu">
+        <input type="hidden" name="jezik" value="en">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
+        <div class="field">
+          <label for="f-name">Your name</label>
+          <input id="f-name" name="ime" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-site">Your website or business name</label>
+          <input id="f-site" name="stranica_ili_firma" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field wide">
+          <label for="f-msg">Message (optional)</label>
+          <textarea id="f-msg" name="poruka" rows="4" placeholder="E.g. what you need most or when it's easiest to reach you"></textarea>
+        </div>
+        <div class="form-actions wide">
+          <button class="btn" type="submit" id="leadSend">Ask for a free concept</button>
+          <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Book a 15-minute call</a>
+        </div>
+        <p class="form-status wide" id="leadStatus" role="status" hidden></p>
+      </form>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">Or write directly: manuelstankovic3@gmail.com</a>
     </div>
   </section>
 </main>
@@ -458,6 +498,7 @@
   var prefix = "from";
   var subject = "Package inquiry – Fresh Front";
   var bodyIntro = "Hello, I'm interested in this package:";
+  var monthWord = "monthly";
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
@@ -468,12 +509,41 @@
     month.textContent = (m ? prefix + ' ' : '') + m + ' €';
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
-    send.href = 'mailto:manuelstankovic3@gmail.com?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(bodyIntro + '\n' + names.join('\n') + '\n\n');
+    send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
+      once.textContent + ' + ' + month.textContent + ' ' + monthWord;
   }
-  send.addEventListener('click', function (e) { if (send.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+  send.addEventListener('click', function (e) {
+    if (send.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+    var msg = document.getElementById('f-msg');
+    if (msg) msg.value = send.dataset.body || '';
+    setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
+  });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
   update();
+})();
+(function () {
+  var form = document.getElementById('leadForm');
+  if (!form || !window.fetch) return;
+  var btn = document.getElementById('leadSend');
+  var status = document.getElementById('leadStatus');
+  var txt = { sending: "Sending…", ok: "Thank you! Your inquiry arrived. I'll get back to you within a day or two.", err: "Your inquiry wasn't sent. Please try again or write directly to manuelstankovic3@gmail.com." };
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    btn.disabled = true; btn.textContent = txt.sending;
+    status.hidden = true; status.className = 'form-status wide';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('status ' + r.status);
+        form.reset();
+        status.textContent = txt.ok; status.classList.add('ok');
+      })
+      .catch(function () {
+        status.textContent = txt.err; status.classList.add('err');
+      })
+      .then(function () {
+        status.hidden = false; btn.disabled = false; btn.textContent = "Ask for a free concept";
+      });
+  });
 })();
 </script>
 </body>
