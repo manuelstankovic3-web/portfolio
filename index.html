@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manuel Stanković – web stranice za firme na Kvarneru</title>
+<meta name="description" content="Moderne web stranice za male firme u Rijeci i na Kvarneru: prilagođene mobitelima, vidljive na Googleu, s online rezervacijama. Besplatan koncept bez obveze.">
+<meta property="og:title" content="Manuel Stanković – web stranice za firme na Kvarneru">
+<meta property="og:description" content="Nova web stranica za vašu firmu za oko tjedan dana. Besplatan koncept bez obveze.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sea: #0E4D64;
+    --sea-deep: #08313F;
+    --stone: #EEF1F0;
+    --buoy: #F2C14E;
+    --ink: #14232B;
+    --mist: #5B6B72;
+    --white: #FFFFFF;
+    --line: #D3DADB;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--stone);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--buoy);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  .top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 24px; padding-bottom: 24px;
+  }
+  .brand { font-family: var(--display); font-weight: 700; font-size: 1.15rem; text-decoration: none; }
+  .brand span { color: var(--mist); font-weight: 500; }
+  .top-link { font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+  /* Hero */
+  .hero {
+    display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center;
+    padding-top: 40px; padding-bottom: 96px;
+  }
+  .hero h1 {
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(2.4rem, 5.2vw, 4.1rem);
+    line-height: 1.02; letter-spacing: -0.02em;
+    margin: 0 0 24px; color: var(--sea-deep);
+  }
+  .hero p.lead { font-size: 1.25rem; max-width: 34ch; margin: 0 0 32px; color: var(--ink); }
+  .actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .btn {
+    display: inline-block; font-family: var(--body); font-weight: 700; font-size: 1.1rem;
+    padding: 16px 28px; border-radius: 999px; text-decoration: none;
+    background: var(--sea); color: var(--white); border: 2px solid var(--sea);
+    transition: background .15s ease;
+  }
+  .btn:hover { background: var(--sea-deep); }
+  .btn.ghost { background: transparent; color: var(--sea); }
+  .btn.ghost:hover { background: var(--white); }
+
+  /* Before / after phones */
+  .compare { display: flex; gap: 20px; justify-content: center; align-items: flex-end; }
+  .phone {
+    width: 210px; flex: 0 0 auto;
+    border-radius: 30px; padding: 10px;
+    background: var(--ink);
+    box-shadow: 0 30px 60px -30px rgba(8, 49, 63, .55);
+  }
+  .screen { border-radius: 22px; overflow: hidden; height: 400px; position: relative; }
+  .tag {
+    display: block; text-align: center; font-family: var(--display); font-weight: 700;
+    font-size: 1rem; margin: 10px 0 4px; color: #A9BCC2;
+  }
+  .after .tag { color: var(--buoy); }
+
+  /* Old site: tiny, desktop-only layout squeezed onto a phone */
+  .old { background: #fff; font-family: "Times New Roman", serif; color: #333; }
+  .old .bar { background: #6b4f3a; color: #fff; font-size: 8px; padding: 6px; letter-spacing: .02em; }
+  .old .nav { font-size: 6px; padding: 4px 6px; background: #e8dcc8; color: #00e; text-decoration: underline; white-space: nowrap; overflow: hidden; }
+  .old .body { padding: 6px; font-size: 6.5px; line-height: 1.35; }
+  .old .img { height: 62px; background: repeating-linear-gradient(45deg, #cbbfa8 0 6px, #d8cdb8 6px 12px); margin: 6px 0; }
+  .old .foot { position: absolute; bottom: 0; left: 0; right: 0; font-size: 6px; background: #e8dcc8; padding: 5px; text-align: center; }
+  .old .notice { font-size: 7px; color: #a00; margin-top: 4px; }
+
+  /* New site */
+  .new { background: var(--sea-deep); color: var(--white); font-family: var(--body); display: flex; flex-direction: column; }
+  .new .pic {
+    height: 150px;
+    background:
+      radial-gradient(circle at 75% 30%, #F7D57E 0 16px, transparent 17px),
+      linear-gradient(180deg, #3E8EA8 0%, #7FB9C9 55%, #0E4D64 56%, #0B3C4F 100%);
+  }
+  .new .in { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .new .name { font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1.05; }
+  .new .sub { font-size: 11px; color: #BFD3DA; }
+  .new .meta { font-size: 10.5px; color: #DCE7EA; margin-top: 4px; }
+  .new .cta {
+    margin-top: auto; background: var(--buoy); color: var(--ink); font-weight: 700;
+    font-size: 13px; text-align: center; border-radius: 999px; padding: 10px;
+  }
+  .new .cta2 { border: 1.5px solid #5F8E9C; color: #fff; font-size: 12px; text-align: center; border-radius: 999px; padding: 8px; }
+  .demo-note { text-align: center; font-size: .9rem; color: var(--mist); margin: 18px 0 0; }
+
+  /* Sections */
+  section.block { padding: 88px 0; }
+  section.block.white { background: var(--white); }
+  h2 {
+    font-family: var(--display); font-weight: 800; color: var(--sea-deep);
+    font-size: clamp(1.9rem, 3.6vw, 2.75rem); line-height: 1.08; letter-spacing: -0.015em;
+    margin: 0 0 16px; max-width: 22ch;
+  }
+  .intro { max-width: 60ch; color: var(--mist); margin: 0 0 48px; }
+
+  /* What you get: two-column definition list */
+  .gets { display: grid; grid-template-columns: 1fr 1fr; gap: 0 64px; margin: 0; }
+  .gets div { border-top: 2px solid var(--line); padding: 22px 0 26px; }
+  .gets dt { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin-bottom: 6px; }
+  .gets dd { margin: 0; color: var(--mist); max-width: 46ch; }
+
+  /* Process: a real sequence, so it is numbered */
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; counter-reset: step; }
+  .steps li { counter-increment: step; }
+  .steps li::before {
+    content: counter(step);
+    display: grid; place-items: center;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--buoy); color: var(--ink);
+    font-family: var(--display); font-weight: 800; font-size: 1.3rem;
+    margin-bottom: 18px;
+  }
+  .steps h3 { font-family: var(--display); font-weight: 700; font-size: 1.25rem; margin: 0 0 8px; }
+  .steps p { margin: 0; color: var(--mist); }
+
+  /* Prices */
+  .prices { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
+  .price {
+    border-radius: 24px; padding: 36px;
+    background: var(--white); border: 2px solid var(--line);
+  }
+  .price.main { background: var(--sea); color: var(--white); border-color: var(--sea); }
+  .price h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin: 0 0 12px; }
+  .amount { font-family: var(--display); font-weight: 800; font-size: 3.4rem; line-height: 1; margin: 0 0 6px; }
+  .amount small { font-size: 1.1rem; font-weight: 500; }
+  .price ul { margin: 24px 0 0; padding-left: 20px; }
+  .price li { margin-bottom: 6px; }
+  .price.main .note { color: #CFE0E6; }
+  .note { font-size: .98rem; color: var(--mist); margin: 0; }
+
+  /* Contact */
+  .contact { background: var(--sea-deep); color: var(--white); padding: 96px 0; }
+  .contact h2 { color: var(--white); }
+  .contact p { max-width: 52ch; color: #CFE0E6; margin: 0 0 32px; }
+  .contact .btn { background: var(--buoy); color: var(--ink); border-color: var(--buoy); }
+  .contact .btn:hover { background: #F7D57E; }
+  .mail { display: block; margin-top: 20px; font-size: 1.05rem; color: #CFE0E6; }
+
+  footer { background: var(--sea-deep); color: #8FB0BB; font-size: .95rem; padding: 0 0 40px; }
+  footer .wrap { border-top: 1px solid #1E4B5B; padding-top: 24px; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-bottom: 72px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .prices { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    body { font-size: 1.0625rem; }
+    .gets { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .phone { width: 46%; max-width: 190px; border-radius: 24px; padding: 7px; }
+    .screen { height: 340px; border-radius: 18px; }
+    .compare { gap: 12px; }
+    section.block, .contact { padding: 64px 0; }
+    .price { padding: 28px 22px; }
+    .top-link { font-size: 1rem; }
+    .brand span { display: none; }
+    .hero { padding-top: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="#">Manuel Stanković <span>web stranice</span></a>
+  <a class="top-link" href="mailto:manuelstankovic3@gmail.com?subject=Upit%20za%20web%20stranicu">Pošaljite upit</a>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Nova web stranica za vašu firmu, gotova za tjedan dana.</h1>
+      <p class="lead">Izrađujem stranice za konobe, servise, ordinacije, salone i obrte u Rijeci i na Kvarneru. Prije bilo kakvog dogovora dobijete besplatan koncept, pa vidite što dobivate.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Besplatan%20koncept%20stranice">Zatražite besplatan koncept</a>
+        <a class="btn ghost" href="#cijene">Pogledajte cijene</a>
+      </div>
+    </div>
+
+    <figure style="margin:0">
+      <div class="compare" aria-label="Usporedba stare i nove web stranice na mobitelu">
+        <div class="phone before">
+          <div class="screen old" aria-hidden="true">
+            <div class="bar">KONOBA MUL - DOBRODOŠLI NA NAŠU WEB STRANICU</div>
+            <div class="nav">Home | O nama | Specijaliteti | Galerija | Kontakt | Linkovi</div>
+            <div class="body">
+              Dobrodošli u konobu Mul. Nalazimo se uz more, u mirnoj uvali. Nudimo domaću hranu, ribu, meso s roštilja i domaće slastice. Pogledajte naše specijalitete u izborniku iznad.
+              <div class="img"></div>
+              Cijene: riblja plata 165,76 kn / 22,00 €
+              <div class="notice">Rezervacije isključivo telefonom!</div>
+            </div>
+            <div class="foot">© 2017 Konoba Mul | Sva prava pridržana</div>
+          </div>
+          <span class="tag">Prije</span>
+        </div>
+        <div class="phone after">
+          <div class="screen new" aria-hidden="true">
+            <div class="pic"></div>
+            <div class="in">
+              <div class="name">Konoba Mul</div>
+              <div class="sub">Riba, roštilj i domaće slastice uz more</div>
+              <div class="meta">Otvoreno danas 12–23 h<br>Jelovnik s cijenama u eurima</div>
+              <div class="cta">Rezervirajte stol</div>
+              <div class="cta2">Nazovite nas</div>
+            </div>
+          </div>
+          <span class="tag">Poslije</span>
+        </div>
+      </div>
+      <figcaption class="demo-note">Primjer za izmišljenu konobu, onako kako izgleda na mobitelu.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block white">
+    <div class="wrap">
+      <h2>Što dobiva vaša firma</h2>
+      <p class="intro">Većina gostiju i klijenata vas danas traži na mobitelu. Stranica mora brzo reći tko ste, što nudite i kako vas dobiti.</p>
+      <dl class="gets">
+        <div><dt>Izgleda dobro na mobitelu</dt><dd>Tekst se čita bez zumiranja, a gumbi za poziv i rezervaciju su odmah pri ruci.</dd></div>
+        <div><dt>Pronađu vas na Googleu</dt><dd>Stranica je ispravno postavljena za pretraživanje, s vašim adresom, radnim vremenom i djelatnošću.</dd></div>
+        <div><dt>Rezervacije i upiti online</dt><dd>Gost rezervira stol, a klijent se naruči na servis ili pregled i onda kad vi ne stignete javiti se na telefon.</dd></div>
+        <div><dt>Ažurne cijene i informacije</dt><dd>Jelovnik, cjenik i radno vrijeme u eurima i na jezicima koje trebate, uvijek točni.</dd></div>
+        <div><dt>Izmjene bez muke</dt><dd>Pošaljete mi poruku što treba promijeniti i to je gotovo, bez učenja ikakvih programa.</dd></div>
+        <div><dt>Hosting i domena riješeni</dt><dd>Stranica je brza i sigurna (https), a ja se brinem da sve radi.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2>Kako to ide</h2>
+      <p class="intro">Ništa ne plaćate dok ne vidite kako bi vaša nova stranica izgledala.</p>
+      <ol class="steps">
+        <li><h3>Besplatan koncept</h3><p>Javite se i za dan-dva dobijete prijedlog naslovnice za vašu firmu, bez obveze.</p></li>
+        <li><h3>Dogovor</h3><p>Ako vam se sviđa, dogovorimo detalje. Plaćate polovicu unaprijed i pošaljete logo, slike i tekstove.</p></li>
+        <li><h3>Izrada</h3><p>Stranica je gotova za oko tjedan dana. Pregledate je i tražite izmjene dok niste zadovoljni.</p></li>
+        <li><h3>Objava</h3><p>Plaćate ostatak, a stranica ide online na vašoj domeni. Za izmjene ste mi uvijek dostupni.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block white" id="cijene">
+    <div class="wrap">
+      <h2>Cijene</h2>
+      <p class="intro">Jasno i unaprijed. Točnu cijenu dogovaramo nakon koncepta, ovisno o tome koliko stranica i funkcija trebate.</p>
+      <div class="prices">
+        <div class="price main">
+          <h3>Nova web stranica</h3>
+          <p class="amount">od 350 € <small>jednokratno</small></p>
+          <p class="note">Polovica unaprijed, ostatak kad je stranica gotova.</p>
+          <ul>
+            <li>Dizajn po mjeri vaše firme</li>
+            <li>Prilagođeno mobitelima i Googleu</li>
+            <li>Obrazac za rezervacije ili upite</li>
+            <li>Postavljanje na vašu domenu</li>
+          </ul>
+        </div>
+        <div class="price">
+          <h3>Hosting i održavanje</h3>
+          <p class="amount">25 € <small>mjesečno</small></p>
+          <p class="note">Nije obavezno, ali tako ne morate brinuti ni o čemu.</p>
+          <ul>
+            <li>Brz i siguran hosting</li>
+            <li>Izmjene cijena, slika i teksta</li>
+            <li>Provjera da sve radi</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="kontakt">
+    <div class="wrap">
+      <h2>Pogledajmo vašu stranicu</h2>
+      <p>Pošaljite mi adresu svoje stranice ili samo ime firme. Javim vam se s besplatnim konceptom nove naslovnice, a vi odlučite želite li nastaviti.</p>
+      <a class="btn" href="mailto:manuelstankovic3@gmail.com?subject=Besplatan%20koncept%20stranice">Zatražite besplatan koncept</a>
+      <a class="mail" href="mailto:manuelstankovic3@gmail.com">manuelstankovic3@gmail.com</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Manuel Stanković, Rijeka</div>
+</footer>
+
+</body>
+</html>
