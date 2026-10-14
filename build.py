@@ -144,8 +144,8 @@ T = {
         "contact_p": "Pošaljite mi adresu svoje stranice ili samo ime firme. Javim vam se s besplatnim konceptom nove naslovnice, a vi odlučite želite li nastaviti. Manuel Stanković, Fresh Front",
     },
     "en": {
-        "title": "Fresh Front – websites for businesses across Croatia",
-        "description": "Modern websites for small businesses across Croatia: mobile-friendly, easy to find on Google, with online bookings. Free concept, no obligation.",
+        "title": "Fresh Front – websites for small businesses in London",
+        "description": "Modern websites for small businesses in London and across the UK: mobile-friendly, easy to find on Google, with online bookings. Free concept, no obligation.",
         "og_description": "A new website for your business in about a week. Free concept, no obligation.",
         "lang_nav_label": "Choose a language",
         "brand_sub": "websites",
@@ -153,24 +153,24 @@ T = {
         "subj_inquiry": "Website inquiry",
         "subj_concept": "Free website concept",
         "h1": "A new website for your business, ready in a week.",
-        "lead": "I build websites for restaurants, workshops, clinics, salons and small businesses across Croatia. Before anything is agreed, you get a free concept, so you see exactly what you're getting.",
+        "lead": "I build websites for restaurants, workshops, clinics, salons and small businesses in London and across the UK. Before anything is agreed, you get a free concept, so you see exactly what you're getting.",
         "cta_concept": "Ask for a free concept",
         "cta_prices": "See prices",
         "cta_call": "Book a 15-minute call",
         "compare_label": "An old and a new website compared on a phone",
-        "old_bar": "KONOBA MUL - WELCOME TO OUR WEBSITE",
+        "old_bar": "THE OLD MILL CAFE - WELCOME TO OUR WEBSITE",
         "old_nav": "Home | About us | Specialities | Gallery | Contact | Links",
-        "old_body": "Welcome to Konoba Mul. We are by the sea, in a quiet bay. We serve home cooking, fish, grilled meat and homemade desserts. See our specialities in the menu above.",
-        "old_price": "Prices: fish platter 165,76 kn / 22,00 €",
-        "old_notice": "Reservations by phone only!",
-        "old_foot": "© 2017 Konoba Mul | All rights reserved",
+        "old_body": "Welcome to The Old Mill Cafe. We serve breakfast, lunch and homemade cakes every day. Please see our menu page for more information about our food.",
+        "old_price": "Full English breakfast - please ask for prices",
+        "old_notice": "Bookings by phone only!",
+        "old_foot": "© 2016 The Old Mill Cafe | All rights reserved",
         "tag_before": "Before",
         "tag_after": "After",
-        "new_sub": "Fish, grill and homemade desserts by the sea",
-        "new_meta": "Open today 12–11 pm<br>Menu with prices in euros",
+        "new_sub": "Breakfast, lunch and homemade cakes",
+        "new_meta": "Open today 8 am – 5 pm<br>Full menu with prices",
         "new_cta": "Book a table",
         "new_cta2": "Call us",
-        "demo_note": "An example for an invented restaurant, as it looks on a phone.",
+        "demo_note": "An example for an invented café, as it looks on a phone.",
         "gets_h2": "What your business gets",
         "gets_intro": "Most guests and customers look you up on their phone. Your website has to say quickly who you are, what you offer and how to reach you.",
         "g1t": "Looks good on a phone",
@@ -180,7 +180,7 @@ T = {
         "g3t": "Online bookings and inquiries",
         "g3d": "Guests book a table and customers book a service or appointment, even when you can't pick up the phone.",
         "g4t": "Up-to-date prices and information",
-        "g4d": "Menu, price list and opening hours in euros and in the languages you need, always correct.",
+        "g4d": "Menu, price list and opening hours always correct, in the languages your customers speak.",
         "g5t": "Changes without hassle",
         "g5d": "Send me a message with what needs changing and it's done. No software to learn.",
         "g6t": "Hosting and domain taken care of",
@@ -198,7 +198,7 @@ T = {
         "prices_h2": "Prices",
         "prices_intro": "Clear and up front. We agree the exact price after the concept, depending on how many pages and features you need.",
         "p1h": "New website",
-        "p1amount": "from 350 €",
+        "p1amount": "from £299",
         "p1unit": "one-off",
         "p1note": "Half up front, the rest when the site is finished.",
         "p1a": "Design made for your business",
@@ -464,16 +464,16 @@ PK = {
         "pk_badge": "New",
         "pk_web_t": "New website",
         "pk_web_d": "Modern, fast and built for phones and Google.",
-        "pk_web_p": "from 350 €",
+        "pk_web_p": "from £299",
         "pk_book_t": "Online booking and reminders",
         "pk_book_d": "Customers book a free slot themselves and get a reminder the day before. Fewer no-shows and fewer phone calls.",
-        "pk_book_p": "from 150 € + 20 €/mo",
+        "pk_book_p": "from £129 + £19/mo",
         "pk_auto_t": "Automatic replies to inquiries",
         "pk_auto_d": "Common questions about prices, opening hours and availability get answered at once, and every inquiry from your website lands in one place.",
-        "pk_auto_p": "from 150 € + 20 €/mo",
+        "pk_auto_p": "from £129 + £19/mo",
         "pk_host_t": "Hosting and maintenance",
         "pk_host_d": "Fast, secure hosting plus updates to prices, photos and text.",
-        "pk_host_p": "25 €/mo",
+        "pk_host_p": "£22/mo",
         "pk_sum_h": "Your package",
         "pk_once": "One-off",
         "pk_month": "Monthly",
@@ -633,6 +633,17 @@ FORM = {
     },
 }
 
+# Prices per language. English targets the UK, so it is in pounds.
+PRICES = {
+    "en": {"cur": "£", "before": True, "web": 299, "addon": 129, "addon_m": 19, "host": 22},
+}
+EUR = {"cur": "€", "before": False, "web": 350, "addon": 150, "addon_m": 20, "host": 25}
+DEMO = {"en": "The Old Mill Cafe"}
+
+
+def money(pr, n):
+    return f"{pr['cur']}{n}" if pr["before"] else f"{n} {pr['cur']}"
+
 def flags_html(current):
     out = []
     for code in LANGS:
@@ -658,6 +669,13 @@ def build():
         t = dict(T[code])
         t.update(PK[code])
         t.update(FORM[code])
+        pr = PRICES.get(code, EUR)
+        t.update({
+            "n_web": str(pr["web"]), "n_addon": str(pr["addon"]), "n_addon_m": str(pr["addon_m"]), "n_host": str(pr["host"]),
+            "money_web": money(pr, pr["web"]), "money_host": money(pr, pr["host"]), "money_zero": money(pr, 0),
+            "cur_js": json.dumps(pr["cur"], ensure_ascii=False), "cur_before_js": "true" if pr["before"] else "false",
+            "demo_name": DEMO.get(code, "Konoba Mul"),
+        })
         for k in ('f_sending', 'f_ok', 'f_err', 'f_send'):
             t[k + '_js'] = json.dumps(FORM[code][k], ensure_ascii=False)
         t['pk_month_js'] = json.dumps(PK[code]['pk_month'].lower(), ensure_ascii=False)

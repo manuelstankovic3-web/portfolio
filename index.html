@@ -499,14 +499,16 @@
   var subject = "Upit za paket – Fresh Front";
   var bodyIntro = "Pozdrav, zanima me ovaj paket:";
   var monthWord = "mjesečno";
+  var cur = "€", curBefore = false;
+  function money(n) { return curBefore ? cur + n : n + ' ' + cur; }
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
       if (!b.checked) return;
       o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
     });
-    once.textContent = (o ? prefix + ' ' : '') + o + ' €';
-    month.textContent = (m ? prefix + ' ' : '') + m + ' €';
+    once.textContent = (o ? prefix + ' ' : '') + money(o);
+    month.textContent = (m ? prefix + ' ' : '') + money(m);
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
     send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +

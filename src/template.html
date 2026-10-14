@@ -132,7 +132,7 @@
           <div class="screen new" aria-hidden="true">
             <div class="pic"></div>
             <div class="in">
-              <div class="name">Konoba Mul</div>
+              <div class="name">{{demo_name}}</div>
               <div class="sub">{{new_sub}}</div>
               <div class="meta">{{new_meta}}</div>
               <div class="cta">{{new_cta}}</div>
@@ -192,7 +192,7 @@
         </div>
         <div class="price side">
           <h3>{{p2h}}</h3>
-          <p class="amount">25 € <small>{{p2unit}}</small></p>
+          <p class="amount">{{money_host}} <small>{{p2unit}}</small></p>
           <p class="note">{{p2note}}</p>
           <ul>
             <li>{{p2a}}</li>
@@ -212,30 +212,30 @@
         <fieldset class="opts">
           <legend class="sr">{{pk_h2}}</legend>
           <label class="opt">
-            <input type="checkbox" value="web" data-once="350" data-month="0" data-label="{{pk_web_t}}" checked>
+            <input type="checkbox" value="web" data-once="{{n_web}}" data-month="0" data-label="{{pk_web_t}}" checked>
             <span><span class="opt-title">{{pk_web_t}}</span><span class="opt-desc">{{pk_web_d}}</span></span>
             <span class="opt-price">{{pk_web_p}}</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="booking" data-once="150" data-month="20" data-label="{{pk_book_t}}">
+            <input type="checkbox" value="booking" data-once="{{n_addon}}" data-month="{{n_addon_m}}" data-label="{{pk_book_t}}">
             <span><span class="opt-title">{{pk_book_t}}<span class="badge">{{pk_badge}}</span></span><span class="opt-desc">{{pk_book_d}}</span></span>
             <span class="opt-price">{{pk_book_p}}</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="replies" data-once="150" data-month="20" data-label="{{pk_auto_t}}">
+            <input type="checkbox" value="replies" data-once="{{n_addon}}" data-month="{{n_addon_m}}" data-label="{{pk_auto_t}}">
             <span><span class="opt-title">{{pk_auto_t}}<span class="badge">{{pk_badge}}</span></span><span class="opt-desc">{{pk_auto_d}}</span></span>
             <span class="opt-price">{{pk_auto_p}}</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="hosting" data-once="0" data-month="25" data-label="{{pk_host_t}}">
+            <input type="checkbox" value="hosting" data-once="0" data-month="{{n_host}}" data-label="{{pk_host_t}}">
             <span><span class="opt-title">{{pk_host_t}}</span><span class="opt-desc">{{pk_host_d}}</span></span>
             <span class="opt-price">{{pk_host_p}}</span>
           </label>
         </fieldset>
         <div class="sum" aria-live="polite">
           <h3>{{pk_sum_h}}</h3>
-          <p class="sum-row"><span>{{pk_once}}</span><strong id="sumOnce">350 €</strong></p>
-          <p class="sum-row month"><span>{{pk_month}}</span><strong id="sumMonth">0 €</strong></p>
+          <p class="sum-row"><span>{{pk_once}}</span><strong id="sumOnce">{{money_web}}</strong></p>
+          <p class="sum-row month"><span>{{pk_month}}</span><strong id="sumMonth">{{money_zero}}</strong></p>
           <p class="note">{{pk_note}}</p>
           <p class="empty" id="packEmpty" hidden>{{pk_none}}</p>
           <a class="btn" id="packSend" href="#kontakt">{{pk_send}}</a>
@@ -296,14 +296,16 @@
   var subject = {{pk_subject_js}};
   var bodyIntro = {{pk_body_js}};
   var monthWord = {{pk_month_js}};
+  var cur = {{cur_js}}, curBefore = {{cur_before_js}};
+  function money(n) { return curBefore ? cur + n : n + ' ' + cur; }
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
       if (!b.checked) return;
       o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
     });
-    once.textContent = (o ? prefix + ' ' : '') + o + ' €';
-    month.textContent = (m ? prefix + ' ' : '') + m + ' €';
+    once.textContent = (o ? prefix + ' ' : '') + money(o);
+    month.textContent = (m ? prefix + ' ' : '') + money(m);
     empty.hidden = names.length > 0;
     send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
     send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
