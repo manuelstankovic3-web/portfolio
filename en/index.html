@@ -230,6 +230,12 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Currency switch */
+  .cur-switch { display: inline-flex; gap: 0; margin: -24px 0 32px; border: 2px solid var(--black); border-radius: 999px; overflow: hidden; }
+  .cur-switch button { font: inherit; font-weight: 700; font-size: 1rem; padding: 8px 18px; background: transparent; color: var(--black); border: 0; cursor: pointer; }
+  .cur-switch button[aria-pressed="true"] { background: var(--black); color: var(--white); }
+  .cur-switch button:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+
   /* Lead form */
   .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
   .lead-form .wide { grid-column: 1 / -1; }
@@ -381,10 +387,11 @@
     <div class="wrap">
       <h2>Prices</h2>
       <p class="intro">Clear and up front. We agree the exact price after the concept, depending on how many pages and features you need.</p>
+      <div class="cur-switch" role="group" aria-label="Currency"><button type="button" data-cur="gbp" aria-pressed="true">£ GBP</button><button type="button" data-cur="usd" aria-pressed="false">$ USD</button></div>
       <div class="prices">
         <div class="price main">
           <h3>New website</h3>
-          <p class="amount">from £299 <small>one-off</small></p>
+          <p class="amount">from <span class="money" data-k="web">£299</span> <small>one-off</small></p>
           <p class="note">Half up front, the rest when the site is finished.</p>
           <ul>
             <li>Design made for your business</li>
@@ -395,7 +402,7 @@
         </div>
         <div class="price side">
           <h3>Hosting and maintenance</h3>
-          <p class="amount">£22 <small>per month</small></p>
+          <p class="amount"><span class="money" data-k="host">£22</span> <small>per month</small></p>
           <p class="note">Optional, but it means you never have to worry about it.</p>
           <ul>
             <li>Fast, secure hosting</li>
@@ -411,33 +418,34 @@
     <div class="wrap">
       <h2>Build your package</h2>
       <p class="intro">Choose what your business needs. Everything works with a new website or on its own, on the website you already have.</p>
+      <div class="cur-switch" role="group" aria-label="Currency"><button type="button" data-cur="gbp" aria-pressed="true">£ GBP</button><button type="button" data-cur="usd" aria-pressed="false">$ USD</button></div>
       <form class="pack" id="pack" onsubmit="return false">
         <fieldset class="opts">
           <legend class="sr">Build your package</legend>
           <label class="opt">
-            <input type="checkbox" value="web" data-once="299" data-month="0" data-label="New website" checked>
+            <input type="checkbox" value="web" data-once-k="web" data-label="New website" checked>
             <span><span class="opt-title">New website</span><span class="opt-desc">Modern, fast and built for phones and Google.</span></span>
-            <span class="opt-price">from £299</span>
+            <span class="opt-price">from <span class="money" data-k="web">£299</span></span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="booking" data-once="129" data-month="19" data-label="Online booking and reminders">
+            <input type="checkbox" value="booking" data-once-k="addon" data-month-k="addon_m" data-label="Online booking and reminders">
             <span><span class="opt-title">Online booking and reminders<span class="badge">New</span></span><span class="opt-desc">Customers book a free slot themselves and get a reminder the day before. Fewer no-shows and fewer phone calls.</span></span>
-            <span class="opt-price">from £129 + £19/mo</span>
+            <span class="opt-price">from <span class="money" data-k="addon">£129</span> + <span class="money" data-k="addon_m">£19</span>/mo</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="replies" data-once="129" data-month="19" data-label="Automatic replies to inquiries">
+            <input type="checkbox" value="replies" data-once-k="addon" data-month-k="addon_m" data-label="Automatic replies to inquiries">
             <span><span class="opt-title">Automatic replies to inquiries<span class="badge">New</span></span><span class="opt-desc">Common questions about prices, opening hours and availability get answered at once, and every inquiry from your website lands in one place.</span></span>
-            <span class="opt-price">from £129 + £19/mo</span>
+            <span class="opt-price">from <span class="money" data-k="addon">£129</span> + <span class="money" data-k="addon_m">£19</span>/mo</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="hosting" data-once="0" data-month="22" data-label="Hosting and maintenance">
+            <input type="checkbox" value="hosting" data-month-k="host" data-label="Hosting and maintenance">
             <span><span class="opt-title">Hosting and maintenance</span><span class="opt-desc">Fast, secure hosting plus updates to prices, photos and text.</span></span>
-            <span class="opt-price">£22/mo</span>
+            <span class="opt-price"><span class="money" data-k="host">£22</span>/mo</span>
           </label>
         </fieldset>
         <div class="sum" aria-live="polite">
           <h3>Your package</h3>
-          <p class="sum-row"><span>One-off</span><strong id="sumOnce">£299</strong></p>
+          <p class="sum-row"><span>One-off</span><strong id="sumOnce"><span class="money" data-k="web">£299</span></strong></p>
           <p class="sum-row month"><span>Monthly</span><strong id="sumMonth">£0</strong></p>
           <p class="note">Guide prices. We agree the exact price after the free concept.</p>
           <p class="empty" id="packEmpty" hidden>Choose at least one option.</p>
@@ -499,13 +507,31 @@
   var subject = "Package inquiry – Fresh Front";
   var bodyIntro = "Hello, I'm interested in this package:";
   var monthWord = "monthly";
-  var cur = "£", curBefore = true;
-  function money(n) { return curBefore ? cur + n : n + ' ' + cur; }
+  var prices = {"gbp": {"cur": "£", "before": true, "web": 299, "addon": 129, "addon_m": 19, "host": 22}, "usd": {"cur": "$", "before": true, "web": 399, "addon": 169, "addon_m": 25, "host": 29}}, cur = "gbp";
+  function money(n) { var p = prices[cur]; return p.before ? p.cur + n : n + ' ' + p.cur; }
+  function val(k) { return k ? prices[cur][k] || 0 : 0; }
+  var ids = Object.keys(prices);
+  if (ids.length > 1) {
+    var saved = null;
+    try { saved = localStorage.getItem('ff-cur'); } catch (e) {}
+    if (saved && prices[saved]) cur = saved;
+    else if (prices.usd && /^en-US$/i.test(navigator.language || '')) cur = 'usd';
+  }
+  function setCur(id) {
+    cur = id;
+    try { localStorage.setItem('ff-cur', id); } catch (e) {}
+    document.querySelectorAll('.money').forEach(function (el) { el.textContent = money(prices[cur][el.dataset.k]); });
+    document.querySelectorAll('.cur-switch button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cur === cur ? 'true' : 'false'); });
+    update();
+  }
+  document.querySelectorAll('.cur-switch button').forEach(function (b) {
+    b.addEventListener('click', function () { setCur(b.dataset.cur); });
+  });
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
       if (!b.checked) return;
-      o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
+      o += val(b.dataset.onceK); m += val(b.dataset.monthK); names.push('- ' + b.dataset.label);
     });
     once.textContent = (o ? prefix + ' ' : '') + money(o);
     month.textContent = (m ? prefix + ' ' : '') + money(m);
@@ -521,7 +547,7 @@
     setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
   });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
-  update();
+  setCur(cur);
 })();
 (function () {
   var form = document.getElementById('leadForm');

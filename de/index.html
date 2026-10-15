@@ -230,6 +230,12 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Currency switch */
+  .cur-switch { display: inline-flex; gap: 0; margin: -24px 0 32px; border: 2px solid var(--black); border-radius: 999px; overflow: hidden; }
+  .cur-switch button { font: inherit; font-weight: 700; font-size: 1rem; padding: 8px 18px; background: transparent; color: var(--black); border: 0; cursor: pointer; }
+  .cur-switch button[aria-pressed="true"] { background: var(--black); color: var(--white); }
+  .cur-switch button:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+
   /* Lead form */
   .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
   .lead-form .wide { grid-column: 1 / -1; }
@@ -381,6 +387,7 @@
     <div class="wrap">
       <h2>Preise</h2>
       <p class="intro">Klar und im Voraus. Den genauen Preis vereinbaren wir nach dem Entwurf, je nachdem, wie viele Seiten und Funktionen Sie brauchen.</p>
+      
       <div class="prices">
         <div class="price main">
           <h3>Neue Website</h3>
@@ -395,7 +402,7 @@
         </div>
         <div class="price side">
           <h3>Hosting und Wartung</h3>
-          <p class="amount">25 € <small>pro Monat</small></p>
+          <p class="amount"><span class="money" data-k="host">25 €</span> <small>pro Monat</small></p>
           <p class="note">Optional, aber so müssen Sie sich um nichts kümmern.</p>
           <ul>
             <li>Schnelles, sicheres Hosting</li>
@@ -411,33 +418,34 @@
     <div class="wrap">
       <h2>Stellen Sie Ihr Paket zusammen</h2>
       <p class="intro">Wählen Sie, was Ihr Unternehmen braucht. Alles gibt es mit einer neuen Website oder einzeln für Ihre bestehende Website.</p>
+      
       <form class="pack" id="pack" onsubmit="return false">
         <fieldset class="opts">
           <legend class="sr">Stellen Sie Ihr Paket zusammen</legend>
           <label class="opt">
-            <input type="checkbox" value="web" data-once="350" data-month="0" data-label="Neue Website" checked>
+            <input type="checkbox" value="web" data-once-k="web" data-label="Neue Website" checked>
             <span><span class="opt-title">Neue Website</span><span class="opt-desc">Modern, schnell und optimiert für Smartphones und Google.</span></span>
             <span class="opt-price">ab 350 €</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="booking" data-once="150" data-month="20" data-label="Online-Buchung und Erinnerungen">
+            <input type="checkbox" value="booking" data-once-k="addon" data-month-k="addon_m" data-label="Online-Buchung und Erinnerungen">
             <span><span class="opt-title">Online-Buchung und Erinnerungen<span class="badge">Neu</span></span><span class="opt-desc">Kunden buchen selbst einen freien Termin und bekommen am Vortag eine Erinnerung. Weniger verpasste Termine, weniger Telefonate.</span></span>
             <span class="opt-price">ab 150 € + 20 €/Monat</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="replies" data-once="150" data-month="20" data-label="Automatische Antworten auf Anfragen">
+            <input type="checkbox" value="replies" data-once-k="addon" data-month-k="addon_m" data-label="Automatische Antworten auf Anfragen">
             <span><span class="opt-title">Automatische Antworten auf Anfragen<span class="badge">Neu</span></span><span class="opt-desc">Häufige Fragen zu Preisen, Öffnungszeiten und freien Terminen werden sofort beantwortet, und alle Anfragen von der Website landen an einem Ort.</span></span>
             <span class="opt-price">ab 150 € + 20 €/Monat</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="hosting" data-once="0" data-month="25" data-label="Hosting und Wartung">
+            <input type="checkbox" value="hosting" data-month-k="host" data-label="Hosting und Wartung">
             <span><span class="opt-title">Hosting und Wartung</span><span class="opt-desc">Schnelles, sicheres Hosting und Änderungen an Preisen, Fotos und Texten.</span></span>
             <span class="opt-price">25 €/Monat</span>
           </label>
         </fieldset>
         <div class="sum" aria-live="polite">
           <h3>Ihr Paket</h3>
-          <p class="sum-row"><span>Einmalig</span><strong id="sumOnce">350 €</strong></p>
+          <p class="sum-row"><span>Einmalig</span><strong id="sumOnce"><span class="money" data-k="web">350 €</span></strong></p>
           <p class="sum-row month"><span>Monatlich</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">Richtpreise. Den genauen Preis vereinbaren wir nach dem kostenlosen Entwurf.</p>
           <p class="empty" id="packEmpty" hidden>Wählen Sie mindestens eine Option.</p>
@@ -499,13 +507,31 @@
   var subject = "Paketanfrage – Fresh Front";
   var bodyIntro = "Hallo, ich interessiere mich für dieses Paket:";
   var monthWord = "monatlich";
-  var cur = "€", curBefore = false;
-  function money(n) { return curBefore ? cur + n : n + ' ' + cur; }
+  var prices = {"eur": {"cur": "€", "before": false, "web": 350, "addon": 150, "addon_m": 20, "host": 25}}, cur = "eur";
+  function money(n) { var p = prices[cur]; return p.before ? p.cur + n : n + ' ' + p.cur; }
+  function val(k) { return k ? prices[cur][k] || 0 : 0; }
+  var ids = Object.keys(prices);
+  if (ids.length > 1) {
+    var saved = null;
+    try { saved = localStorage.getItem('ff-cur'); } catch (e) {}
+    if (saved && prices[saved]) cur = saved;
+    else if (prices.usd && /^en-US$/i.test(navigator.language || '')) cur = 'usd';
+  }
+  function setCur(id) {
+    cur = id;
+    try { localStorage.setItem('ff-cur', id); } catch (e) {}
+    document.querySelectorAll('.money').forEach(function (el) { el.textContent = money(prices[cur][el.dataset.k]); });
+    document.querySelectorAll('.cur-switch button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cur === cur ? 'true' : 'false'); });
+    update();
+  }
+  document.querySelectorAll('.cur-switch button').forEach(function (b) {
+    b.addEventListener('click', function () { setCur(b.dataset.cur); });
+  });
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
       if (!b.checked) return;
-      o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
+      o += val(b.dataset.onceK); m += val(b.dataset.monthK); names.push('- ' + b.dataset.label);
     });
     once.textContent = (o ? prefix + ' ' : '') + money(o);
     month.textContent = (m ? prefix + ' ' : '') + money(m);
@@ -521,7 +547,7 @@
     setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
   });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
-  update();
+  setCur(cur);
 })();
 (function () {
   var form = document.getElementById('leadForm');

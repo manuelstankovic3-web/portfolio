@@ -230,6 +230,12 @@
     .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
   }
 
+  /* Currency switch */
+  .cur-switch { display: inline-flex; gap: 0; margin: -24px 0 32px; border: 2px solid var(--black); border-radius: 999px; overflow: hidden; }
+  .cur-switch button { font: inherit; font-weight: 700; font-size: 1rem; padding: 8px 18px; background: transparent; color: var(--black); border: 0; cursor: pointer; }
+  .cur-switch button[aria-pressed="true"] { background: var(--black); color: var(--white); }
+  .cur-switch button:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+
   /* Lead form */
   .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
   .lead-form .wide { grid-column: 1 / -1; }
@@ -381,6 +387,7 @@
     <div class="wrap">
       <h2>Cijene</h2>
       <p class="intro">Jasno i unaprijed. Točnu cijenu dogovaramo nakon koncepta, ovisno o tome koliko stranica i funkcija trebate.</p>
+      
       <div class="prices">
         <div class="price main">
           <h3>Nova web stranica</h3>
@@ -395,7 +402,7 @@
         </div>
         <div class="price side">
           <h3>Hosting i održavanje</h3>
-          <p class="amount">25 € <small>mjesečno</small></p>
+          <p class="amount"><span class="money" data-k="host">25 €</span> <small>mjesečno</small></p>
           <p class="note">Nije obavezno, ali tako ne morate brinuti ni o čemu.</p>
           <ul>
             <li>Brz i siguran hosting</li>
@@ -411,33 +418,34 @@
     <div class="wrap">
       <h2>Složite svoj paket</h2>
       <p class="intro">Odaberite što vašoj firmi treba. Sve se može uz novu stranicu ili zasebno, na stranici koju već imate.</p>
+      
       <form class="pack" id="pack" onsubmit="return false">
         <fieldset class="opts">
           <legend class="sr">Složite svoj paket</legend>
           <label class="opt">
-            <input type="checkbox" value="web" data-once="350" data-month="0" data-label="Nova web stranica" checked>
+            <input type="checkbox" value="web" data-once-k="web" data-label="Nova web stranica" checked>
             <span><span class="opt-title">Nova web stranica</span><span class="opt-desc">Moderna, brza i prilagođena mobitelima i Googleu.</span></span>
             <span class="opt-price">od 350 €</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="booking" data-once="150" data-month="20" data-label="Online rezervacije i podsjetnici">
+            <input type="checkbox" value="booking" data-once-k="addon" data-month-k="addon_m" data-label="Online rezervacije i podsjetnici">
             <span><span class="opt-title">Online rezervacije i podsjetnici<span class="badge">Novo</span></span><span class="opt-desc">Klijenti se sami naruče u slobodan termin, a dan prije dobiju podsjetnik. Manje propuštenih termina i manje telefoniranja.</span></span>
             <span class="opt-price">od 150 € + 20 €/mj.</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="replies" data-once="150" data-month="20" data-label="Automatski odgovori na upite">
+            <input type="checkbox" value="replies" data-once-k="addon" data-month-k="addon_m" data-label="Automatski odgovori na upite">
             <span><span class="opt-title">Automatski odgovori na upite<span class="badge">Novo</span></span><span class="opt-desc">Česta pitanja o cijenama, radnom vremenu i terminima dobiju odgovor odmah, a svi upiti s weba slažu se na jedno mjesto.</span></span>
             <span class="opt-price">od 150 € + 20 €/mj.</span>
           </label>
           <label class="opt">
-            <input type="checkbox" value="hosting" data-once="0" data-month="25" data-label="Hosting i održavanje">
+            <input type="checkbox" value="hosting" data-month-k="host" data-label="Hosting i održavanje">
             <span><span class="opt-title">Hosting i održavanje</span><span class="opt-desc">Brz i siguran hosting, izmjene cijena, slika i teksta.</span></span>
             <span class="opt-price">25 €/mj.</span>
           </label>
         </fieldset>
         <div class="sum" aria-live="polite">
           <h3>Vaš paket</h3>
-          <p class="sum-row"><span>Jednokratno</span><strong id="sumOnce">350 €</strong></p>
+          <p class="sum-row"><span>Jednokratno</span><strong id="sumOnce"><span class="money" data-k="web">350 €</span></strong></p>
           <p class="sum-row month"><span>Mjesečno</span><strong id="sumMonth">0 €</strong></p>
           <p class="note">Okvirne cijene. Točnu cijenu dogovaramo nakon besplatnog koncepta.</p>
           <p class="empty" id="packEmpty" hidden>Odaberite barem jednu opciju.</p>
@@ -499,13 +507,31 @@
   var subject = "Upit za paket – Fresh Front";
   var bodyIntro = "Pozdrav, zanima me ovaj paket:";
   var monthWord = "mjesečno";
-  var cur = "€", curBefore = false;
-  function money(n) { return curBefore ? cur + n : n + ' ' + cur; }
+  var prices = {"eur": {"cur": "€", "before": false, "web": 350, "addon": 150, "addon_m": 20, "host": 25}}, cur = "eur";
+  function money(n) { var p = prices[cur]; return p.before ? p.cur + n : n + ' ' + p.cur; }
+  function val(k) { return k ? prices[cur][k] || 0 : 0; }
+  var ids = Object.keys(prices);
+  if (ids.length > 1) {
+    var saved = null;
+    try { saved = localStorage.getItem('ff-cur'); } catch (e) {}
+    if (saved && prices[saved]) cur = saved;
+    else if (prices.usd && /^en-US$/i.test(navigator.language || '')) cur = 'usd';
+  }
+  function setCur(id) {
+    cur = id;
+    try { localStorage.setItem('ff-cur', id); } catch (e) {}
+    document.querySelectorAll('.money').forEach(function (el) { el.textContent = money(prices[cur][el.dataset.k]); });
+    document.querySelectorAll('.cur-switch button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cur === cur ? 'true' : 'false'); });
+    update();
+  }
+  document.querySelectorAll('.cur-switch button').forEach(function (b) {
+    b.addEventListener('click', function () { setCur(b.dataset.cur); });
+  });
   function update() {
     var o = 0, m = 0, names = [];
     boxes.forEach(function (b) {
       if (!b.checked) return;
-      o += +b.dataset.once; m += +b.dataset.month; names.push('- ' + b.dataset.label);
+      o += val(b.dataset.onceK); m += val(b.dataset.monthK); names.push('- ' + b.dataset.label);
     });
     once.textContent = (o ? prefix + ' ' : '') + money(o);
     month.textContent = (m ? prefix + ' ' : '') + money(m);
@@ -521,7 +547,7 @@
     setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
   });
   boxes.forEach(function (b) { b.addEventListener('change', update); });
-  update();
+  setCur(cur);
 })();
 (function () {
   var form = document.getElementById('leadForm');

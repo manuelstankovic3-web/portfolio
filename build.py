@@ -198,7 +198,7 @@ T = {
         "prices_h2": "Prices",
         "prices_intro": "Clear and up front. We agree the exact price after the concept, depending on how many pages and features you need.",
         "p1h": "New website",
-        "p1amount": "from £299",
+        "p1amount": "from {web}",
         "p1unit": "one-off",
         "p1note": "Half up front, the rest when the site is finished.",
         "p1a": "Design made for your business",
@@ -464,16 +464,16 @@ PK = {
         "pk_badge": "New",
         "pk_web_t": "New website",
         "pk_web_d": "Modern, fast and built for phones and Google.",
-        "pk_web_p": "from £299",
+        "pk_web_p": "from {web}",
         "pk_book_t": "Online booking and reminders",
         "pk_book_d": "Customers book a free slot themselves and get a reminder the day before. Fewer no-shows and fewer phone calls.",
-        "pk_book_p": "from £129 + £19/mo",
+        "pk_book_p": "from {addon} + {addon_m}/mo",
         "pk_auto_t": "Automatic replies to inquiries",
         "pk_auto_d": "Common questions about prices, opening hours and availability get answered at once, and every inquiry from your website lands in one place.",
-        "pk_auto_p": "from £129 + £19/mo",
+        "pk_auto_p": "from {addon} + {addon_m}/mo",
         "pk_host_t": "Hosting and maintenance",
         "pk_host_d": "Fast, secure hosting plus updates to prices, photos and text.",
-        "pk_host_p": "£22/mo",
+        "pk_host_p": "{host}/mo",
         "pk_sum_h": "Your package",
         "pk_once": "One-off",
         "pk_month": "Monthly",
@@ -633,16 +633,38 @@ FORM = {
     },
 }
 
-# Prices per language. English targets the UK, so it is in pounds.
-PRICES = {
-    "en": {"cur": "£", "before": True, "web": 299, "addon": 129, "addon_m": 19, "host": 22},
-}
-EUR = {"cur": "€", "before": False, "web": 350, "addon": 150, "addon_m": 20, "host": 25}
+# Prices. Each language lists its currencies; the first is the default.
+# With more than one, the page shows a currency switch.
+EUR = {"id": "eur", "label": "€ EUR", "cur": "€", "before": False, "web": 350, "addon": 150, "addon_m": 20, "host": 25}
+GBP = {"id": "gbp", "label": "£ GBP", "cur": "£", "before": True, "web": 299, "addon": 129, "addon_m": 19, "host": 22}
+USD = {"id": "usd", "label": "$ USD", "cur": "$", "before": True, "web": 399, "addon": 169, "addon_m": 25, "host": 29}
+CURRENCIES = {"en": [GBP, USD]}
+CUR_LABEL = {"en": "Currency"}
 DEMO = {"en": "The Old Mill Cafe"}
 
 
 def money(pr, n):
     return f"{pr['cur']}{n}" if pr["before"] else f"{n} {pr['cur']}"
+
+
+def money_span(key, pr):
+    return f'<span class="money" data-k="{key}">{money(pr, pr[key])}</span>'
+
+
+def fill_money(text, pr):
+    for key in ("addon_m", "addon", "web", "host"):
+        text = text.replace("{" + key + "}", money_span(key, pr))
+    return text
+
+
+def cur_switch_html(code, curs):
+    if len(curs) < 2:
+        return ""
+    btns = "".join(
+        f'<button type="button" data-cur="{c["id"]}" aria-pressed="{"true" if i == 0 else "false"}">{c["label"]}</button>'
+        for i, c in enumerate(curs)
+    )
+    return f'<div class="cur-switch" role="group" aria-label="{CUR_LABEL.get(code, "Currency")}">{btns}</div>'
 
 def flags_html(current):
     out = []
@@ -669,11 +691,16 @@ def build():
         t = dict(T[code])
         t.update(PK[code])
         t.update(FORM[code])
-        pr = PRICES.get(code, EUR)
+        curs = CURRENCIES.get(code, [EUR])
+        pr = curs[0]
+        for k, v in list(t.items()):
+            if isinstance(v, str):
+                t[k] = fill_money(v, pr)
         t.update({
-            "n_web": str(pr["web"]), "n_addon": str(pr["addon"]), "n_addon_m": str(pr["addon_m"]), "n_host": str(pr["host"]),
-            "money_web": money(pr, pr["web"]), "money_host": money(pr, pr["host"]), "money_zero": money(pr, 0),
-            "cur_js": json.dumps(pr["cur"], ensure_ascii=False), "cur_before_js": "true" if pr["before"] else "false",
+            "money_web": money_span("web", pr), "money_host": money_span("host", pr), "money_zero": money(pr, 0),
+            "prices_js": json.dumps({c["id"]: {k: c[k] for k in ("cur", "before", "web", "addon", "addon_m", "host")} for c in curs}, ensure_ascii=False),
+            "cur_default_js": json.dumps(pr["id"]),
+            "cur_switch": cur_switch_html(code, curs),
             "demo_name": DEMO.get(code, "Konoba Mul"),
         })
         for k in ('f_sending', 'f_ok', 'f_err', 'f_send'):
