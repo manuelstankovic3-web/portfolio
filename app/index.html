@@ -120,6 +120,17 @@
   .stat b{font-size:22px;font-weight:780;display:block;letter-spacing:-.5px}
   .stat span{font-size:11px;color:var(--gray);font-weight:600}
   .hidden{display:none!important}
+  .msg-btn{margin-left:auto;background:#2A2521;border:0;color:#fff;font-size:15px;padding:6px 11px;border-radius:8px;cursor:pointer;position:relative}
+  .msg-btn .ibadge{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+  .thread{display:flex;flex-direction:column;gap:9px;padding:6px 0 14px}
+  .bub{max-width:80%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.45}
+  .bub.them{align-self:flex-start;background:var(--white);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .bub.me{align-self:flex-end;background:var(--orange);color:#fff;border-bottom-right-radius:5px}
+  .bub .t{display:block;font-size:10.5px;opacity:.6;margin-top:3px}
+  .replywrap{position:sticky;bottom:0;background:var(--bg);display:flex;gap:8px;padding:10px 0}
+  .replywrap input{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit}
+  .replywrap input:focus{outline:none;border-color:var(--orange)}
+  .replywrap button{background:var(--orange);color:#fff;border:0;border-radius:11px;width:48px;font-size:18px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -143,7 +154,8 @@
 <div id="appScreen" class="app hidden">
   <div class="topbar">
     <div class="brand"><span class="dot">F</span> Fresh Front
-      <button class="logout" onclick="doLogout()">Odjava</button>
+      <button class="msg-btn" onclick="openMsgs()">📨<span id="msgBadge" class="ibadge hidden">0</span></button>
+      <button class="logout" onclick="doLogout()" style="margin-left:8px">Odjava</button>
     </div>
     <div class="switch">
       <button id="tabUred" class="active" onclick="setView('ured')">🏢 Ured</button>
@@ -235,6 +247,17 @@
         <p style="font-weight:700;margin:6px 0 0">Sve poslano! Hvala.</p>
         <p class="sub">Knjigovodstvo je obaviješteno.</p>
       </div>
+    </div>
+  </div>
+
+  <div id="s-msg" class="screen">
+    <button class="back" onclick="setView('ured')">‹ Natrag</button>
+    <h2 class="title">Poruke s Fresh Front</h2>
+    <p class="sub">Pitanja o aplikaciji, pretplati ili pomoći.</p>
+    <div id="msgThread" class="thread"></div>
+    <div class="replywrap">
+      <input id="msgInput" placeholder="Napiši poruku…" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button onclick="sendMsg()">➤</button>
     </div>
   </div>
 </div>
@@ -359,7 +382,45 @@
     try{ clients=await DB.list(); }catch(e){ toast(humanErr(e)); clients=[]; }
     renderList();
     loadSub();
+    refreshMsgBadge();
   }
+  async function refreshMsgBadge(){
+    if(!LIVE||!myOffice)return;
+    try{
+      var r=await sb.from("messages").select("created_at").eq("sender","admin").order("created_at",{ascending:false}).limit(30);
+      var seen=0; try{seen=+localStorage.getItem("ff_msg_seen_"+myOffice)||0;}catch(e){}
+      var n=(r.data||[]).filter(function(m){return new Date(m.created_at).getTime()>seen;}).length;
+      var b=document.getElementById("msgBadge");
+      if(n>0){b.textContent=n;b.classList.remove("hidden");}else{b.classList.add("hidden");}
+    }catch(e){}
+  }
+  window.openMsgs=async function(){
+    go("msg"); await loadMsgs();
+    try{localStorage.setItem("ff_msg_seen_"+myOffice,Date.now());}catch(e){}
+    document.getElementById("msgBadge").classList.add("hidden");
+  };
+  async function loadMsgs(){
+    var box=document.getElementById("msgThread"); box.innerHTML="Učitavanje…";
+    if(!LIVE){ box.innerHTML='<div class="empty" style="padding:20px"><p>Poruke rade kad je aplikacija spojena na bazu.</p></div>'; return; }
+    try{
+      var r=await sb.from("messages").select("*").order("created_at",{ascending:true});
+      var msgs=(r.data||[]).filter(function(m){return m.office_id;});
+      box.innerHTML="";
+      if(!msgs.length){ box.innerHTML='<div class="empty" style="padding:20px"><p>Nema poruka još. Napiši prvu 👇</p></div>'; }
+      msgs.forEach(function(m){
+        var el=document.createElement("div"); el.className="bub "+(m.sender==="office"?"me":"them");
+        el.innerHTML=esc(m.body)+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
+      });
+    }catch(e){ box.innerHTML='<div class="empty">Greška.</div>'; }
+  }
+  window.sendMsg=async function(){
+    var inp=document.getElementById("msgInput"); var v=inp.value.trim(); if(!v)return;
+    if(!LIVE){toast("Dostupno kad je spojena baza");return;}
+    inp.value="";
+    try{ await sb.from("messages").insert({office_id:myOffice,sender:"office",body:v}); await loadMsgs(); }
+    catch(e){ toast(humanErr(e)); }
+  };
+  function fmtTime(d){ try{var dt=new Date(d);return ("0"+dt.getHours()).slice(-2)+":"+("0"+dt.getMinutes()).slice(-2);}catch(e){return "";} }
   async function loadSub(){
     var host=document.getElementById("subCard"); if(!host)return; host.innerHTML="";
     if(!LIVE||!myOffice)return;
@@ -384,7 +445,7 @@
     if(v==="ured"){go("list");} else {renderClient();}
   };
   function go(scr){
-    ["list","add","build","sent","client"].forEach(function(s){var el=document.getElementById("s-"+s);if(el)el.classList.remove("active");});
+    ["list","add","build","sent","client","msg"].forEach(function(s){var el=document.getElementById("s-"+s);if(el)el.classList.remove("active");});
     document.getElementById("s-"+scr).classList.add("active");
     if(scr==="list")renderList();
     window.scrollTo(0,0);
