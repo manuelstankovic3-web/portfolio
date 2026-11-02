@@ -131,6 +131,18 @@
   .replywrap input{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit}
   .replywrap input:focus{outline:none;border-color:var(--orange)}
   .replywrap button{background:var(--orange);color:#fff;border:0;border-radius:11px;width:48px;font-size:18px;cursor:pointer}
+  .sugg-btn{position:fixed;right:16px;bottom:18px;z-index:55;width:52px;height:52px;border-radius:50%;background:var(--black);color:#fff;border:2px solid var(--orange);font-size:24px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px -6px rgba(20,18,16,.5)}
+  .sugg-modal{display:none;position:fixed;inset:0;z-index:80;background:rgba(20,18,16,.5);align-items:flex-end;justify-content:center}
+  .sugg-card{background:#fff;width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:20px}
+  .sugg-head{display:flex;align-items:center;margin-bottom:4px}
+  .sugg-head b{font-size:19px}
+  .sugg-head button{margin-left:auto;background:none;border:0;font-size:22px;color:var(--gray);cursor:pointer}
+  .sugg-card textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit;resize:vertical;margin-bottom:10px}
+  .sugg-card textarea:focus{outline:none;border-color:var(--orange)}
+  .sugg-preview{position:relative;margin-bottom:10px}
+  .sugg-preview img{width:100%;border-radius:10px;display:block}
+  .sugg-preview button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:28px;height:28px;font-size:15px;cursor:pointer}
+  .sugg-file{display:inline-flex;align-items:center;gap:6px;background:var(--orange-soft);color:var(--orange-dark);font-weight:650;font-size:14px;padding:11px 14px;border-radius:11px;cursor:pointer;margin-bottom:12px;width:100%;justify-content:center}
 </style>
 </head>
 <body>
@@ -260,6 +272,21 @@
       <button onclick="sendMsg()">➤</button>
     </div>
   </div>
+
+  <button id="suggBtn" class="sugg-btn" onclick="openSugg()" title="Prijedlog">!</button>
+  <div id="suggModal" class="sugg-modal">
+    <div class="sugg-card">
+      <div class="sugg-head"><b>Prijedlog</b><button onclick="closeSugg()">✕</button></div>
+      <p class="sub">Što želite promijeniti ili što vam fali? Možete dodati i sliku.</p>
+      <div id="suggForm">
+        <textarea id="suggText" rows="3" placeholder="Opišite prijedlog…"></textarea>
+        <div id="suggPreview" class="sugg-preview hidden"><img id="suggImg" alt=""><button onclick="clearSuggImg()">✕</button></div>
+        <label class="sugg-file">📎 Dodaj sliku<input id="suggFile" type="file" accept="image/*" style="display:none"></label>
+        <button class="btn" id="suggSend" onclick="sendSugg()">Pošalji prijedlog</button>
+      </div>
+      <div id="suggDone" class="hidden" style="text-align:center;padding:14px 0"><div style="font-size:38px">✅</div><p style="font-weight:700;margin:8px 0 0">Hvala! Prijedlog poslan.</p></div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -356,13 +383,14 @@
   /* ---------- UI ---------- */
   function setModeNote(){
     var n=document.getElementById("modeNote");
-    if(LIVE){ n.className="mode-note live"; n.innerHTML="🔒 <b>Povezano s bazom.</b> Prijavi se s podacima koje ti je dao Fresh Front."; }
+    if(LIVE){ n.className="mode-note live"; n.innerHTML="🔒 <b>Povezano s bazom.</b> Prijava s podacima koje ti je dao Fresh Front.<br>👀 Demo pristup: upiši <b>test</b> / <b>1234</b>."; }
     else { n.className="mode-note demo"; n.innerHTML="ℹ️ <b>Demo:</b> upiši bilo koji email i lozinku."; }
   }
   window.doLogin=async function(){
     var em=document.getElementById("loginEmail").value.trim();
     var pw=document.getElementById("loginPass").value.trim();
     if(!em||!pw){toast("Upišite email i lozinku");return;}
+    if(em.toLowerCase()==="test"&&pw==="1234"){ LIVE=false; myOffice=null; try{localStorage.removeItem("freshfront_app_v1");}catch(e){} await showApp(); toast("👀 Demo način — probaj slobodno"); return; }
     var rem=document.getElementById("rememberMe").checked;
     try{ localStorage.setItem("ff_remember",rem?"1":"0"); if(rem){localStorage.setItem("ff_email",em);}else{localStorage.removeItem("ff_email");} }catch(e){}
     var btn=document.getElementById("loginBtn"); btn.disabled=true; btn.textContent="Prijava…";
@@ -409,7 +437,8 @@
       if(!msgs.length){ box.innerHTML='<div class="empty" style="padding:20px"><p>Nema poruka još. Napiši prvu 👇</p></div>'; }
       msgs.forEach(function(m){
         var el=document.createElement("div"); el.className="bub "+(m.sender==="office"?"me":"them");
-        el.innerHTML=esc(m.body)+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
+        var imgH=m.image?('<img src="'+m.image+'" style="max-width:100%;border-radius:8px;margin-bottom:6px;display:block">'):'';
+        el.innerHTML=imgH+esc(m.body).replace(/\n/g,"<br>")+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
       });
     }catch(e){ box.innerHTML='<div class="empty">Greška.</div>'; }
   }
@@ -421,6 +450,42 @@
     catch(e){ toast(humanErr(e)); }
   };
   function fmtTime(d){ try{var dt=new Date(d);return ("0"+dt.getHours()).slice(-2)+":"+("0"+dt.getMinutes()).slice(-2);}catch(e){return "";} }
+
+  /* ---------- PRIJEDLOZI ---------- */
+  var suggImgData=null;
+  function downscale(file,cb){
+    try{
+      var img=new Image();
+      img.onload=function(){
+        var max=1000,w=img.width,h=img.height;
+        if(w>max||h>max){ if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;} }
+        var c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        cb(c.toDataURL("image/jpeg",0.7));
+      };
+      img.onerror=function(){cb(null);};
+      img.src=URL.createObjectURL(file);
+    }catch(e){cb(null);}
+  }
+  window.openSugg=function(){ document.getElementById("suggModal").style.display="flex"; document.getElementById("suggForm").style.display="block"; document.getElementById("suggDone").classList.add("hidden"); };
+  window.closeSugg=function(){ document.getElementById("suggModal").style.display="none"; };
+  window.clearSuggImg=function(){ suggImgData=null; document.getElementById("suggPreview").classList.add("hidden"); var f=document.getElementById("suggFile"); if(f)f.value=""; };
+  var suggFileEl=document.getElementById("suggFile");
+  if(suggFileEl){ suggFileEl.onchange=function(e){ var f=e.target.files[0]; if(!f)return; downscale(f,function(d){ if(!d){toast("Slika nije učitana");return;} suggImgData=d; document.getElementById("suggImg").src=d; document.getElementById("suggPreview").classList.remove("hidden"); }); }; }
+  document.addEventListener("paste",function(e){ if(document.getElementById("suggModal").style.display!=="flex")return; var items=(e.clipboardData&&e.clipboardData.items)||[]; for(var i=0;i<items.length;i++){ if(items[i].type&&items[i].type.indexOf("image")===0){ var f=items[i].getAsFile(); if(f)downscale(f,function(d){ if(d){suggImgData=d;document.getElementById("suggImg").src=d;document.getElementById("suggPreview").classList.remove("hidden");} }); } } });
+  window.sendSugg=async function(){
+    var t=document.getElementById("suggText").value.trim();
+    if(!t&&!suggImgData){ toast("Upišite prijedlog ili dodajte sliku"); return; }
+    if(!LIVE){ toast("U demo načinu prijedlog se ne šalje"); return; }
+    var btn=document.getElementById("suggSend"); btn.disabled=true; btn.textContent="Slanje…";
+    try{
+      await sb.from("messages").insert({office_id:myOffice,sender:"office",body:"💡 Prijedlog:\n"+(t||"(slika u prilogu)"),image:suggImgData});
+      document.getElementById("suggForm").style.display="none";
+      document.getElementById("suggDone").classList.remove("hidden");
+      document.getElementById("suggText").value=""; clearSuggImg();
+    }catch(e){ toast(humanErr(e)); }
+    finally{ btn.disabled=false; btn.textContent="Pošalji prijedlog"; }
+  };
   async function loadSub(){
     var host=document.getElementById("subCard"); if(!host)return; host.innerHTML="";
     if(!LIVE||!myOffice)return;
