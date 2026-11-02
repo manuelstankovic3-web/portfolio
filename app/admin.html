@@ -15,8 +15,6 @@
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45}
   .app{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:40px}
-
-  /* login */
   .login-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:28px 22px;max-width:420px;margin:0 auto}
   .login-brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:22px;justify-content:center;margin-bottom:6px}
   .login-brand .logo{width:38px;height:38px;border-radius:11px;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800}
@@ -30,38 +28,34 @@
   .field label{display:block;font-size:12.5px;font-weight:650;color:var(--gray);margin-bottom:6px}
   .field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:13px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
   .field input:focus,.field select:focus{outline:none;border-color:var(--orange)}
-  .demo-note{background:var(--amber-soft);color:#8a6000;border-radius:11px;padding:11px 13px;font-size:12.5px;margin-bottom:16px;line-height:1.5}
+  .mode-note{border-radius:11px;padding:11px 13px;font-size:12.5px;margin-bottom:16px;line-height:1.5}
+  .mode-note.live{background:var(--green-soft);color:#13704c}
+  .mode-note.demo{background:var(--amber-soft);color:#8a6000}
   .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;background:var(--orange);color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:13px;cursor:pointer;font-family:inherit;transition:.12s}
   .btn:active{transform:scale(.99)}
   .btn.dark{background:var(--black)}
   .btn.ghost{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
-  .btn.sm{padding:11px;font-size:14px}
+  .btn[disabled]{opacity:.5;pointer-events:none}
   .back-site{text-align:center;margin-top:20px}
   .back-site a{color:var(--gray);font-size:13px;text-decoration:none}
-
-  /* topbar */
   .topbar{position:sticky;top:0;z-index:40;background:var(--black);color:#fff;padding:14px 18px}
   .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
   .brand .dot{width:22px;height:22px;border-radius:7px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
   .brand .adm{font-size:10px;font-weight:800;letter-spacing:.1em;background:#2A2521;color:#B7AFA8;padding:2px 7px;border-radius:5px}
   .brand .logout{margin-left:auto;background:#2A2521;border:0;color:#B7AFA8;font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;font-family:inherit}
-
   .screen{display:none;padding:18px 16px 0}
   .screen.active{display:block;animation:fade .25s ease}
   @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
   h2.title{font-size:20px;font-weight:750;letter-spacing:-.4px;margin:4px 0 2px}
   .sub{color:var(--gray);font-size:13.5px;margin:0 0 16px}
   .card{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
-
   .stat-row{display:flex;gap:9px;margin-bottom:16px}
   .stat{flex:1;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:12px 8px;text-align:center}
   .stat b{font-size:21px;font-weight:780;display:block;letter-spacing:-.5px}
   .stat span{font-size:10.5px;color:var(--gray);font-weight:600}
-
   .filters{display:flex;gap:8px;margin-bottom:14px}
   .filters button{flex:1;border:1.5px solid var(--line);background:var(--white);color:var(--gray);font-weight:650;font-size:13px;padding:9px;border-radius:10px;cursor:pointer;font-family:inherit}
   .filters button.active{background:var(--black);color:#fff;border-color:var(--black)}
-
   .office{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px}
   .office .top{display:flex;align-items:center;gap:12px}
   .avatar{width:40px;height:40px;border-radius:11px;background:var(--orange-soft);color:var(--orange-dark);display:flex;align-items:center;justify-content:center;font-weight:750;font-size:15px;flex-shrink:0}
@@ -80,36 +74,35 @@
   .tbtn.pay{background:var(--green);color:#fff;border-color:var(--green)}
   .tbtn.unpay{background:var(--white);color:var(--red);border-color:var(--red)}
   .tbtn.del{color:var(--gray);padding:7px 9px}
-
   .back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--orange-dark);font-weight:650;font-size:14px;cursor:pointer;padding:4px 0;margin-bottom:6px;font-family:inherit}
   .empty{text-align:center;padding:30px 20px;color:var(--gray);font-size:14px}
-  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--black);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:100;pointer-events:none;text-align:center}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--black);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:100;pointer-events:none;text-align:center;max-width:90%}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .hidden{display:none!important}
-  .reset-link{text-align:center;margin-top:16px}
-  .reset-link button{background:none;border:0;color:var(--gray);font-size:12.5px;text-decoration:underline;cursor:pointer;font-family:inherit}
   .two{display:flex;gap:10px}
   .two>*{flex:1}
+  .prov{background:var(--black);color:#fff;border-radius:12px;padding:14px;margin-top:4px}
+  .prov .lbl{font-size:11.5px;color:#A8A09A;font-weight:600;margin-bottom:8px;line-height:1.5}
+  .prov code{display:block;font-size:11.5px;font-family:ui-monospace,Menlo,monospace;color:var(--orange);background:#000;padding:10px;border-radius:8px;word-break:break-all;margin-bottom:6px}
+  .prov .copy{width:100%;background:var(--orange);border:0;color:#fff;font-weight:700;padding:10px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="login-wrap">
   <div class="login-brand"><span class="logo">F<b>.</b></span> Fresh Front</div>
   <div class="login-sub">Admin konzola <span class="adm-tag">ADMIN</span></div>
   <div class="login-card">
     <h1>Admin prijava</h1>
     <p class="ch">Samo za vlasnika — upravljanje uredima i pretplatama.</p>
-    <div class="demo-note">ℹ️ <b>Demo:</b> upišite bilo koji email i lozinku. U pravoj verziji ovdje je samo vaš Supabase admin račun.</div>
+    <div id="modeNote" class="mode-note demo">Učitavanje…</div>
     <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="manuelstankovic3@gmail.com" autocomplete="username"></div>
     <div class="field"><label>Lozinka</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn dark" onclick="doLogin()">Prijava ›</button>
+    <button id="loginBtn" class="btn dark" onclick="doLogin()">Prijava ›</button>
   </div>
   <div class="back-site"><a href="../">‹ Natrag na stranicu</a></div>
 </div>
 
-<!-- ADMIN APP -->
 <div id="appScreen" class="app hidden">
   <div class="topbar">
     <div class="brand"><span class="dot">F</span> Fresh Front <span class="adm">ADMIN</span>
@@ -117,7 +110,6 @@
     </div>
   </div>
 
-  <!-- dashboard -->
   <div id="s-dash" class="screen active">
     <h2 class="title">Pretplatnici (uredi)</h2>
     <p class="sub">Dodajte urede i pratite tko je platio subskripciju.</p>
@@ -134,10 +126,8 @@
     </div>
     <div id="officeList"></div>
     <button class="btn" onclick="openAdd()">＋ Dodaj ured</button>
-    <div class="reset-link"><button onclick="resetDemo()">Resetiraj demo podatke</button></div>
   </div>
 
-  <!-- add/edit office -->
   <div id="s-edit" class="screen">
     <button class="back" onclick="go('dash')">‹ Natrag</button>
     <h2 class="title" id="editTitle">Novi ured</h2>
@@ -156,44 +146,110 @@
         </div>
       </div>
       <div class="field"><label>Sljedeća naplata (datum)</label><input id="eDue" type="date"></div>
-      <button class="btn dark" onclick="saveOffice()">Spremi ured</button>
+      <button class="btn dark" id="saveBtn" onclick="saveOffice()">Spremi ured</button>
+    </div>
+    <div id="provBox" class="hidden">
+      <div class="prov">
+        <div class="lbl">✅ Ured spremljen. Da mu date <b>login</b>: 1) Supabase → Authentication → Add user (ovaj email + lozinka), kopirajte njegov UID. 2) Pokrenite ovo u SQL Editoru (zamijenite UID):</div>
+        <code id="provSql">—</code>
+        <button class="copy" onclick="copyProv()">Kopiraj SQL</button>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
   "use strict";
+  var cfg=window.FF_CONFIG||{};
+  var LIVE=!!(cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY&&window.supabase);
+  var sb=LIVE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY):null;
   var LS="freshfront_admin_v1", AUTH="freshfront_admin_auth_v1";
-  var state=load(), filter="all", editId=null;
+  var filter="all", editId=null, offices=[];
 
-  function load(){ try{var r=localStorage.getItem(LS);if(r)return JSON.parse(r);}catch(e){} return seed(); }
-  function save(){ try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} }
-  function seed(){
-    return {offices:[
-      {id:id(),name:"Knjigovodstvo Horizont d.o.o.",email:"ured@horizont.hr",price:49,status:"paid",due:"2026-12-01"},
-      {id:id(),name:"Saldo knjigovodstveni servis",email:"info@saldo.hr",price:39,status:"unpaid",due:"2026-11-01"},
-      {id:id(),name:"Bilanca obrt",email:"bilanca@obrt.hr",price:39,status:"trial",due:"2026-11-20"}
-    ]};
+  /* ---------- DATA LAYER (live = Supabase, demo = localStorage) ---------- */
+  var DB={
+    async list(){
+      if(LIVE){
+        var r=await sb.from("offices").select("*").order("created_at",{ascending:true});
+        if(r.error)throw r.error;
+        return r.data.map(function(o){return {id:o.id,name:o.name,email:o.login_email||"",price:+o.price||0,status:o.status,due:o.due_date||""};});
+      }
+      return demo().offices;
+    },
+    async add(o){
+      if(LIVE){
+        var r=await sb.from("offices").insert({name:o.name,login_email:o.email,price:o.price,status:o.status,due_date:o.due||null}).select().single();
+        if(r.error)throw r.error; return r.data.id;
+      }
+      var d=demo(); o.id="o"+Math.random().toString(36).slice(2,8); d.offices.push(o); saveDemo(d); return o.id;
+    },
+    async update(id,patch){
+      if(LIVE){
+        var up={}; if("name"in patch)up.name=patch.name; if("email"in patch)up.login_email=patch.email;
+        if("price"in patch)up.price=patch.price; if("status"in patch)up.status=patch.status; if("due"in patch)up.due_date=patch.due||null;
+        var r=await sb.from("offices").update(up).eq("id",id); if(r.error)throw r.error; return;
+      }
+      var d=demo(); var o=d.offices.filter(function(x){return x.id===id;})[0]; if(o)Object.assign(o,patch); saveDemo(d);
+    },
+    async remove(id){
+      if(LIVE){ var r=await sb.from("offices").delete().eq("id",id); if(r.error)throw r.error; return; }
+      var d=demo(); d.offices=d.offices.filter(function(x){return x.id!==id;}); saveDemo(d);
+    }
+  };
+  var Auth={
+    async login(email,pass){
+      if(LIVE){
+        var r=await sb.auth.signInWithPassword({email:email,password:pass});
+        if(r.error)throw r.error;
+        var p=await sb.from("profiles").select("role").eq("id",r.data.user.id).single();
+        if(p.error||!p.data||p.data.role!=="admin"){ await sb.auth.signOut(); throw new Error("Ovaj račun nije admin."); }
+        return true;
+      }
+      try{localStorage.setItem(AUTH,"1");}catch(e){} return true;
+    },
+    async logout(){ if(LIVE){try{await sb.auth.signOut();}catch(e){}} else {try{localStorage.removeItem(AUTH);}catch(e){}} },
+    async check(){
+      if(LIVE){
+        var s=await sb.auth.getSession();
+        if(!s.data.session)return false;
+        var p=await sb.from("profiles").select("role").eq("id",s.data.session.user.id).single();
+        return !!(p.data&&p.data.role==="admin");
+      }
+      try{return localStorage.getItem(AUTH)==="1";}catch(e){return false;}
+    }
+  };
+  function demo(){ try{var r=localStorage.getItem(LS);if(r)return JSON.parse(r);}catch(e){} var s=seed(); saveDemo(s); return s; }
+  function saveDemo(s){ try{localStorage.setItem(LS,JSON.stringify(s));}catch(e){} }
+  function seed(){return {offices:[
+    {id:"o1",name:"Knjigovodstvo Horizont d.o.o.",email:"ured@horizont.hr",price:49,status:"paid",due:"2026-12-01"},
+    {id:"o2",name:"Saldo knjigovodstveni servis",email:"info@saldo.hr",price:39,status:"unpaid",due:"2026-11-01"}
+  ]};}
+
+  /* ---------- UI ---------- */
+  function setModeNote(){
+    var n=document.getElementById("modeNote");
+    if(LIVE){ n.className="mode-note live"; n.innerHTML="🔒 <b>Povezano s bazom.</b> Prijavi se s admin računom koji si napravio u Supabaseu."; }
+    else { n.className="mode-note demo"; n.innerHTML="ℹ️ <b>Demo:</b> upiši bilo koji email i lozinku."; }
   }
-  function id(){return "o"+Math.random().toString(36).slice(2,8);}
-  function find(oid){return state.offices.filter(function(o){return o.id===oid;})[0];}
-
-  function isAuthed(){ try{return localStorage.getItem(AUTH)==="1";}catch(e){return false;} }
-  window.doLogin=function(){
+  window.doLogin=async function(){
     var em=document.getElementById("loginEmail").value.trim();
     var pw=document.getElementById("loginPass").value.trim();
     if(!em||!pw){toast("Upišite email i lozinku");return;}
-    try{localStorage.setItem(AUTH,"1");}catch(e){}
-    showApp();
+    var btn=document.getElementById("loginBtn"); btn.disabled=true; btn.textContent="Prijava…";
+    try{ await Auth.login(em,pw); await showApp(); }
+    catch(e){ toast(humanErr(e)); }
+    finally{ btn.disabled=false; btn.textContent="Prijava ›"; }
   };
-  window.doLogout=function(){ try{localStorage.removeItem(AUTH);}catch(e){} location.reload(); };
-  function showApp(){
+  window.doLogout=async function(){ await Auth.logout(); location.reload(); };
+  async function showApp(){
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("appScreen").classList.remove("hidden");
-    render();
+    await render();
   }
 
   function go(scr){
@@ -202,57 +258,58 @@
     if(scr==="dash")render();
     window.scrollTo(0,0);
   }
+  window.go=go;
   window.setFilter=function(f){
     filter=f;
     ["all","unpaid","paid"].forEach(function(x){document.getElementById("f-"+x).classList.toggle("active",x===f);});
-    render();
+    renderList();
   };
 
-  function render(){
-    var list=state.offices.slice();
-    var paid=list.filter(function(o){return o.status==="paid";}).length;
-    var unpaid=list.filter(function(o){return o.status==="unpaid";}).length;
-    var mrr=list.filter(function(o){return o.status==="paid";}).reduce(function(s,o){return s+(+o.price||0);},0);
-    document.getElementById("st-total").textContent=list.length;
+  async function render(){
+    try{ offices=await DB.list(); }catch(e){ toast(humanErr(e)); offices=[]; }
+    renderList();
+  }
+  function renderList(){
+    var paid=offices.filter(function(o){return o.status==="paid";}).length;
+    var unpaid=offices.filter(function(o){return o.status==="unpaid";}).length;
+    var mrr=offices.filter(function(o){return o.status==="paid";}).reduce(function(s,o){return s+(+o.price||0);},0);
+    document.getElementById("st-total").textContent=offices.length;
     document.getElementById("st-paid").textContent=paid;
     document.getElementById("st-unpaid").textContent=unpaid;
     document.getElementById("st-mrr").textContent=mrr+"€";
 
+    var list=offices.slice();
     if(filter==="unpaid")list=list.filter(function(o){return o.status==="unpaid";});
     if(filter==="paid")list=list.filter(function(o){return o.status==="paid";});
 
     var host=document.getElementById("officeList");host.innerHTML="";
     if(!list.length){host.innerHTML='<div class="empty">Nema ureda u ovom prikazu.</div>';return;}
     list.forEach(function(o){
-      var badge = o.status==="paid"?'<span class="pill paid">Plaćeno</span>'
-                : o.status==="unpaid"?'<span class="pill unpaid">Neplaćeno</span>'
-                : '<span class="pill trial">Probni period</span>';
+      var badge=o.status==="paid"?'<span class="pill paid">Plaćeno</span>'
+              :o.status==="unpaid"?'<span class="pill unpaid">Neplaćeno</span>'
+              :'<span class="pill trial">Probni period</span>';
       var el=document.createElement("div");el.className="office";
-      el.innerHTML=
-        '<div class="top"><div class="avatar">'+initials(o.name)+'</div>'+
+      el.innerHTML='<div class="top"><div class="avatar">'+initials(o.name)+'</div>'+
         '<div class="meta"><div class="nm">'+esc(o.name)+'</div><div class="em">'+esc(o.email)+'</div></div>'+badge+'</div>'+
         '<div class="row2"><span class="price">'+(+o.price||0)+'€/mj</span>'+
         '<span class="due">'+(o.due?('naplata '+fmtDate(o.due)):'')+'</span>'+
         '<span class="acts">'+
-          (o.status==="paid"
-            ? '<button class="tbtn unpay" data-a="unpay">Označi neplaćeno</button>'
-            : '<button class="tbtn pay" data-a="pay">Označi plaćeno</button>')+
+          (o.status==="paid"?'<button class="tbtn unpay" data-a="unpay">Neplaćeno</button>':'<button class="tbtn pay" data-a="pay">Plaćeno</button>')+
           '<button class="tbtn" data-a="edit">Uredi</button>'+
           '<button class="tbtn del" data-a="del">🗑</button>'+
         '</span></div>';
-      el.querySelectorAll("[data-a]").forEach(function(b){
-        b.onclick=function(){ act(b.getAttribute("data-a"), o.id); };
-      });
+      el.querySelectorAll("[data-a]").forEach(function(b){ b.onclick=function(){act(b.getAttribute("data-a"),o.id);}; });
       host.appendChild(el);
     });
   }
-
-  function act(a,oid){
-    var o=find(oid); if(!o)return;
-    if(a==="pay"){ o.status="paid"; save(); render(); toast("✅ "+o.name+" — plaćeno"); }
-    else if(a==="unpay"){ o.status="unpaid"; save(); render(); toast("Označeno neplaćeno"); }
-    else if(a==="edit"){ openEdit(oid); }
-    else if(a==="del"){ state.offices=state.offices.filter(function(x){return x.id!==oid;}); save(); render(); toast("Ured obrisan"); }
+  async function act(a,oid){
+    var o=offices.filter(function(x){return x.id===oid;})[0]; if(!o)return;
+    try{
+      if(a==="pay"){ await DB.update(oid,{status:"paid"}); toast("✅ "+o.name+" — plaćeno"); await render(); }
+      else if(a==="unpay"){ await DB.update(oid,{status:"unpaid"}); toast("Označeno neplaćeno"); await render(); }
+      else if(a==="edit"){ openEdit(o); }
+      else if(a==="del"){ await DB.remove(oid); toast("Ured obrisan"); await render(); }
+    }catch(e){ toast(humanErr(e)); }
   }
 
   window.openAdd=function(){
@@ -263,41 +320,61 @@
     document.getElementById("ePrice").value="49";
     document.getElementById("eStatus").value="trial";
     document.getElementById("eDue").value="";
+    document.getElementById("provBox").classList.add("hidden");
     go("edit");
   };
-  function openEdit(oid){
-    var o=find(oid);editId=oid;
+  function openEdit(o){
+    editId=o.id;
     document.getElementById("editTitle").textContent="Uredi ured";
     document.getElementById("eName").value=o.name;
     document.getElementById("eEmail").value=o.email;
     document.getElementById("ePrice").value=o.price;
     document.getElementById("eStatus").value=o.status;
     document.getElementById("eDue").value=o.due||"";
+    document.getElementById("provBox").classList.add("hidden");
     go("edit");
   }
-  window.saveOffice=function(){
+  window.saveOffice=async function(){
     var n=document.getElementById("eName").value.trim();
     if(!n){toast("Upišite naziv ureda");return;}
-    var data={
-      name:n,
-      email:document.getElementById("eEmail").value.trim()||"—",
-      price:+document.getElementById("ePrice").value||0,
-      status:document.getElementById("eStatus").value,
-      due:document.getElementById("eDue").value||""
-    };
-    if(editId){ var o=find(editId); Object.assign(o,data); toast("Spremljeno"); }
-    else { data.id=id(); state.offices.push(data); toast("✅ Ured dodan"); }
-    save(); go("dash");
+    var data={name:n,email:document.getElementById("eEmail").value.trim(),price:+document.getElementById("ePrice").value||0,
+      status:document.getElementById("eStatus").value,due:document.getElementById("eDue").value||""};
+    var btn=document.getElementById("saveBtn"); btn.disabled=true; btn.textContent="Spremanje…";
+    try{
+      if(editId){ await DB.update(editId,data); toast("Spremljeno"); go("dash"); }
+      else {
+        var newId=await DB.add(data); toast("✅ Ured dodan");
+        await render();
+        if(LIVE){ showProv(newId); } else { go("dash"); }
+      }
+    }catch(e){ toast(humanErr(e)); }
+    finally{ btn.disabled=false; btn.textContent="Spremi ured"; }
+  };
+  function showProv(officeId){
+    document.getElementById("provSql").textContent=
+      "insert into profiles (id, role, office_id) values ('UID-UREDA', 'office', '"+officeId+"');";
+    document.getElementById("provBox").classList.remove("hidden");
+  }
+  window.copyProv=function(){
+    try{navigator.clipboard.writeText(document.getElementById("provSql").textContent);}catch(e){}
+    toast("SQL kopiran");
   };
 
   function initials(n){return n.trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase();}
   function esc(s){return(s==null?"":""+s).replace(/[&<>"]/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m];});}
-  function fmtDate(d){ try{var p=d.split("-");return p[2]+"."+p[1]+"."+p[0].slice(2)+".";}catch(e){return d;} }
+  function fmtDate(d){try{var p=(""+d).slice(0,10).split("-");return p[2]+"."+p[1]+"."+p[0].slice(2)+".";}catch(e){return d;}}
+  function humanErr(e){
+    var m=(e&&e.message)||""+e;
+    if(/Invalid login/i.test(m))return "Pogrešan email ili lozinka.";
+    if(/Email not confirmed/i.test(m))return "Email nije potvrđen — u Supabaseu kod korisnika uključi 'Confirm'.";
+    if(/not admin/i.test(m)||/nije admin/i.test(m))return "Ovaj račun nije admin.";
+    return m||"Greška.";
+  }
   var tTimer;
-  function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove("show");},1900);}
-  window.resetDemo=function(){state=seed();save();toast("Demo resetiran");render();};
+  function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove("show");},2600);}
 
-  if(isAuthed())showApp();
+  setModeNote();
+  Auth.check().then(function(ok){ if(ok)showApp(); });
 })();
 </script>
 </body>
