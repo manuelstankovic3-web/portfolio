@@ -262,6 +262,7 @@
         <div class="prog"><i id="cvProg" style="width:0%"></i></div>
       </div>
       <div id="cvList"></div>
+      <input type="file" id="cvFile" accept="image/*" capture="environment" style="display:none">
       <div id="cvDone" style="display:none;text-align:center;padding:10px 0 0">
         <div style="font-size:40px">✅</div>
         <p style="font-weight:700;margin:6px 0 0">Sve poslano! Hvala.</p>
@@ -598,6 +599,27 @@
   }
   function fmtDay(d){ try{var p=d.split("-");return p[2]+"."+p[1]+"."+p[0]+".";}catch(e){return d;} }
 
+  /* upload iz Klijent taba (priloži -> stvarni upload u arhivu) */
+  var cvUploadTarget=null;
+  var cvFileEl=document.getElementById("cvFile");
+  if(cvFileEl){ cvFileEl.onchange=function(e){
+    var f=e.target.files[0]; if(!f||!cvUploadTarget)return;
+    var tgt=cvUploadTarget; cvFileEl.value="";
+    toast("Obrada i slanje…");
+    scanEnhance(f,async function(d){
+      if(!d){toast("Slika nije učitana");return;}
+      try{
+        var path=myOffice+"/"+tgt.c.id+"/"+Date.now()+".jpg";
+        var up=await sb.storage.from("dokumenti").upload(path,dataURLtoBlob(d),{contentType:"image/jpeg"});
+        if(up.error)throw up.error;
+        await sb.from("documents").insert({office_id:myOffice,client_id:tgt.c.id,client_name:tgt.c.name,path:path});
+        tgt.it.got=true;
+        await DB.setItems(tgt.c.id,tgt.items);
+        renderClient(); toast("✅ Priloženo i spremljeno u arhivu");
+      }catch(err){ toast(humanErr(err)); }
+    });
+  }; }
+
   async function loadSub(){
     var host=document.getElementById("subCard"); if(!host)return; host.innerHTML="";
     if(!LIVE||!myOffice)return;
@@ -782,10 +804,11 @@
       el.innerHTML='<div class="up-ic"><svg viewBox="0 0 24 24"><path d="'+(it.got?'M4 12l5 5L20 6':'M12 16V4m0 0L8 8m4-4l4 4M4 20h16')+'"/></svg></div>'+
         '<div class="ut"><b>'+esc(it.t)+'</b><span>'+(it.got?'Priloženo ✓':'Dodirni za upload')+'</span></div>'+
         '<button class="mini">'+(it.got?'Promijeni':'📎 Priloži')+'</button>';
-      el.querySelector(".mini").onclick=async function(){
-        it.got=!it.got;
-        try{ await DB.setItems(c.id,items); }catch(e){}
-        renderClient(); if(it.got)toast("📎 Dokument priložen");
+      el.querySelector(".mini").onclick=function(){
+        if(it.got){ it.got=false; if(LIVE){try{DB.setItems(c.id,items);}catch(e){}} renderClient(); return; }
+        if(!LIVE){ it.got=true; renderClient(); toast("📎 (demo) priloženo"); return; }
+        cvUploadTarget={c:c,it:it,items:items};
+        document.getElementById("cvFile").click();
       };
       host.appendChild(el);
     });
