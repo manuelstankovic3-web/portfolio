@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova lozinka — Fresh Front</title>
+<style>
+  :root{--orange:#FF6A2B;--orange-dark:#E8551A;--black:#141210;--ink:#201C18;--gray:#6B6560;--line:#E9E4DF;--bg:#FBF9F7;--green:#1E9E6A;--green-soft:#E7F6EF}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0;line-height:1.5}
+  .wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;max-width:420px;margin:0 auto;padding:28px 22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:22px;justify-content:center;margin-bottom:24px}
+  .brand .logo{width:38px;height:38px;border-radius:11px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(20,18,16,.05);padding:22px}
+  h1{font-size:19px;margin:0 0 4px}
+  .ch{color:var(--gray);font-size:13px;margin:0 0 18px}
+  label{display:block;font-size:12.5px;font-weight:650;color:var(--gray);margin-bottom:6px}
+  input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:13px;font-size:15px;font-family:inherit;margin-bottom:13px}
+  input:focus{outline:none;border-color:var(--orange)}
+  .btn{width:100%;border:0;background:var(--orange);color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:13px;cursor:pointer;font-family:inherit}
+  .btn[disabled]{opacity:.5}
+  .msg{font-size:13.5px;padding:11px 13px;border-radius:11px;margin-bottom:14px}
+  .msg.err{background:#FBEAEA;color:#B23B3B}
+  .msg.ok{background:var(--green-soft);color:#13704c}
+  .done{text-align:center}
+  .done a{color:var(--orange-dark);font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="logo">F</span> Fresh Front</div>
+  <div class="card">
+    <div id="formBox">
+      <h1>Postavi novu lozinku</h1>
+      <p class="ch">Upiši novu lozinku za svoj račun.</p>
+      <div id="msg" class="msg err" style="display:none"></div>
+      <label>Nova lozinka</label>
+      <input id="pw1" type="password" placeholder="min. 6 znakova" autocomplete="new-password">
+      <label>Ponovi lozinku</label>
+      <input id="pw2" type="password" placeholder="ponovi lozinku" autocomplete="new-password" onkeydown="if(event.key==='Enter')savePw()">
+      <button class="btn" id="saveBtn" onclick="savePw()">Spremi lozinku</button>
+    </div>
+    <div id="doneBox" class="done" style="display:none">
+      <div style="font-size:42px">✅</div>
+      <h1 style="margin-top:8px">Lozinka promijenjena!</h1>
+      <p class="ch">Sad se možeš prijaviti s novom lozinkom.</p>
+      <a href="./">‹ Idi na prijavu</a>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var cfg=window.FF_CONFIG||{};
+  var LIVE=!!(cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY&&window.supabase);
+  var sb=LIVE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{detectSessionInUrl:true,persistSession:true}}):null;
+  var ready=false;
+  function showMsg(t,ok){ var m=document.getElementById("msg"); m.textContent=t; m.className="msg "+(ok?"ok":"err"); m.style.display="block"; }
+  if(sb){
+    sb.auth.onAuthStateChange(function(ev,session){ if(ev==="PASSWORD_RECOVERY"||session){ ready=true; } });
+    // provjeri postoji li sesija (iz linka)
+    setTimeout(function(){ sb.auth.getSession().then(function(s){ if(s.data&&s.data.session){ready=true;} else if(!ready){ showMsg("Link je istekao ili nije valjan. Zatražite novi mail za promjenu lozinke.",false); } }); },800);
+  } else {
+    showMsg("Konfiguracija nedostaje.",false);
+  }
+  window.savePw=async function(){
+    var p1=document.getElementById("pw1").value.trim(), p2=document.getElementById("pw2").value.trim();
+    if(p1.length<6){ showMsg("Lozinka mora imati barem 6 znakova.",false); return; }
+    if(p1!==p2){ showMsg("Lozinke se ne podudaraju.",false); return; }
+    if(!sb){ showMsg("Nije moguće spremiti.",false); return; }
+    var btn=document.getElementById("saveBtn"); btn.disabled=true; btn.textContent="Spremanje…";
+    try{
+      var r=await sb.auth.updateUser({password:p1});
+      if(r.error)throw r.error;
+      document.getElementById("formBox").style.display="none";
+      document.getElementById("doneBox").style.display="block";
+    }catch(e){
+      showMsg((e&&e.message)||"Greška. Zatražite novi mail za promjenu lozinke.",false);
+      btn.disabled=false; btn.textContent="Spremi lozinku";
+    }
+  };
+})();
+</script>
+</body>
+</html>

@@ -177,6 +177,7 @@
     <div class="field"><label>Lozinka</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <label class="remember"><input type="checkbox" id="rememberMe" checked> Zapamti me na ovom uređaju</label>
     <button class="btn" id="loginBtn" onclick="doLogin()">Prijava ›</button>
+    <div style="text-align:center;margin-top:12px"><a href="#" onclick="forgotPassword();return false" style="font-size:13px;color:var(--orange-dark);text-decoration:none">Zaboravili ste lozinku?</a></div>
   </div>
   <div class="legal-links"><a href="../legal/uvjeti.html">Uvjeti korištenja</a> · <a href="../legal/privatnost.html">Privatnost</a></div>
   <div class="back-site"><a href="../">‹ Natrag na stranicu</a></div>
@@ -454,6 +455,16 @@
     }catch(e){ toast(humanErr(e)); btn.disabled=false; btn.textContent="Prijava ›"; }
   };
   window.doLogout=async function(){ await Auth.logout(); location.reload(); };
+  window.forgotPassword=async function(){
+    var em=document.getElementById("loginEmail").value.trim();
+    if(!em){ toast("Prvo upišite svoj email, pa kliknite ovo"); return; }
+    if(!LIVE){ toast("Dostupno s pravim računom"); return; }
+    try{
+      var r=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+"/app/reset.html"});
+      if(r.error)throw r.error;
+      toast("📧 Poslan email za promjenu lozinke — provjerite inbox");
+    }catch(e){ toast(humanErr(e)); }
+  };
   async function showApp(){
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("appScreen").classList.remove("hidden");
