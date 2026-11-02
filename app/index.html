@@ -456,13 +456,16 @@
   };
   window.doLogout=async function(){ await Auth.logout(); location.reload(); };
   window.forgotPassword=async function(){
-    var em=document.getElementById("loginEmail").value.trim();
-    if(!em){ toast("Prvo upišite svoj email, pa kliknite ovo"); return; }
+    var pre=document.getElementById("loginEmail").value.trim();
+    var em=window.prompt("Na koji email poslati link za promjenu lozinke?", pre);
+    if(em===null) return;
+    em=(em||"").trim();
+    if(!em){ toast("Upišite email"); return; }
     if(!LIVE){ toast("Dostupno s pravim računom"); return; }
     try{
       var r=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+"/app/reset.html"});
       if(r.error)throw r.error;
-      toast("📧 Poslan email za promjenu lozinke — provjerite inbox");
+      toast("📧 Poslan email na "+em+" — provjerite inbox");
     }catch(e){ toast(humanErr(e)); }
   };
   async function showApp(){
