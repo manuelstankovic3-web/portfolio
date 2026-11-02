@@ -30,6 +30,19 @@
   .mode-note.demo{background:var(--orange-soft);color:var(--orange-dark)}
   .back-site{text-align:center;margin-top:20px}
   .back-site a{color:var(--gray);font-size:13px;text-decoration:none}
+  .remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);margin:2px 0 16px;cursor:pointer}
+  .remember input{width:16px;height:16px;accent-color:var(--orange)}
+  .legal-links{text-align:center;margin-top:16px;font-size:12px}
+  .legal-links a{color:var(--gray);text-decoration:none}
+  .subcard{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:13px 15px;display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .subcard .st{flex:1;min-width:0}
+  .subcard .st b{font-size:14.5px;font-weight:700;display:block}
+  .subcard .st span{font-size:12px;color:var(--gray)}
+  .subcard .pay{background:var(--orange);color:#fff;border:0;font-weight:700;font-size:13px;padding:9px 15px;border-radius:10px;text-decoration:none;white-space:nowrap}
+  .subcard .badge{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px}
+  .subcard .badge.paid{background:var(--green-soft);color:var(--green)}
+  .subcard .badge.unpaid{background:#FBEAEA;color:#D64545}
+  .subcard .badge.trial{background:#E8EFFD;color:#2F6FEB}
   .topbar{position:sticky;top:0;z-index:40;background:var(--black);color:#fff;padding:14px 18px 12px}
   .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.2px;font-size:16px}
   .brand .dot{width:22px;height:22px;border-radius:7px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
@@ -120,8 +133,10 @@
     <div id="modeNote" class="mode-note demo">Učitavanje…</div>
     <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="ured@primjer.hr" autocomplete="username"></div>
     <div class="field"><label>Lozinka</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <label class="remember"><input type="checkbox" id="rememberMe" checked> Zapamti me na ovom uređaju</label>
     <button class="btn" id="loginBtn" onclick="doLogin()">Prijava ›</button>
   </div>
+  <div class="legal-links"><a href="../legal/uvjeti.html">Uvjeti korištenja</a> · <a href="../legal/privatnost.html">Privatnost</a></div>
   <div class="back-site"><a href="../">‹ Natrag na stranicu</a></div>
 </div>
 
@@ -139,6 +154,7 @@
   <div id="s-list" class="screen active">
     <h2 class="title">Klijenti</h2>
     <p class="sub">Odaberite klijenta za slanje zahtjeva za dokumentima.</p>
+    <div id="subCard"></div>
     <div class="stat-row">
       <div class="stat"><b id="st-clients">0</b><span>KLIJENATA</span></div>
       <div class="stat"><b id="st-wait" style="color:var(--amber)">0</b><span>ČEKA DOK.</span></div>
@@ -232,7 +248,8 @@
   "use strict";
   var cfg=window.FF_CONFIG||{};
   var LIVE=!!(cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY&&window.supabase);
-  var sb=LIVE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY):null;
+  var REMEMBER=true; try{REMEMBER=localStorage.getItem("ff_remember")!=="0";}catch(e){}
+  var sb=LIVE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:REMEMBER,autoRefreshToken:true}}):null;
   var LS="freshfront_app_v1", AUTH="freshfront_auth_v1";
   var STD=[
     {id:"izvod",t:"Izvodi banke",h:"Bankovni izvodi za mjesec"},
@@ -323,6 +340,8 @@
     var em=document.getElementById("loginEmail").value.trim();
     var pw=document.getElementById("loginPass").value.trim();
     if(!em||!pw){toast("Upišite email i lozinku");return;}
+    var rem=document.getElementById("rememberMe").checked;
+    try{ localStorage.setItem("ff_remember",rem?"1":"0"); if(rem){localStorage.setItem("ff_email",em);}else{localStorage.removeItem("ff_email");} }catch(e){}
     var btn=document.getElementById("loginBtn"); btn.disabled=true; btn.textContent="Prijava…";
     try{
       var role=await Auth.login(em,pw);
@@ -339,6 +358,22 @@
   async function loadClients(){
     try{ clients=await DB.list(); }catch(e){ toast(humanErr(e)); clients=[]; }
     renderList();
+    loadSub();
+  }
+  async function loadSub(){
+    var host=document.getElementById("subCard"); if(!host)return; host.innerHTML="";
+    if(!LIVE||!myOffice)return;
+    try{
+      var r=await sb.from("offices").select("name,status,price").eq("id",myOffice).single();
+      if(!r.data)return;
+      var o=r.data, link=(cfg.STRIPE_PAYMENT_LINK||"").trim();
+      var badge=o.status==="paid"?'<span class="badge paid">Plaćeno</span>'
+              :o.status==="unpaid"?'<span class="badge unpaid">Neplaćeno</span>'
+              :'<span class="badge trial">Probni period</span>';
+      var pay=link?('<a class="pay" href="'+esc(link)+'" target="_blank" rel="noopener">Plati pretplatu</a>'):'';
+      host.innerHTML='<div class="subcard"><div class="st"><b>Pretplata '+badge+'</b>'+
+        '<span>'+(+o.price||0)+'€ mjesečno</span></div>'+pay+'</div>';
+    }catch(e){}
   }
   function find(cid){return clients.filter(function(c){return c.id===cid;})[0];}
 
@@ -534,6 +569,7 @@
   function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove("show");},2600);}
 
   setModeNote();
+  try{var le=localStorage.getItem("ff_email"); if(le)document.getElementById("loginEmail").value=le; document.getElementById("rememberMe").checked=(localStorage.getItem("ff_remember")!=="0");}catch(e){}
   Auth.check().then(function(role){
     if(role==="admin"){ window.location.href="admin.html"; return; }
     if(role==="office"){ showApp(); }
