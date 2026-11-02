@@ -482,7 +482,8 @@
       var msgs=r.data||[]; box.innerHTML="";
       msgs.forEach(function(m){
         var el=document.createElement("div"); el.className="bub "+(m.sender==="admin"?"me":"them");
-        el.innerHTML=esc(m.body)+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
+        var imgH=m.image?('<img src="'+m.image+'" style="max-width:100%;border-radius:8px;margin-bottom:6px;display:block">'):'';
+        el.innerHTML=imgH+esc(m.body).replace(/\n/g,"<br>")+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
       });
       await sb.from("messages").update({read_by_admin:true}).eq("office_id",oid).eq("read_by_admin",false);
       loadInboxData();
