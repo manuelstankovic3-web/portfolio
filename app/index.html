@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fresh Front — Aplikacija</title>
+<style>
+  :root{
+    --orange:#FF6A2B;--orange-dark:#E8551A;--orange-soft:#FFF1EA;--black:#141210;--ink:#201C18;
+    --gray:#6B6560;--line:#E9E4DF;--bg:#FBF9F7;--white:#FFFFFF;--green:#1E9E6A;--green-soft:#E7F6EF;
+    --amber:#C98A00;--amber-soft:#FBF1D9;--radius:16px;--shadow:0 2px 10px rgba(20,18,16,.05),0 10px 30px rgba(20,18,16,.04);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45}
+  .app{max-width:460px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:40px}
+
+  /* ===== LOGIN ===== */
+  .login-wrap{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:28px 22px;max-width:420px;margin:0 auto}
+  .login-brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:22px;justify-content:center;margin-bottom:6px}
+  .login-brand .logo{width:38px;height:38px;border-radius:11px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800}
+  .login-sub{text-align:center;color:var(--gray);font-size:14px;margin-bottom:28px}
+  .login-card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}
+  .login-card h1{font-size:19px;font-weight:750;margin:0 0 4px;letter-spacing:-.3px}
+  .login-card .ch{color:var(--gray);font-size:13px;margin:0 0 18px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12.5px;font-weight:650;color:var(--gray);margin-bottom:6px}
+  .field input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:13px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--orange)}
+  .demo-note{background:var(--orange-soft);color:var(--orange-dark);border-radius:11px;padding:11px 13px;font-size:12.5px;margin-bottom:16px;line-height:1.5}
+  .back-site{text-align:center;margin-top:20px}
+  .back-site a{color:var(--gray);font-size:13px;text-decoration:none}
+
+  /* ===== APP ===== */
+  .topbar{position:sticky;top:0;z-index:40;background:var(--black);color:#fff;padding:14px 18px 12px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.2px;font-size:16px}
+  .brand .dot{width:22px;height:22px;border-radius:7px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
+  .brand .logout{margin-left:auto;background:#2A2521;border:0;color:#B7AFA8;font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;cursor:pointer;font-family:inherit}
+  .switch{display:flex;background:#2A2521;border-radius:11px;padding:3px;margin-top:12px;gap:3px}
+  .switch button{flex:1;border:0;background:transparent;color:#B7AFA8;font-size:13.5px;font-weight:600;padding:9px;border-radius:9px;cursor:pointer;font-family:inherit;transition:.15s}
+  .switch button.active{background:var(--orange);color:#fff}
+
+  .screen{display:none;padding:18px 16px 0}
+  .screen.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2.title{font-size:20px;font-weight:750;letter-spacing:-.4px;margin:4px 0 2px}
+  .sub{color:var(--gray);font-size:13.5px;margin:0 0 16px}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+
+  .client-row{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--white);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;transition:.12s}
+  .client-row:active{transform:scale(.99)}
+  .avatar{width:40px;height:40px;border-radius:11px;background:var(--orange-soft);color:var(--orange-dark);display:flex;align-items:center;justify-content:center;font-weight:750;font-size:15px;flex-shrink:0}
+  .client-row .meta{flex:1;min-width:0}
+  .client-row .nm{font-weight:650;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .client-row .em{color:var(--gray);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pill{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .pill.done{background:var(--green-soft);color:var(--green)}
+  .pill.wait{background:var(--amber-soft);color:var(--amber)}
+  .pill.none{background:#F1EDE9;color:var(--gray)}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;background:var(--orange);color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:13px;cursor:pointer;font-family:inherit;transition:.12s}
+  .btn:active{transform:scale(.99);background:var(--orange-dark)}
+  .btn.ghost{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
+  .btn.dark{background:var(--black)}
+  .btn.sm{padding:11px;font-size:14px}
+  .btn.wa{background:#25D366;color:#fff}
+  .two-btn{display:flex;gap:10px;margin-top:4px}
+  .two-btn .btn{flex:1}
+
+  .check-item{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+  .check-item:last-child{border-bottom:0}
+  .check-item .tx{flex:1;font-size:14.5px;font-weight:550}
+  .check-item .hint{font-size:11.5px;color:var(--gray);font-weight:400;display:block;margin-top:1px}
+  .box{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.12s;background:var(--white)}
+  .box.on{background:var(--orange);border-color:var(--orange)}
+  .box svg{width:15px;height:15px;stroke:#fff;stroke-width:3.4;fill:none;opacity:0;transition:.12s}
+  .box.on svg{opacity:1}
+  .del{color:var(--gray);background:none;border:0;font-size:19px;cursor:pointer;padding:2px 6px;line-height:1}
+  .addrow{display:flex;gap:8px;margin-top:12px}
+  .addrow input{flex:1;border:1.5px dashed var(--line);border-radius:11px;padding:11px 12px;font-size:14px;font-family:inherit;background:var(--orange-soft)}
+  .addrow input:focus{outline:none;border-color:var(--orange);border-style:solid}
+  .addrow button{background:var(--black);color:#fff;border:0;border-radius:11px;width:46px;font-size:22px;cursor:pointer;flex-shrink:0;font-family:inherit}
+  .section-label{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin:18px 2px 8px}
+  .back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--orange-dark);font-weight:650;font-size:14px;cursor:pointer;padding:4px 0;margin-bottom:6px;font-family:inherit}
+
+  .linkbox{background:var(--black);border-radius:13px;padding:14px;margin-top:4px;color:#fff}
+  .linkbox .lbl{font-size:11.5px;color:#A8A09A;font-weight:600;margin-bottom:6px}
+  .linkbox .url{font-size:13px;font-family:ui-monospace,Menlo,monospace;color:var(--orange);word-break:break-all;background:#000;padding:10px;border-radius:9px}
+  .copy{margin-top:10px;width:100%;background:var(--orange);border:0;color:#fff;font-weight:700;padding:11px;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit}
+
+  .prog{height:9px;background:var(--line);border-radius:999px;overflow:hidden;margin:4px 0 2px}
+  .prog>i{display:block;height:100%;background:var(--green);border-radius:999px;transition:width .4s ease}
+  .prog-txt{font-size:12px;color:var(--gray);font-weight:600}
+
+  .up-item{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px;display:flex;align-items:center;gap:13px}
+  .up-item.done{border-color:var(--green);background:var(--green-soft)}
+  .up-ic{width:42px;height:42px;border-radius:11px;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .up-ic svg{width:21px;height:21px;stroke:var(--orange-dark);stroke-width:2;fill:none}
+  .up-item.done .up-ic{background:var(--green)}
+  .up-item.done .up-ic svg{stroke:#fff}
+  .up-item .ut{flex:1;min-width:0}
+  .up-item .ut b{font-size:14.5px;font-weight:650;display:block}
+  .up-item .ut span{font-size:12px;color:var(--gray)}
+  .up-item.done .ut span{color:var(--green);font-weight:600}
+  .mini{border:0;background:var(--orange);color:#fff;font-weight:700;font-size:13px;padding:9px 14px;border-radius:10px;cursor:pointer;flex-shrink:0;font-family:inherit}
+  .up-item.done .mini{background:var(--white);color:var(--green);border:1.5px solid var(--green)}
+
+  .empty{text-align:center;padding:36px 20px;color:var(--gray)}
+  .empty svg{width:48px;height:48px;stroke:var(--line);stroke-width:1.6;fill:none;margin-bottom:10px}
+  .empty p{font-size:14px;margin:0}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--black);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:100;pointer-events:none;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .note{background:var(--orange-soft);border-radius:12px;padding:12px 14px;font-size:12.5px;color:var(--orange-dark);margin-bottom:14px;line-height:1.5}
+  .reset-link{text-align:center;margin-top:18px}
+  .reset-link button{background:none;border:0;color:var(--gray);font-size:12.5px;text-decoration:underline;cursor:pointer;font-family:inherit}
+  .stat-row{display:flex;gap:10px;margin-bottom:14px}
+  .stat{flex:1;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center}
+  .stat b{font-size:22px;font-weight:780;display:block;letter-spacing:-.5px}
+  .stat span{font-size:11px;color:var(--gray);font-weight:600}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-brand"><span class="logo">F</span> Fresh Front</div>
+  <div class="login-sub">Aplikacija za skupljanje dokumenata</div>
+  <div class="login-card">
+    <h1>Prijava</h1>
+    <p class="ch">Prijavite se u svoj knjigovodstveni ured.</p>
+    <div class="demo-note">ℹ️ <b>Demo pristup:</b> upišite bilo koji email i lozinku pa kliknite Prijava.</div>
+    <div class="field"><label>Email</label><input id="loginEmail" type="email" placeholder="ured@primjer.hr" autocomplete="username"></div>
+    <div class="field"><label>Lozinka</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn" onclick="doLogin()">Prijava ›</button>
+  </div>
+  <div class="back-site"><a href="../">‹ Natrag na stranicu</a></div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="appScreen" class="app hidden">
+  <div class="topbar">
+    <div class="brand"><span class="dot">F</span> Fresh Front
+      <button class="logout" onclick="doLogout()">Odjava</button>
+    </div>
+    <div class="switch">
+      <button id="tabUred" class="active" onclick="setView('ured')">🏢 Ured</button>
+      <button id="tabKlijent" onclick="setView('klijent')">📱 Klijent</button>
+    </div>
+  </div>
+
+  <div id="s-list" class="screen active">
+    <h2 class="title">Klijenti</h2>
+    <p class="sub">Odaberite klijenta za slanje zahtjeva za dokumentima.</p>
+    <div class="stat-row">
+      <div class="stat"><b id="st-clients">0</b><span>KLIJENATA</span></div>
+      <div class="stat"><b id="st-wait" style="color:var(--amber)">0</b><span>ČEKA DOK.</span></div>
+      <div class="stat"><b id="st-done" style="color:var(--green)">0</b><span>KOMPLETNO</span></div>
+    </div>
+    <div id="clientList"></div>
+    <button class="btn" onclick="openAdd()">＋ Dodaj klijenta</button>
+    <div class="reset-link"><button onclick="resetDemo()">Resetiraj demo podatke</button></div>
+  </div>
+
+  <div id="s-add" class="screen">
+    <button class="back" onclick="go('list')">‹ Natrag</button>
+    <h2 class="title">Novi klijent</h2>
+    <p class="sub">Dovoljno je ime i email — ostalo ide automatski.</p>
+    <div class="card">
+      <div class="field"><label>Naziv / ime klijenta</label><input id="newName" placeholder="npr. Caffe Bar Luka"></div>
+      <div class="field"><label>Email klijenta</label><input id="newEmail" type="email" placeholder="luka@primjer.hr"></div>
+      <div class="field"><label>Broj mobitela (za WhatsApp / SMS)</label><input id="newPhone" type="tel" inputmode="tel" placeholder="091 234 5678"></div>
+      <button class="btn" onclick="saveClient()">Spremi i odaberi dokumente ›</button>
+    </div>
+  </div>
+
+  <div id="s-build" class="screen">
+    <button class="back" onclick="go('list')">‹ Natrag</button>
+    <h2 class="title" id="buildName">Klijent</h2>
+    <p class="sub">Označite dokumente koje trebate ovaj mjesec.</p>
+    <div class="card">
+      <div class="section-label" style="margin-top:0">Standardni dokumenti</div>
+      <div id="stdList"></div>
+      <div class="section-label">Dodatni (vlastiti) dokumenti</div>
+      <div id="customList"></div>
+      <div class="addrow">
+        <input id="customInput" placeholder="npr. Ugovor o najmu" onkeydown="if(event.key==='Enter')addCustom()">
+        <button onclick="addCustom()">＋</button>
+      </div>
+    </div>
+    <button class="btn dark" onclick="sendRequest()">📤 Pošalji zahtjev klijentu</button>
+  </div>
+
+  <div id="s-sent" class="screen">
+    <button class="back" onclick="go('list')">‹ Natrag</button>
+    <h2 class="title" id="sentName">Klijent</h2>
+    <p class="sub">Zahtjev poslan. Pratite što je stiglo.</p>
+    <div class="card">
+      <div class="prog-txt" id="sentProgTxt">0 / 0 dokumenata</div>
+      <div class="prog"><i id="sentProg" style="width:0%"></i></div>
+    </div>
+    <div id="statusList"></div>
+    <div class="card">
+      <div class="linkbox">
+        <div class="lbl">🔗 Magic link za klijenta (bez registracije)</div>
+        <div class="url" id="magicUrl">freshfront.eu/u/...</div>
+        <button class="copy" onclick="copyLink()">Kopiraj link</button>
+      </div>
+    </div>
+    <div class="two-btn">
+      <button class="btn wa sm" onclick="sendWa()">💬 Pošalji WhatsApp</button>
+      <button class="btn ghost sm" onclick="sendSms()">✉️ SMS</button>
+    </div>
+    <button class="btn ghost sm" style="margin-top:10px" onclick="remind()">🔔 Email podsjetnik</button>
+  </div>
+
+  <div id="s-client" class="screen">
+    <div id="clientEmpty" class="empty" style="display:none">
+      <svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h10"/></svg>
+      <p>Ured još nije poslao zahtjev.<br>Prebacite na <b>Ured</b> i pošaljite jedan.</p>
+    </div>
+    <div id="clientReal" style="display:none">
+      <div class="note">👋 Ovako klijent vidi zahtjev kad otvori link na mobitelu — bez aplikacije, bez lozinke.</div>
+      <h2 class="title">Dokumenti za <span id="cvOffice">knjigovodstvo</span></h2>
+      <p class="sub" id="cvName">—</p>
+      <div class="card" style="padding:14px 16px">
+        <div class="prog-txt" id="cvProgTxt">0 / 0 priloženo</div>
+        <div class="prog"><i id="cvProg" style="width:0%"></i></div>
+      </div>
+      <div id="cvList"></div>
+      <div id="cvDone" style="display:none;text-align:center;padding:10px 0 0">
+        <div style="font-size:40px">✅</div>
+        <p style="font-weight:700;margin:6px 0 0">Sve poslano! Hvala.</p>
+        <p class="sub">Knjigovodstvo je obaviješteno.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var LS="freshfront_app_v1", AUTH="freshfront_auth_v1";
+
+  var STD=[
+    {id:"izvod",t:"Izvodi banke",h:"Bankovni izvodi za mjesec"},
+    {id:"ulazni",t:"Ulazni računi",h:"Računi dobavljača (troškovi)"},
+    {id:"izlazni",t:"Izlazni računi",h:"Računi koje ste izdali"},
+    {id:"blag",t:"Blagajnički izvještaj",h:"Gotovinski promet"},
+    {id:"fisk",t:"Fiskalni računi",h:"Maloprodajni / gotovinski"},
+    {id:"putni",t:"Putni nalozi",h:"Ako ih je bilo"},
+    {id:"place",t:"Plaće / JOPPD",h:"Podaci za obračun plaća"}
+  ];
+
+  var state=load(), view="ured", curId=null, draft=null;
+
+  function load(){ try{var r=localStorage.getItem(LS);if(r)return JSON.parse(r);}catch(e){} return seed(); }
+  function save(){ try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} }
+  function seed(){
+    return {clients:[
+      {id:id(),name:"Frizerski salon Mia",email:"mia@salon.hr",phone:"0912345678",request:{items:[
+        {key:"izvod",t:"Izvodi banke",got:true},{key:"ulazni",t:"Ulazni računi",got:true},
+        {key:"izlazni",t:"Izlazni računi",got:false},{key:"c1",t:"Ugovor o najmu prostora",got:false}
+      ],sent:true}},
+      {id:id(),name:"Caffe Bar Luka",email:"luka@bar.hr",request:null}
+    ]};
+  }
+  function id(){return "c"+Math.random().toString(36).slice(2,8);}
+  function find(cid){return state.clients.filter(function(c){return c.id===cid;})[0];}
+
+  /* ---- AUTH (demo) ---- */
+  function isAuthed(){ try{return localStorage.getItem(AUTH)==="1";}catch(e){return false;} }
+  window.doLogin=function(){
+    var em=document.getElementById("loginEmail").value.trim();
+    var pw=document.getElementById("loginPass").value.trim();
+    if(!em||!pw){ toast("Upišite email i lozinku"); return; }
+    try{localStorage.setItem(AUTH,"1");}catch(e){}
+    showApp();
+  };
+  window.doLogout=function(){ try{localStorage.removeItem(AUTH);}catch(e){} location.reload(); };
+  function showApp(){
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("appScreen").classList.remove("hidden");
+    renderList();
+  }
+
+  window.setView=function(v){
+    view=v;
+    document.getElementById("tabUred").classList.toggle("active",v==="ured");
+    document.getElementById("tabKlijent").classList.toggle("active",v==="klijent");
+    if(v==="ured"){go("list");} else {renderClient();}
+  };
+  function go(scr){
+    ["list","add","build","sent","client"].forEach(function(s){var el=document.getElementById("s-"+s);if(el)el.classList.remove("active");});
+    document.getElementById("s-"+scr).classList.add("active");
+    if(scr==="list")renderList();
+    window.scrollTo(0,0);
+  }
+
+  function renderList(){
+    var host=document.getElementById("clientList");host.innerHTML="";
+    var nWait=0,nDone=0;
+    state.clients.forEach(function(c){
+      var st=status(c);
+      if(st.key==="done")nDone++;else if(st.key==="wait")nWait++;
+      var row=document.createElement("div");row.className="client-row";
+      row.innerHTML='<div class="avatar">'+initials(c.name)+'</div>'+
+        '<div class="meta"><div class="nm">'+esc(c.name)+'</div><div class="em">'+esc(c.email)+'</div></div>'+
+        '<div class="pill '+st.key+'">'+st.label+'</div>';
+      row.onclick=function(){openClient(c.id);};
+      host.appendChild(row);
+    });
+    document.getElementById("st-clients").textContent=state.clients.length;
+    document.getElementById("st-wait").textContent=nWait;
+    document.getElementById("st-done").textContent=nDone;
+  }
+  function status(c){
+    if(!c.request||!c.request.sent)return{key:"none",label:"Nije poslano"};
+    var tot=c.request.items.length,got=c.request.items.filter(function(i){return i.got;}).length;
+    if(got>=tot)return{key:"done",label:"Kompletno"};
+    return{key:"wait",label:got+"/"+tot+" stiglo"};
+  }
+  function openClient(cid){
+    curId=cid;var c=find(cid);
+    if(c.request&&c.request.sent){go("sent");renderSent();}
+    else{startDraft(c);go("build");renderBuild();}
+  }
+
+  window.openAdd=function(){document.getElementById("newName").value="";document.getElementById("newEmail").value="";document.getElementById("newPhone").value="";go("add");};
+  window.saveClient=function(){
+    var n=document.getElementById("newName").value.trim();
+    var e=document.getElementById("newEmail").value.trim();
+    var ph=document.getElementById("newPhone").value.trim();
+    if(!n){toast("Upišite ime klijenta");return;}
+    var c={id:id(),name:n,email:e||"—",phone:ph||"",request:null};
+    state.clients.push(c);save();curId=c.id;
+    startDraft(c);go("build");renderBuild();
+  };
+
+  function startDraft(c){
+    draft={std:{},custom:[]};
+    STD.forEach(function(s){draft.std[s.id]=(s.id==="izvod"||s.id==="ulazni"||s.id==="izlazni");});
+  }
+  function renderBuild(){
+    var c=find(curId);
+    document.getElementById("buildName").textContent=c.name;
+    var host=document.getElementById("stdList");host.innerHTML="";
+    STD.forEach(function(s){
+      var on=!!draft.std[s.id];
+      var el=document.createElement("div");el.className="check-item";
+      el.innerHTML='<div class="box'+(on?' on':'')+'"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>'+
+        '<div class="tx">'+esc(s.t)+'<span class="hint">'+esc(s.h)+'</span></div>';
+      el.querySelector(".box").onclick=function(){draft.std[s.id]=!draft.std[s.id];renderBuild();};
+      host.appendChild(el);
+    });
+    var ch=document.getElementById("customList");ch.innerHTML="";
+    draft.custom.forEach(function(it,ix){
+      var el=document.createElement("div");el.className="check-item";
+      el.innerHTML='<div class="box on"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>'+
+        '<div class="tx">'+esc(it.t)+'<span class="hint">Vlastita stavka</span></div>'+
+        '<button class="del">✕</button>';
+      el.querySelector(".del").onclick=function(){draft.custom.splice(ix,1);renderBuild();};
+      ch.appendChild(el);
+    });
+    if(!draft.custom.length){ch.innerHTML='<div style="font-size:12.5px;color:var(--gray);padding:6px 2px">Nema dodatnih stavki. Dodajte ispod ako treba.</div>';}
+  }
+  window.addCustom=function(){
+    var inp=document.getElementById("customInput");var v=inp.value.trim();
+    if(!v)return;
+    draft.custom.push({id:"x"+Date.now(),t:v});inp.value="";renderBuild();
+  };
+  window.sendRequest=function(){
+    var c=find(curId);var items=[];
+    STD.forEach(function(s){if(draft.std[s.id])items.push({key:s.id,t:s.t,got:false});});
+    draft.custom.forEach(function(it){items.push({key:it.id,t:it.t,got:false});});
+    if(!items.length){toast("Označite barem jedan dokument");return;}
+    c.request={items:items,sent:true};save();go("sent");renderSent();
+    toast("✅ Zahtjev poslan — email + link kreiran");
+  };
+
+  function renderSent(){
+    var c=find(curId);
+    document.getElementById("sentName").textContent=c.name;
+    var items=c.request.items,got=items.filter(function(i){return i.got;}).length;
+    document.getElementById("sentProgTxt").textContent=got+" / "+items.length+" dokumenata stiglo";
+    document.getElementById("sentProg").style.width=(items.length?Math.round(got/items.length*100):0)+"%";
+    var host=document.getElementById("statusList");host.innerHTML="";
+    items.forEach(function(it){
+      var el=document.createElement("div");el.className="up-item"+(it.got?" done":"");
+      el.innerHTML='<div class="up-ic"><svg viewBox="0 0 24 24"><path d="'+(it.got?'M4 12l5 5L20 6':'M12 5v14M5 12h14')+'"/></svg></div>'+
+        '<div class="ut"><b>'+esc(it.t)+'</b><span>'+(it.got?'Stiglo ✓':'Čeka se')+'</span></div>';
+      host.appendChild(el);
+    });
+    document.getElementById("magicUrl").textContent="freshfront.eu/u/"+c.id;
+  }
+  window.copyLink=function(){
+    var url="https://freshfront.eu/u/"+curId;
+    try{navigator.clipboard.writeText(url);}catch(e){}
+    toast("🔗 Link kopiran");
+  };
+  window.remind=function(){toast("🔔 Podsjetnik poslan klijentu");};
+
+  function waNumber(ph){
+    var d=(ph||"").replace(/\D/g,"");
+    if(!d)return "";
+    if(d.indexOf("00")===0)d=d.slice(2);
+    else if(d.charAt(0)==="0")d="385"+d.slice(1); // Hrvatska default
+    return d;
+  }
+  function msgText(c){
+    var link="https://freshfront.eu/u/"+c.id;
+    return "Pozdrav! Molimo pošaljite dokumente za knjigovodstvo putem ovog linka (bez aplikacije): "+link;
+  }
+  window.sendWa=function(){
+    var c=find(curId); var num=waNumber(c.phone);
+    if(!num){ toast("Klijent nema upisan broj mobitela"); return; }
+    window.open("https://wa.me/"+num+"?text="+encodeURIComponent(msgText(c)),"_blank");
+  };
+  window.sendSms=function(){
+    var c=find(curId);
+    if(!c.phone){ toast("Klijent nema upisan broj mobitela"); return; }
+    window.location.href="sms:"+c.phone.replace(/\s/g,"")+"?&body="+encodeURIComponent(msgText(c));
+  };
+
+  function latestSent(){
+    var s=state.clients.filter(function(c){return c.request&&c.request.sent;});
+    if(curId){var cur=find(curId);if(cur&&cur.request&&cur.request.sent)return cur;}
+    return s.length?s[s.length-1]:null;
+  }
+  function renderClient(){
+    go("client");
+    var c=latestSent();
+    document.getElementById("clientEmpty").style.display=c?"none":"block";
+    document.getElementById("clientReal").style.display=c?"block":"none";
+    if(!c)return;
+    document.getElementById("cvName").textContent=c.name;
+    var items=c.request.items,got=items.filter(function(i){return i.got;}).length;
+    document.getElementById("cvProgTxt").textContent=got+" / "+items.length+" priloženo";
+    document.getElementById("cvProg").style.width=(items.length?Math.round(got/items.length*100):0)+"%";
+    var host=document.getElementById("cvList");host.innerHTML="";
+    items.forEach(function(it){
+      var el=document.createElement("div");el.className="up-item"+(it.got?" done":"");
+      el.innerHTML='<div class="up-ic"><svg viewBox="0 0 24 24"><path d="'+(it.got?'M4 12l5 5L20 6':'M12 16V4m0 0L8 8m4-4l4 4M4 20h16')+'"/></svg></div>'+
+        '<div class="ut"><b>'+esc(it.t)+'</b><span>'+(it.got?'Priloženo ✓':'Dodirni za upload')+'</span></div>'+
+        '<button class="mini">'+(it.got?'Promijeni':'📎 Priloži')+'</button>';
+      el.querySelector(".mini").onclick=function(){it.got=!it.got;save();renderClient();if(it.got)toast("📎 Dokument priložen");};
+      host.appendChild(el);
+    });
+    document.getElementById("cvDone").style.display=(got>=items.length&&items.length>0)?"block":"none";
+  }
+
+  function initials(n){return n.trim().split(/\s+/).slice(0,2).map(function(w){return w[0];}).join("").toUpperCase();}
+  function esc(s){return(s==null?"":""+s).replace(/[&<>"]/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m];});}
+  var tTimer;
+  function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove("show");},1900);}
+  window.resetDemo=function(){state=seed();save();curId=null;toast("Demo resetiran");renderList();};
+
+  if(isAuthed()) showApp();
+})();
+</script>
+</body>
+</html>
