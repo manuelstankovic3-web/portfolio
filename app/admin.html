@@ -135,6 +135,7 @@
     <div class="card">
       <div class="field"><label>Naziv ureda</label><input id="eName" placeholder="npr. Knjigovodstvo Horizont d.o.o."></div>
       <div class="field"><label>Email za prijavu ureda</label><input id="eEmail" type="email" placeholder="ured@horizont.hr"></div>
+      <div class="field" id="ePassWrap"><label>Lozinka za prijavu ureda</label><input id="ePass" type="text" placeholder="min. 6 znakova — daš je uredu"></div>
       <div class="two">
         <div class="field"><label>Cijena (€/mj)</label><input id="ePrice" type="number" inputmode="numeric" placeholder="49"></div>
         <div class="field"><label>Status pretplate</label>
@@ -320,6 +321,8 @@
     document.getElementById("ePrice").value="49";
     document.getElementById("eStatus").value="trial";
     document.getElementById("eDue").value="";
+    document.getElementById("ePass").value="";
+    document.getElementById("ePassWrap").classList.remove("hidden");
     document.getElementById("provBox").classList.add("hidden");
     go("edit");
   };
@@ -331,25 +334,41 @@
     document.getElementById("ePrice").value=o.price;
     document.getElementById("eStatus").value=o.status;
     document.getElementById("eDue").value=o.due||"";
+    document.getElementById("ePassWrap").classList.add("hidden");
     document.getElementById("provBox").classList.add("hidden");
     go("edit");
   }
   window.saveOffice=async function(){
     var n=document.getElementById("eName").value.trim();
     if(!n){toast("Upišite naziv ureda");return;}
-    var data={name:n,email:document.getElementById("eEmail").value.trim(),price:+document.getElementById("ePrice").value||0,
+    var email=document.getElementById("eEmail").value.trim();
+    var pass=document.getElementById("ePass").value.trim();
+    var data={name:n,email:email,price:+document.getElementById("ePrice").value||0,
       status:document.getElementById("eStatus").value,due:document.getElementById("eDue").value||""};
     var btn=document.getElementById("saveBtn"); btn.disabled=true; btn.textContent="Spremanje…";
     try{
       if(editId){ await DB.update(editId,data); toast("Spremljeno"); go("dash"); }
-      else {
-        var newId=await DB.add(data); toast("✅ Ured dodan");
-        await render();
-        if(LIVE){ showProv(newId); } else { go("dash"); }
+      else if(LIVE){
+        if(!email){ toast("Upišite email za prijavu ureda"); throw new Error("skip"); }
+        if(pass.length<6){ toast("Lozinka: barem 6 znakova"); throw new Error("skip"); }
+        var newId=await DB.add(data);
+        try{ await provisionOffice(email,pass,newId); }
+        catch(pe){ await DB.remove(newId); throw pe; }
+        toast("✅ Ured i login kreirani");
+        await render(); go("dash");
       }
-    }catch(e){ toast(humanErr(e)); }
+      else { await DB.add(data); toast("✅ Ured dodan"); await render(); go("dash"); }
+    }catch(e){ if(!e||e.message!=="skip") toast(humanErr(e)); }
     finally{ btn.disabled=false; btn.textContent="Spremi ured"; }
   };
+
+  async function provisionOffice(email,pass,officeId){
+    var sb2=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,
+      {auth:{persistSession:false,autoRefreshToken:false,storageKey:"ff_prov_tmp"}});
+    var r=await sb2.auth.signUp({email:email,password:pass,options:{data:{role:"office",office_id:officeId}}});
+    if(r.error)throw r.error;
+    if(!r.data||!r.data.user)throw new Error("Login nije kreiran.");
+  }
   function showProv(officeId){
     document.getElementById("provSql").textContent=
       "insert into profiles (id, role, office_id) values ('UID-UREDA', 'office', '"+officeId+"');";
@@ -366,7 +385,9 @@
   function humanErr(e){
     var m=(e&&e.message)||""+e;
     if(/Invalid login/i.test(m))return "Pogrešan email ili lozinka.";
-    if(/Email not confirmed/i.test(m))return "Email nije potvrđen — u Supabaseu kod korisnika uključi 'Confirm'.";
+    if(/Email not confirmed/i.test(m))return "Email nije potvrđen — u Supabaseu isključi 'Confirm email'.";
+    if(/already registered|already been registered|User already/i.test(m))return "Taj email već ima račun.";
+    if(/profiles|row-level|violates|policy/i.test(m))return "Pokreni jednom setup SQL (okidač za profile). Vidi poruku u chatu.";
     if(/not admin/i.test(m)||/nije admin/i.test(m))return "Ovaj račun nije admin.";
     return m||"Greška.";
   }
