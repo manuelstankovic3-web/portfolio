@@ -63,6 +63,9 @@
   .btn.ghost{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
   .btn.dark{background:var(--black)}
   .btn.sm{padding:11px;font-size:14px}
+  .btn.wa{background:#25D366;color:#fff}
+  .two-btn{display:flex;gap:10px;margin-top:4px}
+  .two-btn .btn{flex:1}
 
   .check-item{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
   .check-item:last-child{border-bottom:0}
@@ -166,6 +169,7 @@
     <div class="card">
       <div class="field"><label>Naziv / ime klijenta</label><input id="newName" placeholder="npr. Caffe Bar Luka"></div>
       <div class="field"><label>Email klijenta</label><input id="newEmail" type="email" placeholder="luka@primjer.hr"></div>
+      <div class="field"><label>Broj mobitela (za WhatsApp / SMS)</label><input id="newPhone" type="tel" inputmode="tel" placeholder="091 234 5678"></div>
       <button class="btn" onclick="saveClient()">Spremi i odaberi dokumente ›</button>
     </div>
   </div>
@@ -200,10 +204,14 @@
       <div class="linkbox">
         <div class="lbl">🔗 Magic link za klijenta (bez registracije)</div>
         <div class="url" id="magicUrl">freshfront.eu/u/...</div>
-        <button class="copy" onclick="copyLink()">Kopiraj link za WhatsApp / email</button>
+        <button class="copy" onclick="copyLink()">Kopiraj link</button>
       </div>
     </div>
-    <button class="btn ghost sm" onclick="remind()">🔔 Pošalji podsjetnik</button>
+    <div class="two-btn">
+      <button class="btn wa sm" onclick="sendWa()">💬 Pošalji WhatsApp</button>
+      <button class="btn ghost sm" onclick="sendSms()">✉️ SMS</button>
+    </div>
+    <button class="btn ghost sm" style="margin-top:10px" onclick="remind()">🔔 Email podsjetnik</button>
   </div>
 
   <div id="s-client" class="screen">
@@ -252,7 +260,7 @@
   function save(){ try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){} }
   function seed(){
     return {clients:[
-      {id:id(),name:"Frizerski salon Mia",email:"mia@salon.hr",request:{items:[
+      {id:id(),name:"Frizerski salon Mia",email:"mia@salon.hr",phone:"0912345678",request:{items:[
         {key:"izvod",t:"Izvodi banke",got:true},{key:"ulazni",t:"Ulazni računi",got:true},
         {key:"izlazni",t:"Izlazni računi",got:false},{key:"c1",t:"Ugovor o najmu prostora",got:false}
       ],sent:true}},
@@ -320,12 +328,13 @@
     else{startDraft(c);go("build");renderBuild();}
   }
 
-  window.openAdd=function(){document.getElementById("newName").value="";document.getElementById("newEmail").value="";go("add");};
+  window.openAdd=function(){document.getElementById("newName").value="";document.getElementById("newEmail").value="";document.getElementById("newPhone").value="";go("add");};
   window.saveClient=function(){
     var n=document.getElementById("newName").value.trim();
     var e=document.getElementById("newEmail").value.trim();
+    var ph=document.getElementById("newPhone").value.trim();
     if(!n){toast("Upišite ime klijenta");return;}
-    var c={id:id(),name:n,email:e||"—",request:null};
+    var c={id:id(),name:n,email:e||"—",phone:ph||"",request:null};
     state.clients.push(c);save();curId=c.id;
     startDraft(c);go("build");renderBuild();
   };
@@ -392,6 +401,28 @@
     toast("🔗 Link kopiran");
   };
   window.remind=function(){toast("🔔 Podsjetnik poslan klijentu");};
+
+  function waNumber(ph){
+    var d=(ph||"").replace(/\D/g,"");
+    if(!d)return "";
+    if(d.indexOf("00")===0)d=d.slice(2);
+    else if(d.charAt(0)==="0")d="385"+d.slice(1); // Hrvatska default
+    return d;
+  }
+  function msgText(c){
+    var link="https://freshfront.eu/u/"+c.id;
+    return "Pozdrav! Molimo pošaljite dokumente za knjigovodstvo putem ovog linka (bez aplikacije): "+link;
+  }
+  window.sendWa=function(){
+    var c=find(curId); var num=waNumber(c.phone);
+    if(!num){ toast("Klijent nema upisan broj mobitela"); return; }
+    window.open("https://wa.me/"+num+"?text="+encodeURIComponent(msgText(c)),"_blank");
+  };
+  window.sendSms=function(){
+    var c=find(curId);
+    if(!c.phone){ toast("Klijent nema upisan broj mobitela"); return; }
+    window.location.href="sms:"+c.phone.replace(/\s/g,"")+"?&body="+encodeURIComponent(msgText(c));
+  };
 
   function latestSent(){
     var s=state.clients.filter(function(c){return c.request&&c.request.sent;});
