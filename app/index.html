@@ -143,6 +143,13 @@
   .sugg-preview img{width:100%;border-radius:10px;display:block}
   .sugg-preview button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:28px;height:28px;font-size:15px;cursor:pointer}
   .sugg-file{display:inline-flex;align-items:center;gap:6px;background:var(--orange-soft);color:var(--orange-dark);font-weight:650;font-size:14px;padding:11px 14px;border-radius:11px;cursor:pointer;margin-bottom:12px;width:100%;justify-content:center}
+  .sugg-card .field select{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit;background:#fff;margin-bottom:0}
+  .arch-group{margin-bottom:18px}
+  .arch-group>.gh{font-weight:750;font-size:15px;margin:0 2px 8px;display:flex;align-items:center;gap:8px}
+  .arch-day{font-size:12px;font-weight:700;color:var(--gray);margin:10px 2px 6px}
+  .arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .arch-item{border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1;background:#fff;cursor:pointer}
+  .arch-item img{width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </head>
 <body>
@@ -171,6 +178,7 @@
     </div>
     <div class="switch">
       <button id="tabUred" class="active" onclick="setView('ured')">🏢 Ured</button>
+      <button id="tabArhiva" onclick="setView('arhiva')">📁 Arhiva</button>
       <button id="tabKlijent" onclick="setView('klijent')">📱 Klijent</button>
     </div>
   </div>
@@ -270,6 +278,24 @@
     <div class="replywrap">
       <input id="msgInput" placeholder="Napiši poruku…" onkeydown="if(event.key==='Enter')sendMsg()">
       <button onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+
+  <div id="s-arhiva" class="screen">
+    <h2 class="title">Arhiva dokumenata</h2>
+    <p class="sub">Spremljeni dokumenti po klijentu i danu.</p>
+    <button class="btn" onclick="openUpload()">＋ Učitaj dokument</button>
+    <div id="archiveList" style="margin-top:14px"></div>
+  </div>
+
+  <div id="upModal" class="sugg-modal">
+    <div class="sugg-card">
+      <div class="sugg-head"><b>Učitaj dokument</b><button onclick="closeUpload()">✕</button></div>
+      <p class="sub">Odaberi klijenta i slikaj/učitaj dokument — pretvara se u čisti sken.</p>
+      <div class="field"><label>Klijent</label><select id="upClient"></select></div>
+      <label class="sugg-file">📷 Slikaj ili odaberi dokument<input id="upFile" type="file" accept="image/*" capture="environment" style="display:none"></label>
+      <div id="upPreview" class="sugg-preview hidden"><img id="upImg" alt=""><button onclick="clearUpImg()">✕</button></div>
+      <button class="btn" id="upSave" onclick="saveDoc()">Spremi u arhivu</button>
     </div>
   </div>
 
@@ -486,6 +512,92 @@
     }catch(e){ toast(humanErr(e)); }
     finally{ btn.disabled=false; btn.textContent="Pošalji prijedlog"; }
   };
+
+  /* ---------- ARHIVA ---------- */
+  var upImgData=null;
+  function scanEnhance(file,cb){
+    try{
+      var img=new Image();
+      img.onload=function(){
+        var max=1600,w=img.width,h=img.height;
+        if(w>max||h>max){ if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;} }
+        var c=document.createElement("canvas");c.width=w;c.height=h;
+        var ctx=c.getContext("2d");ctx.drawImage(img,0,0,w,h);
+        try{
+          var im=ctx.getImageData(0,0,w,h),a=im.data,k=1.35,off=128*(1-k);
+          for(var i=0;i<a.length;i+=4){ var g=0.299*a[i]+0.587*a[i+1]+0.114*a[i+2]; g=g*k+off; if(g<0)g=0; if(g>255)g=255; a[i]=a[i+1]=a[i+2]=g; }
+          ctx.putImageData(im,0,0);
+        }catch(e){}
+        cb(c.toDataURL("image/jpeg",0.8));
+      };
+      img.onerror=function(){cb(null);};
+      img.src=URL.createObjectURL(file);
+    }catch(e){cb(null);}
+  }
+  function dataURLtoBlob(u){ var p=u.split(","),b=atob(p[1]),n=b.length,arr=new Uint8Array(n); while(n--)arr[n]=b.charCodeAt(n); return new Blob([arr],{type:"image/jpeg"}); }
+  window.openUpload=function(){
+    var sel=document.getElementById("upClient"); sel.innerHTML="";
+    clients.forEach(function(c){ var o=document.createElement("option"); o.value=c.id; o.textContent=c.name; sel.appendChild(o); });
+    if(!clients.length){ var o=document.createElement("option"); o.value=""; o.textContent="(dodaj klijenta prvo)"; sel.appendChild(o); }
+    upImgData=null; document.getElementById("upPreview").classList.add("hidden");
+    document.getElementById("upModal").style.display="flex";
+  };
+  window.closeUpload=function(){ document.getElementById("upModal").style.display="none"; };
+  window.clearUpImg=function(){ upImgData=null; document.getElementById("upPreview").classList.add("hidden"); var f=document.getElementById("upFile"); if(f)f.value=""; };
+  var upFileEl=document.getElementById("upFile");
+  if(upFileEl){ upFileEl.onchange=function(e){ var f=e.target.files[0]; if(!f)return; toast("Obrada slike…"); scanEnhance(f,function(d){ if(!d){toast("Slika nije učitana");return;} upImgData=d; document.getElementById("upImg").src=d; document.getElementById("upPreview").classList.remove("hidden"); }); }; }
+  window.saveDoc=async function(){
+    if(!LIVE){ toast("Arhiva radi s pravim računom (ne demo)"); return; }
+    var clientId=document.getElementById("upClient").value;
+    if(!clientId){ toast("Odaberite klijenta"); return; }
+    if(!upImgData){ toast("Slikajte ili učitajte dokument"); return; }
+    var cl=clients.filter(function(x){return x.id===clientId;})[0];
+    var btn=document.getElementById("upSave"); btn.disabled=true; btn.textContent="Spremanje…";
+    try{
+      var path=myOffice+"/"+clientId+"/"+Date.now()+".jpg";
+      var up=await sb.storage.from("dokumenti").upload(path, dataURLtoBlob(upImgData), {contentType:"image/jpeg"});
+      if(up.error)throw up.error;
+      var ins=await sb.from("documents").insert({office_id:myOffice,client_id:clientId,client_name:cl?cl.name:"",path:path});
+      if(ins.error)throw ins.error;
+      toast("✅ Spremljeno u arhivu"); closeUpload(); loadArchive();
+    }catch(e){ toast(humanErr(e)); }
+    finally{ btn.disabled=false; btn.textContent="Spremi u arhivu"; }
+  };
+  async function loadArchive(){
+    var host=document.getElementById("archiveList"); host.innerHTML='<div class="sub">Učitavanje…</div>';
+    if(!LIVE){ host.innerHTML='<div class="empty" style="padding:20px"><p>Arhiva radi s pravim računom (ne demo).</p></div>'; return; }
+    try{
+      var r=await sb.from("documents").select("*").order("doc_day",{ascending:false}).order("created_at",{ascending:false});
+      if(r.error)throw r.error;
+      var docs=r.data||[];
+      if(!docs.length){ host.innerHTML='<div class="empty" style="padding:20px"><p>Još nema dokumenata. Učitaj prvi 👆</p></div>'; return; }
+      var byClient={};
+      docs.forEach(function(d){ var k=d.client_name||"Bez klijenta"; (byClient[k]=byClient[k]||[]).push(d); });
+      host.innerHTML="";
+      Object.keys(byClient).forEach(function(cn){
+        var g=document.createElement("div"); g.className="arch-group"; g.innerHTML='<div class="gh">👤 '+esc(cn)+'</div>';
+        var byDay={}; byClient[cn].forEach(function(d){ var day=(""+(d.doc_day||d.created_at)).slice(0,10); (byDay[day]=byDay[day]||[]).push(d); });
+        Object.keys(byDay).forEach(function(day){
+          var dd=document.createElement("div"); dd.className="arch-day"; dd.textContent="📅 "+fmtDay(day); g.appendChild(dd);
+          var grid=document.createElement("div"); grid.className="arch-grid";
+          byDay[day].forEach(function(d){
+            var it=document.createElement("div"); it.className="arch-item";
+            it.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:26px">📄</div>';
+            it.onclick=function(){ viewDoc(d.path); };
+            grid.appendChild(it);
+          });
+          g.appendChild(grid);
+        });
+        host.appendChild(g);
+      });
+    }catch(e){ host.innerHTML='<div class="empty" style="padding:20px"><p>'+esc(humanErr(e))+'</p></div>'; }
+  }
+  async function viewDoc(path){
+    try{ var r=await sb.storage.from("dokumenti").createSignedUrl(path,3600); if(r.data&&r.data.signedUrl){window.open(r.data.signedUrl,"_blank");} else {toast("Ne mogu otvoriti dokument");} }
+    catch(e){ toast(humanErr(e)); }
+  }
+  function fmtDay(d){ try{var p=d.split("-");return p[2]+"."+p[1]+"."+p[0]+".";}catch(e){return d;} }
+
   async function loadSub(){
     var host=document.getElementById("subCard"); if(!host)return; host.innerHTML="";
     if(!LIVE||!myOffice)return;
@@ -506,11 +618,14 @@
   window.setView=function(v){
     view=v;
     document.getElementById("tabUred").classList.toggle("active",v==="ured");
+    document.getElementById("tabArhiva").classList.toggle("active",v==="arhiva");
     document.getElementById("tabKlijent").classList.toggle("active",v==="klijent");
-    if(v==="ured"){go("list");} else {renderClient();}
+    if(v==="ured"){go("list");}
+    else if(v==="arhiva"){go("arhiva");loadArchive();}
+    else {renderClient();}
   };
   function go(scr){
-    ["list","add","build","sent","client","msg"].forEach(function(s){var el=document.getElementById("s-"+s);if(el)el.classList.remove("active");});
+    ["list","add","build","sent","client","msg","arhiva"].forEach(function(s){var el=document.getElementById("s-"+s);if(el)el.classList.remove("active");});
     document.getElementById("s-"+scr).classList.add("active");
     if(scr==="list")renderList();
     window.scrollTo(0,0);
