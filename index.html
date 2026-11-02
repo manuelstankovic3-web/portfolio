@@ -224,9 +224,68 @@
     <div class="brand"><span class="logo">F</span><span>Fresh Front</span></div>
     <span class="spacer"></span>
     <span>© 2026 Fresh Front · Pula, Hrvatska</span>
+    <a href="legal/uvjeti.html">Uvjeti</a>
+    <a href="legal/privatnost.html">Privatnost</a>
     <a href="app/" style="font-weight:700;color:var(--orange-dark)">Prijava ›</a>
   </div>
 </footer>
 
+<!-- Kontakt widget (potencijalni klijenti) -->
+<button id="ffChatBtn" aria-label="Pošalji upit" style="position:fixed;right:18px;bottom:18px;z-index:60;background:var(--orange);color:#fff;border:0;border-radius:999px;padding:14px 20px;font-family:var(--head);font-weight:700;font-size:15px;box-shadow:0 10px 30px -8px rgba(255,106,43,.6);cursor:pointer">💬 Pošalji upit</button>
+
+<div id="ffChatModal" style="display:none;position:fixed;inset:0;z-index:70;background:rgba(20,18,16,.5);align-items:flex-end;justify-content:center">
+  <div style="background:#fff;width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:22px 20px 26px">
+    <div style="display:flex;align-items:center;margin-bottom:6px">
+      <b style="font-family:var(--head);font-size:19px">Pošaljite upit</b>
+      <button onclick="ffCloseChat()" style="margin-left:auto;background:none;border:0;font-size:22px;color:var(--gray);cursor:pointer">✕</button>
+    </div>
+    <p style="color:var(--gray);font-size:14px;margin:0 0 16px">Odgovaramo u najkraćem roku.</p>
+    <div id="ffChatForm">
+      <input id="ffName" placeholder="Vaše ime / naziv firme" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;margin-bottom:10px;font-family:var(--body)">
+      <input id="ffContact" placeholder="Email ili broj mobitela" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;margin-bottom:10px;font-family:var(--body)">
+      <textarea id="ffBody" placeholder="Vaša poruka…" rows="3" style="width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;margin-bottom:12px;font-family:var(--body);resize:vertical"></textarea>
+      <button onclick="ffSendChat()" id="ffSendBtn" class="btn primary" style="width:100%;justify-content:center">Pošalji ›</button>
+    </div>
+    <div id="ffChatDone" style="display:none;text-align:center;padding:14px 0">
+      <div style="font-size:40px">✅</div>
+      <p style="font-weight:700;margin:8px 0 0">Poruka poslana!</p>
+      <p style="color:var(--gray);font-size:14px;margin:4px 0 0">Javljamo se uskoro.</p>
+    </div>
+  </div>
+</div>
+
+<script src="app/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var cfg=window.FF_CONFIG||{};
+  var LIVE=!!(cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY&&window.supabase);
+  var sb=LIVE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:false}}):null;
+  window.ffCloseChat=function(){ document.getElementById("ffChatModal").style.display="none"; };
+  document.getElementById("ffChatBtn").onclick=function(){
+    document.getElementById("ffChatModal").style.display="flex";
+    document.getElementById("ffChatForm").style.display="block";
+    document.getElementById("ffChatDone").style.display="none";
+  };
+  window.ffSendChat=async function(){
+    var name=document.getElementById("ffName").value.trim();
+    var contact=document.getElementById("ffContact").value.trim();
+    var body=document.getElementById("ffBody").value.trim();
+    if(!body){ alert("Upišite poruku."); return; }
+    var btn=document.getElementById("ffSendBtn"); btn.disabled=true; btn.textContent="Slanje…";
+    try{
+      if(LIVE){
+        var r=await sb.from("messages").insert({office_id:null,sender:"lead",lead_name:name||"Upit",lead_contact:contact,body:body});
+        if(r.error)throw r.error;
+      }
+      document.getElementById("ffChatForm").style.display="none";
+      document.getElementById("ffChatDone").style.display="block";
+      document.getElementById("ffName").value="";document.getElementById("ffContact").value="";document.getElementById("ffBody").value="";
+    }catch(e){
+      alert("Greška pri slanju. Pokušajte ponovno ili pišite na manuelstankovic3@gmail.com");
+    }finally{ btn.disabled=false; btn.textContent="Pošalji ›"; }
+  };
+})();
+</script>
 </body>
 </html>
