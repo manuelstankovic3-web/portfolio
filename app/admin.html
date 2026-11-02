@@ -85,6 +85,27 @@
   .prov .lbl{font-size:11.5px;color:#A8A09A;font-weight:600;margin-bottom:8px;line-height:1.5}
   .prov code{display:block;font-size:11.5px;font-family:ui-monospace,Menlo,monospace;color:var(--orange);background:#000;padding:10px;border-radius:8px;word-break:break-all;margin-bottom:6px}
   .prov .copy{width:100%;background:var(--orange);border:0;color:#fff;font-weight:700;padding:10px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit}
+  .inbox-btn{margin-left:auto;background:#2A2521;border:0;color:#fff;font-size:15px;padding:6px 11px;border-radius:8px;cursor:pointer;position:relative}
+  .ibadge{position:absolute;top:-5px;right:-5px;background:var(--orange);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+  .msg-row{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--white);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer}
+  .msg-row .ic{width:40px;height:40px;border-radius:11px;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .msg-row.lead .ic{background:#E8EFFD}
+  .msg-row .mm{flex:1;min-width:0}
+  .msg-row .mm b{font-weight:700;font-size:14.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .msg-row .mm span{font-size:12.5px;color:var(--gray);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .msg-row .dot{width:9px;height:9px;border-radius:50%;background:var(--orange);flex-shrink:0}
+  .thread{display:flex;flex-direction:column;gap:9px;padding:6px 0 14px}
+  .bub{max-width:78%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.45}
+  .bub.them{align-self:flex-start;background:var(--white);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .bub.me{align-self:flex-end;background:var(--orange);color:#fff;border-bottom-right-radius:5px}
+  .bub .t{display:block;font-size:10.5px;opacity:.6;margin-top:3px}
+  .replywrap{position:sticky;bottom:0;background:var(--bg);display:flex;gap:8px;padding:10px 0}
+  .replywrap input{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:12px;font-size:15px;font-family:inherit}
+  .replywrap input:focus{outline:none;border-color:var(--orange)}
+  .replywrap button{background:var(--orange);color:#fff;border:0;border-radius:11px;width:48px;font-size:18px;cursor:pointer}
+  .lead-act{display:flex;gap:8px;margin-top:4px}
+  .lead-act a{flex:1;text-align:center;background:var(--white);border:1.5px solid var(--line);border-radius:11px;padding:11px;font-size:13.5px;font-weight:650;color:var(--ink);text-decoration:none}
+  .lead-act a.wa{background:#25D366;color:#fff;border-color:#25D366}
 </style>
 </head>
 <body>
@@ -106,7 +127,8 @@
 <div id="appScreen" class="app hidden">
   <div class="topbar">
     <div class="brand"><span class="dot">F</span> Fresh Front <span class="adm">ADMIN</span>
-      <button class="logout" onclick="doLogout()">Odjava</button>
+      <button class="inbox-btn" onclick="openInbox()">📨<span id="inboxBadge" class="ibadge hidden">0</span></button>
+      <button class="logout" onclick="doLogout()" style="margin-left:8px">Odjava</button>
     </div>
   </div>
 
@@ -155,6 +177,24 @@
         <code id="provSql">—</code>
         <button class="copy" onclick="copyProv()">Kopiraj SQL</button>
       </div>
+    </div>
+  </div>
+
+  <div id="s-inbox" class="screen">
+    <button class="back" onclick="go('dash')">‹ Natrag</button>
+    <h2 class="title">Poruke</h2>
+    <p class="sub">Upiti potencijalnih klijenata i poruke ureda.</p>
+    <div id="inboxList"></div>
+  </div>
+
+  <div id="s-thread" class="screen">
+    <button class="back" onclick="openInbox()">‹ Poruke</button>
+    <h2 class="title" id="threadName">Razgovor</h2>
+    <div id="threadBox" class="thread"></div>
+    <div id="leadActions" class="hidden"></div>
+    <div id="replyWrap" class="replywrap">
+      <input id="replyInput" placeholder="Napiši odgovor…" onkeydown="if(event.key==='Enter')sendReply()">
+      <button onclick="sendReply()">➤</button>
     </div>
   </div>
 </div>
@@ -251,10 +291,11 @@
     document.getElementById("loginScreen").classList.add("hidden");
     document.getElementById("appScreen").classList.remove("hidden");
     await render();
+    loadInboxData();
   }
 
   function go(scr){
-    ["dash","edit"].forEach(function(s){document.getElementById("s-"+s).classList.remove("active");});
+    ["dash","edit","inbox","thread"].forEach(function(s){document.getElementById("s-"+s).classList.remove("active");});
     document.getElementById("s-"+scr).classList.add("active");
     if(scr==="dash")render();
     window.scrollTo(0,0);
@@ -393,6 +434,81 @@
   }
   var tTimer;
   function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove("show");},2600);}
+
+  /* ---------- PORUKE (inbox) ---------- */
+  var allMsgs=[], curThread=null;
+  async function loadInboxData(){
+    if(!LIVE){return;}
+    try{ var r=await sb.from("messages").select("*").order("created_at",{ascending:false}); if(r.error)throw r.error; allMsgs=r.data||[]; }
+    catch(e){ allMsgs=[]; }
+    var unread=allMsgs.filter(function(m){return !m.read_by_admin&&m.sender!=="admin";}).length;
+    var b=document.getElementById("inboxBadge");
+    if(unread>0){ b.textContent=unread; b.classList.remove("hidden"); } else { b.classList.add("hidden"); }
+  }
+  window.openInbox=async function(){ await loadInboxData(); renderInbox(); go("inbox"); };
+  function officeName(oid){ var o=offices.filter(function(x){return x.id===oid;})[0]; return o?o.name:"Ured"; }
+  function renderInbox(){
+    var host=document.getElementById("inboxList"); host.innerHTML="";
+    var seen={}, rows=[];
+    allMsgs.forEach(function(m){
+      if(m.office_id){
+        if(!seen[m.office_id]){ seen[m.office_id]=true;
+          var unread=allMsgs.some(function(x){return x.office_id===m.office_id&&!x.read_by_admin&&x.sender!=="admin";});
+          rows.push({type:"office",key:m.office_id,title:officeName(m.office_id),snip:m.body,ts:m.created_at,unread:unread});
+        }
+      } else {
+        rows.push({type:"lead",key:m.id,title:(m.lead_name||"Upit")+(m.lead_contact?(" · "+m.lead_contact):""),snip:m.body,ts:m.created_at,unread:!m.read_by_admin,msg:m});
+      }
+    });
+    rows.sort(function(a,b){return (""+(b.ts||"")).localeCompare(""+(a.ts||""));});
+    if(!rows.length){ host.innerHTML='<div class="empty">Još nema poruka.</div>'; return; }
+    rows.forEach(function(r){
+      var el=document.createElement("div"); el.className="msg-row"+(r.type==="lead"?" lead":"");
+      el.innerHTML='<div class="ic">'+(r.type==="lead"?"✉️":"🏢")+'</div>'+
+        '<div class="mm"><b>'+esc(r.title)+'</b><span>'+esc(r.snip)+'</span></div>'+(r.unread?'<div class="dot"></div>':'');
+      el.onclick=function(){ r.type==="office"?openThread(r.key):openLead(r.msg); };
+      host.appendChild(el);
+    });
+  }
+  async function openThread(oid){
+    curThread={type:"office",id:oid};
+    document.getElementById("threadName").textContent=officeName(oid);
+    document.getElementById("replyWrap").classList.remove("hidden");
+    document.getElementById("leadActions").classList.add("hidden");
+    go("thread");
+    var box=document.getElementById("threadBox"); box.innerHTML="Učitavanje…";
+    try{
+      var r=await sb.from("messages").select("*").eq("office_id",oid).order("created_at",{ascending:true});
+      var msgs=r.data||[]; box.innerHTML="";
+      msgs.forEach(function(m){
+        var el=document.createElement("div"); el.className="bub "+(m.sender==="admin"?"me":"them");
+        el.innerHTML=esc(m.body)+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
+      });
+      await sb.from("messages").update({read_by_admin:true}).eq("office_id",oid).eq("read_by_admin",false);
+      loadInboxData();
+    }catch(e){ box.innerHTML='<div class="empty">Greška pri učitavanju.</div>'; }
+  }
+  function openLead(m){
+    curThread={type:"lead",id:m.id};
+    document.getElementById("threadName").textContent=m.lead_name||"Upit";
+    document.getElementById("replyWrap").classList.add("hidden");
+    var box=document.getElementById("threadBox"); box.innerHTML="";
+    var el=document.createElement("div"); el.className="bub them"; el.innerHTML=esc(m.body)+'<span class="t">'+fmtTime(m.created_at)+'</span>'; box.appendChild(el);
+    var la=document.getElementById("leadActions"); la.classList.remove("hidden");
+    var c=(m.lead_contact||"").trim(), acts="";
+    if(/@/.test(c)) acts='<a href="mailto:'+esc(c)+'">✉️ Email</a>';
+    else if(c){ var num=c.replace(/\D/g,""); if(num){ if(num.charAt(0)==="0")num="385"+num.slice(1); acts='<a class="wa" href="https://wa.me/'+num+'" target="_blank">💬 WhatsApp</a><a href="tel:'+esc(c)+'">📞 Nazovi</a>'; } }
+    la.innerHTML=c?('<div class="lead-act">'+acts+'</div>'):'<div class="sub" style="margin-top:8px">Nema kontakta.</div>';
+    go("thread");
+    if(!m.read_by_admin){ sb.from("messages").update({read_by_admin:true}).eq("id",m.id).then(function(){loadInboxData();}); }
+  }
+  window.sendReply=async function(){
+    if(!curThread||curThread.type!=="office")return;
+    var inp=document.getElementById("replyInput"); var v=inp.value.trim(); if(!v)return; inp.value="";
+    try{ await sb.from("messages").insert({office_id:curThread.id,sender:"admin",body:v}); await openThread(curThread.id); }
+    catch(e){ toast(humanErr(e)); }
+  };
+  function fmtTime(d){ try{var dt=new Date(d);return ("0"+dt.getHours()).slice(-2)+":"+("0"+dt.getMinutes()).slice(-2);}catch(e){return "";} }
 
   setModeNote();
   Auth.check().then(function(ok){ if(ok)showApp(); });
