@@ -1,578 +1,232 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fresh Front – web stranice za firme diljem Hrvatske</title>
-<meta name="description" content="Moderne web stranice za male firme diljem Hrvatske: prilagođene mobitelima, vidljive na Googleu, s online rezervacijama. Besplatan koncept bez obveze.">
-<meta property="og:title" content="Fresh Front – web stranice za firme diljem Hrvatske">
-<meta property="og:description" content="Nova web stranica za vašu firmu za oko tjedan dana. Besplatan koncept bez obveze.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresh Front — skupljanje dokumenata za knjigovodstvene servise</title>
+<meta name="description" content="Prestanite moljakati klijente za dokumente svaki mjesec. Fresh Front šalje link, automatski podsjeća i pokazuje što je stiglo, a što fali. Spremno za Fiskalizaciju 2.0.">
+<meta property="og:title" content="Fresh Front — skupljanje dokumenata bez zivciranja">
+<meta property="og:description" content="Automatski podsjetnici, magic link za klijente bez aplikacije i pregled svih dokumenata na jednom mjestu. Za knjigovodstvene servise u Hrvatskoj.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://freshfront.eu/">
-<link rel="canonical" href="https://freshfront.eu/">
-<link rel="alternate" hreflang="hr" href="https://freshfront.eu/">
-<link rel="alternate" hreflang="en" href="https://freshfront.eu/en/">
-<link rel="alternate" hreflang="de" href="https://freshfront.eu/de/">
-<link rel="alternate" hreflang="ru" href="https://freshfront.eu/ru/">
-<link rel="alternate" hreflang="es" href="https://freshfront.eu/es/">
-<link rel="alternate" hreflang="x-default" href="https://freshfront.eu/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #F26B1D;
-    --orange-deep: #D9560C;
-    --black: #000000;
-    --white: #FFFFFF;
-    --petrol: #13606B;
-    --petrol-soft: #E3EFEF;
-    --paper: #F5F5F3;
-    --mist: #4A4A4A;
-    --line: #DEDEDA;
-    --display: "Bricolage Grotesque", system-ui, sans-serif;
-    --body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  :root{
+    --orange:#FF6A2B; --orange-dark:#E8551A; --orange-soft:#FFF1EA;
+    --black:#141210; --ink:#201C18; --gray:#6B6560; --line:#E9E4DF;
+    --bg:#FBF9F7; --white:#fff; --green:#1E9E6A; --green-soft:#E7F6EF;
+    --head:"Bricolage Grotesque",system-ui,sans-serif;
+    --body:"Atkinson Hyperlegible",system-ui,sans-serif;
   }
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--white);
-    color: var(--black);
-    font-family: var(--body);
-    font-size: 1.125rem;
-    line-height: 1.6;
-  }
-  a { color: inherit; }
-  a:focus-visible, button:focus-visible {
-    outline: 3px solid var(--petrol);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.55}
+  h1,h2,h3,.h{font-family:var(--head);letter-spacing:-.02em;line-height:1.08}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 
-  /* Header */
-  .top {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 24px; padding-bottom: 24px;
-  }
-  .brand { font-family: var(--display); font-weight: 700; font-size: 1.15rem; text-decoration: none; }
-  .brand span { color: var(--mist); font-weight: 500; }
-  .top-link { font-weight: 700; text-decoration-color: var(--orange); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(251,249,247,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:14px;height:62px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:800;font-size:18px}
+  .brand .logo{width:30px;height:30px;border-radius:9px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--gray);font-family:var(--body);letter-spacing:0;margin-top:-2px}
+  .nav .spacer{flex:1}
+  .nav a.login{font-weight:700;font-size:14.5px;padding:9px 16px;border:1.5px solid var(--black);border-radius:10px;color:var(--black)}
+  .nav a.login:hover{background:var(--black);color:#fff}
 
-  /* Hero */
-  .hero {
-    display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center;
-    padding-top: 40px; padding-bottom: 96px;
-  }
-  .hero h1 {
-    font-family: var(--display); font-weight: 800;
-    font-size: clamp(2.4rem, 5.2vw, 4.1rem);
-    line-height: 1.02; letter-spacing: -0.02em;
-    margin: 0 0 24px; color: var(--black);
-  }
-  .hero h1::after {
-    content: ""; display: block; width: 88px; height: 8px; margin-top: 22px;
-    background: var(--orange); border-radius: 4px;
-  }
-  .hero p.lead { font-size: 1.25rem; max-width: 34ch; margin: 0 0 32px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
-  .btn {
-    display: inline-block; font-family: var(--body); font-weight: 700; font-size: 1.1rem;
-    padding: 16px 28px; border-radius: 999px; text-decoration: none;
-    background: var(--orange); color: var(--black); border: 2px solid var(--orange);
-    transition: background .15s ease;
-  }
-  .btn:hover { background: var(--orange-deep); border-color: var(--orange-deep); }
-  .btn.ghost { background: transparent; color: var(--black); border-color: var(--black); }
-  .btn.ghost:hover { background: var(--paper); }
+  /* hero */
+  .hero{padding:54px 0 40px;text-align:center}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--orange-soft);color:var(--orange-dark);font-weight:700;font-size:13px;padding:7px 14px;border-radius:999px;margin-bottom:22px}
+  .badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 0 rgba(255,106,43,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,106,43,.5)}70%{box-shadow:0 0 0 9px rgba(255,106,43,0)}100%{box-shadow:0 0 0 0 rgba(255,106,43,0)}}
+  .hero h1{font-size:clamp(32px,6vw,52px);font-weight:800;max-width:14ch;margin:0 auto 18px}
+  .hero h1 .mark{color:var(--orange)}
+  .hero .lead{font-size:clamp(16px,2.4vw,19px);color:var(--gray);max-width:52ch;margin:0 auto 28px}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--head);font-weight:700;font-size:16px;padding:15px 26px;border-radius:13px;border:0;cursor:pointer;transition:.15s}
+  .btn.primary{background:var(--orange);color:#fff}
+  .btn.primary:hover{background:var(--orange-dark);transform:translateY(-1px)}
+  .btn.ghost{background:var(--white);color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--black)}
+  .microcopy{font-size:13px;color:var(--gray);margin-top:16px}
 
-  /* Before / after phones */
-  .compare { display: flex; gap: 20px; justify-content: center; align-items: flex-end; }
-  .phone {
-    width: 210px; flex: 0 0 auto;
-    border-radius: 30px; padding: 10px;
-    background: var(--black);
-    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .5);
-  }
-  .screen { border-radius: 22px; overflow: hidden; height: 400px; position: relative; }
-  .tag {
-    display: block; text-align: center; font-family: var(--display); font-weight: 700;
-    font-size: 1rem; margin: 10px 0 4px; color: #A3A3A3;
-  }
-  .after .tag { color: var(--orange); }
+  /* mock preview */
+  .showcase{margin:40px auto 0;max-width:420px;background:var(--black);border-radius:24px;padding:12px;box-shadow:0 30px 60px -20px rgba(20,18,16,.35)}
+  .showcase .scr{background:var(--bg);border-radius:15px;overflow:hidden}
+  .sc-top{background:var(--black);color:#fff;padding:13px 16px}
+  .sc-top b{font-family:var(--head);font-size:15px}
+  .sc-body{padding:14px}
+  .sc-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;gap:11px;margin-bottom:9px}
+  .sc-card .ic{width:36px;height:36px;border-radius:9px;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .sc-card.ok .ic{background:var(--green-soft)}
+  .sc-card .t{flex:1;text-align:left}
+  .sc-card .t b{font-family:var(--head);font-size:14px;display:block}
+  .sc-card .t span{font-size:11.5px;color:var(--gray)}
+  .sc-card.ok .t span{color:var(--green);font-weight:700}
+  .chip{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px}
+  .chip.ok{background:var(--green-soft);color:var(--green)}
+  .chip.w{background:#FBF1D9;color:#C98A00}
 
-  /* Old site: tiny, desktop-only layout squeezed onto a phone */
-  .old { background: #fff; font-family: "Times New Roman", serif; color: #333; }
-  .old .bar { background: #6b4f3a; color: #fff; font-size: 8px; padding: 6px; letter-spacing: .02em; }
-  .old .nav { font-size: 6px; padding: 4px 6px; background: #e8dcc8; color: #00e; text-decoration: underline; white-space: nowrap; overflow: hidden; }
-  .old .body { padding: 6px; font-size: 6.5px; line-height: 1.35; }
-  .old .img { height: 62px; background: repeating-linear-gradient(45deg, #cbbfa8 0 6px, #d8cdb8 6px 12px); margin: 6px 0; }
-  .old .foot { position: absolute; bottom: 0; left: 0; right: 0; font-size: 6px; background: #e8dcc8; padding: 5px; text-align: center; }
-  .old .notice { font-size: 7px; color: #a00; margin-top: 4px; }
+  /* sections */
+  section.block{padding:56px 0}
+  .eyebrow{text-align:center;color:var(--orange-dark);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  h2.sec{text-align:center;font-size:clamp(26px,4.5vw,38px);font-weight:800;max-width:18ch;margin:0 auto 14px}
+  .sec-lead{text-align:center;color:var(--gray);font-size:17px;max-width:54ch;margin:0 auto 38px}
 
-  /* New site */
-  .new { background: var(--black); color: var(--white); font-family: var(--body); display: flex; flex-direction: column; }
-  .new .pic {
-    height: 150px;
-    background:
-      radial-gradient(circle at 75% 32%, #FFB27A 0 16px, transparent 17px),
-      linear-gradient(180deg, #F26B1D 0%, #F59A5A 54%, #13606B 55%, #0E4950 100%);
-  }
-  .new .in { padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
-  .new .name { font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1.05; }
-  .new .sub { font-size: 11px; color: #CFCFCF; }
-  .new .meta { font-size: 10.5px; color: #E6E6E6; margin-top: 4px; }
-  .new .cta {
-    margin-top: auto; background: var(--orange); color: var(--black); font-weight: 700;
-    font-size: 13px; text-align: center; border-radius: 999px; padding: 10px;
-  }
-  .new .cta2 { border: 1.5px solid #5E5E5E; color: #fff; font-size: 12px; text-align: center; border-radius: 999px; padding: 8px; }
-  .demo-note { text-align: center; font-size: .9rem; color: var(--mist); margin: 18px 0 0; }
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .feat{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:24px}
+  .feat .fic{width:46px;height:46px;border-radius:12px;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .feat .fic svg{width:24px;height:24px;stroke:var(--orange-dark);stroke-width:2;fill:none}
+  .feat h3{font-size:18px;font-weight:700;margin-bottom:7px}
+  .feat p{font-size:14.5px;color:var(--gray)}
 
-  /* Sections */
-  section.block { padding: 88px 0; }
-  section.block.white { background: var(--paper); }
-  h2 {
-    font-family: var(--display); font-weight: 800; color: var(--black);
-    font-size: clamp(1.9rem, 3.6vw, 2.75rem); line-height: 1.08; letter-spacing: -0.015em;
-    margin: 0 0 16px; max-width: 22ch;
-  }
-  .intro { max-width: 60ch; color: var(--mist); margin: 0 0 48px; }
+  /* steps */
+  .steps{background:var(--black);color:#fff;border-radius:26px;padding:48px 28px}
+  .steps h2{color:#fff}
+  .steps .eyebrow{color:var(--orange)}
+  .steps .sec-lead{color:#B7AFA8}
+  .step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:10px}
+  @media(max-width:760px){.step-grid{grid-template-columns:1fr}}
+  .step{text-align:center}
+  .step .num{width:48px;height:48px;border-radius:14px;background:var(--orange);color:#fff;font-family:var(--head);font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  .step h3{color:#fff;font-size:18px;margin-bottom:6px}
+  .step p{color:#B7AFA8;font-size:14.5px}
 
-  /* What you get: two-column definition list */
-  .gets { display: grid; grid-template-columns: 1fr 1fr; gap: 0 64px; margin: 0; }
-  .gets div { border-top: 3px solid var(--black); padding: 22px 0 26px; }
-  .gets dt { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin-bottom: 6px; }
-  .gets dd { margin: 0; color: var(--mist); max-width: 46ch; }
+  /* fisk callout */
+  .fisk{display:flex;gap:20px;align-items:center;background:var(--orange-soft);border:1px solid #F6D9C9;border-radius:22px;padding:28px}
+  .fisk .big{font-family:var(--head);font-weight:800;font-size:44px;color:var(--orange-dark);line-height:1;flex-shrink:0}
+  .fisk h3{font-size:20px;margin-bottom:6px}
+  .fisk p{font-size:15px;color:var(--ink)}
+  @media(max-width:560px){.fisk{flex-direction:column;text-align:center}}
 
-  /* Process: a real sequence, so it is numbered */
-  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; counter-reset: step; }
-  .steps li { counter-increment: step; }
-  .steps li::before {
-    content: counter(step);
-    display: grid; place-items: center;
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--orange); color: var(--black);
-    font-family: var(--display); font-weight: 800; font-size: 1.3rem;
-    margin-bottom: 18px;
-  }
-  .steps h3 { font-family: var(--display); font-weight: 700; font-size: 1.25rem; margin: 0 0 8px; }
-  .steps p { margin: 0; color: var(--mist); }
-  .steps a { color: var(--petrol); font-weight: 700; }
+  /* final cta */
+  .final{text-align:center;padding:60px 0}
+  .final h2{font-size:clamp(26px,4.5vw,40px);font-weight:800;max-width:16ch;margin:0 auto 16px}
+  .final p{color:var(--gray);font-size:17px;margin-bottom:26px}
 
-  /* Prices */
-  .prices { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
-  .price {
-    border-radius: 24px; padding: 36px;
-    background: var(--white); border: 2px solid var(--line);
-  }
-  .price.main { background: var(--black); color: var(--white); border-color: var(--black); }
-  .price.main .amount { color: var(--orange); }
-  .price.side { background: var(--petrol-soft); border-color: var(--petrol-soft); }
-  .price.side .amount { color: var(--petrol); }
-  .price h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin: 0 0 12px; }
-  .amount { font-family: var(--display); font-weight: 800; font-size: 3.4rem; line-height: 1; margin: 0 0 6px; }
-  .amount small { font-size: 1.1rem; font-weight: 500; color: var(--white); }
-  .price.side .amount small { color: var(--black); }
-  .price ul { margin: 24px 0 0; padding-left: 20px; }
-  .price li { margin-bottom: 6px; }
-  .price.main .note { color: #CFCFCF; }
-  .note { font-size: .98rem; color: var(--mist); margin: 0; }
-
-  /* Contact */
-  .contact { background: var(--black); color: var(--white); padding: 96px 0; }
-  .contact h2 { color: var(--white); }
-  .contact p { max-width: 52ch; color: #D6D6D6; margin: 0 0 32px; }
-  .btn.ghost-light { background: transparent; color: var(--white); border-color: var(--white); }
-  .btn.ghost-light:hover { background: #1F1F1F; }
-  .mail { display: block; margin-top: 20px; font-size: 1.05rem; color: #D6D6D6; }
-
-  footer { background: var(--black); color: #A3A3A3; font-size: .95rem; padding: 0 0 40px; }
-  footer .wrap { border-top: 1px solid #2E2E2E; padding-top: 24px; }
-
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; gap: 48px; padding-bottom: 72px; }
-    .steps { grid-template-columns: 1fr 1fr; }
-    .prices { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    .wrap { padding: 0 16px; }
-    body { font-size: 1.0625rem; }
-    .gets { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .phone { width: 46%; max-width: 190px; border-radius: 24px; padding: 7px; }
-    .screen { height: 340px; border-radius: 18px; }
-    .compare { gap: 12px; }
-    section.block, .contact { padding: 64px 0; }
-    .price { padding: 28px 22px; }
-    .top-link { font-size: 1rem; }
-    .brand span { display: none; }
-    .hero { padding-top: 16px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-  }
-</style>
-<style>
-  :root { --display: "Bricolage Grotesque", system-ui, sans-serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; }
-  .langbar { display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; }
-  .langbar a {
-    display: inline-flex; border-radius: 4px; line-height: 0;
-    outline-offset: 3px; opacity: .8; transition: opacity .15s ease;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.18);
-  }
-  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .langbar a:hover { opacity: 1; }
-  .langbar a[aria-current="true"] { opacity: 1; box-shadow: 0 0 0 2px var(--orange); }
-  .langbar svg { width: 30px; height: 20px; border-radius: 4px; display: block; }
-  @media (max-width: 640px) {
-    .langbar { justify-content: center; gap: 14px; padding-top: 14px; padding-bottom: 6px; }
-  }
-
-  /* Currency switch */
-  .cur-switch { display: inline-flex; gap: 0; margin: -24px 0 32px; border: 2px solid var(--black); border-radius: 999px; overflow: hidden; }
-  .cur-switch button { font: inherit; font-weight: 700; font-size: 1rem; padding: 8px 18px; background: transparent; color: var(--black); border: 0; cursor: pointer; }
-  .cur-switch button[aria-pressed="true"] { background: var(--black); color: var(--white); }
-  .cur-switch button:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
-
-  /* Lead form */
-  .lead-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 20px; max-width: 920px; margin-top: 8px; }
-  .lead-form .wide { grid-column: 1 / -1; }
-  .field label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--white); }
-  .field input, .field textarea {
-    width: 100%; font: inherit; font-size: 1.05rem; color: var(--black);
-    background: var(--white); border: 2px solid var(--white); border-radius: 12px; padding: 12px 14px;
-  }
-  .field textarea { resize: vertical; min-height: 110px; }
-  .field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
-  .form-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 4px; }
-  .form-actions button { cursor: pointer; }
-  .form-actions button[disabled] { opacity: .6; cursor: wait; }
-  .form-status { margin: 0; font-weight: 700; }
-  .form-status.ok { color: #8FD0D6; }
-  .form-status.err { color: #F5A47A; }
-  @media (max-width: 900px) { .lead-form { grid-template-columns: 1fr; } }
-
-  /* Package builder */
-  .pack { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
-  .opts { display: grid; gap: 14px; margin: 0; padding: 0; border: 0; }
-  .opt {
-    display: grid; grid-template-columns: 28px 1fr auto; gap: 16px; align-items: start;
-    background: var(--white); border: 2px solid var(--line); border-radius: 18px;
-    padding: 20px 22px; cursor: pointer; transition: border-color .15s ease;
-  }
-  .opt:hover { border-color: #BDBDB8; }
-  .opt:has(input:checked) { border-color: var(--orange); }
-  .opt input { width: 22px; height: 22px; margin: 3px 0 0; accent-color: var(--orange); cursor: pointer; }
-  .opt input:focus-visible { outline: 3px solid var(--petrol); outline-offset: 3px; }
-  .opt-title { display: block; font-family: var(--display); font-weight: 700; font-size: 1.2rem; }
-  .opt-desc { display: block; color: var(--mist); margin-top: 4px; max-width: 48ch; }
-  .opt-price { font-weight: 700; white-space: nowrap; text-align: right; }
-  .badge {
-    display: inline-block; margin-left: 8px; vertical-align: 3px;
-    font-family: var(--body); font-size: .75rem; font-weight: 700; line-height: 1.4;
-    background: var(--petrol-soft); color: var(--petrol); padding: 2px 9px; border-radius: 999px;
-  }
-  .sum {
-    position: sticky; top: 24px;
-    background: var(--black); color: var(--white); border-radius: 24px; padding: 30px;
-  }
-  .sum h3 { font-family: var(--display); font-weight: 700; font-size: 1.2rem; margin: 0 0 18px; }
-  .sum-row { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 8px; color: #D6D6D6; }
-  .sum-row strong { font-family: var(--display); font-size: 1.6rem; color: var(--orange); }
-  .sum-row.month strong { color: #8FD0D6; }
-  .sum .note { color: #A3A3A3; margin: 14px 0 22px; font-size: .95rem; }
-  .sum .btn { display: block; text-align: center; }
-  .sum .empty { color: #F5A47A; font-weight: 700; margin: 0 0 14px; }
-  @media (max-width: 900px) {
-    .pack { grid-template-columns: 1fr; }
-    .sum { position: static; }
-  }
-  @media (max-width: 640px) {
-    .opt { grid-template-columns: 24px 1fr; padding: 18px; }
-    .opt-price { grid-column: 2; text-align: left; }
-  }
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--gray);font-size:13.5px}
+  .foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .foot .spacer{flex:1}
 </style>
 </head>
 <body>
 
-<nav class="wrap langbar" aria-label="Odaberite jezik">
-  <a href="/" hreflang="hr" lang="hr" title="Hrvatski" aria-label="Hrvatski" aria-current="true"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#171796"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#FF0000"/><path d="M11.5 5.2h7v6.3c0 2.3-1.6 3.6-3.5 4.3-1.9-.7-3.5-2-3.5-4.3z" fill="#fff" stroke="#171796" stroke-width=".4"/><path d="M11.5 5.2h1.4v1.4h-1.4zM14.3 5.2h1.4v1.4h-1.4zM17.1 5.2h1.4v1.4h-1.4zM12.9 6.6h1.4V8h-1.4zM15.7 6.6h1.4V8h-1.4zM11.5 8h1.4v1.4h-1.4zM14.3 8h1.4v1.4h-1.4zM17.1 8h1.4v1.4h-1.4zM12.9 9.4h1.4v1.4h-1.4zM15.7 9.4h1.4v1.4h-1.4zM11.6 10.8h1.3v1.3h-1.1zM14.3 10.8h1.4v1.4h-1.4zM17.1 10.8h1.3l-.1 1.3h-1.2zM12.9 12.2h1.4v1.4h-1.4zM15.7 12.2h1.4v1.4h-1.4zM14.3 13.6h1.4v1.5l-.7.4-.7-.4z" fill="#FF0000"/></svg></a>
-  <a href="/en/" hreflang="en" lang="en" title="English" aria-label="English"><svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="ukc"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0L60,30M60,0L0,30" clip-path="url(#ukc)" stroke="#C8102E" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg></a>
-  <a href="/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#FFCE00"/><rect width="30" height="13.33" fill="#DD0000"/><rect width="30" height="6.67" fill="#000"/></svg></a>
-  <a href="/ru/" hreflang="ru" lang="ru" title="Русский" aria-label="Русский"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#D52B1E"/><rect width="30" height="13.33" fill="#0039A6"/><rect width="30" height="6.67" fill="#fff"/></svg></a>
-  <a href="/es/" hreflang="es" lang="es" title="Español" aria-label="Español"><svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/></svg></a>
-</nav>
-
-<header class="wrap top">
-  <a class="brand" href="/">Fresh Front <span>web stranice</span></a>
-  <a class="top-link" href="#kontakt">Pošaljite upit</a>
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="logo">F</span>
+      <span>Fresh Front<small>skupljanje dokumenata</small></span>
+    </div>
+    <span class="spacer"></span>
+    <a class="login" href="app/">Prijava</a>
+  </div>
 </header>
 
 <main>
-  <div class="wrap hero">
-    <div>
-      <h1>Nova web stranica za vašu firmu, gotova za tjedan dana.</h1>
-      <p class="lead">Izrađujem stranice za konobe, servise, ordinacije, salone i obrte diljem Hrvatske. Prije bilo kakvog dogovora dobijete besplatan koncept, pa vidite što dobivate.</p>
-      <div class="actions">
-        <a class="btn" href="#kontakt">Zatražite besplatan koncept</a>
-        <a class="btn ghost" href="#cijene">Pogledajte cijene</a>
-      </div>
+  <section class="hero wrap">
+    <span class="badge"><span class="pulse"></span> Spremno za Fiskalizaciju 2.0</span>
+    <h1>Prestanite <span class="mark">moljakati klijente</span> za dokumente svaki mjesec.</h1>
+    <p class="lead">Fresh Front pošalje vašim klijentima link, automatski ih podsjeća i pokazuje vam točno što je stiglo, a što fali. Bez aplikacije za klijenta, bez lozinki, bez tri poziva.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="#demo">Zatražite demo ›</a>
+      <a class="btn ghost" href="app/">Prijava u aplikaciju</a>
     </div>
+    <p class="microcopy">Za knjigovodstvene servise u Hrvatskoj · postavljanje klijenta za 2 minute</p>
 
-    <figure style="margin:0">
-      <div class="compare" aria-label="Usporedba stare i nove web stranice na mobitelu">
-        <div class="phone before">
-          <div class="screen old" aria-hidden="true">
-            <div class="bar">KONOBA MUL - DOBRODOŠLI NA NAŠU WEB STRANICU</div>
-            <div class="nav">Home | O nama | Specijaliteti | Galerija | Kontakt | Linkovi</div>
-            <div class="body">
-              Dobrodošli u konobu Mul. Nalazimo se uz more, u mirnoj uvali. Nudimo domaću hranu, ribu, meso s roštilja i domaće slastice. Pogledajte naše specijalitete u izborniku iznad.
-              <div class="img"></div>
-              Cijene: riblja plata 165,76 kn / 22,00 €
-              <div class="notice">Rezervacije isključivo telefonom!</div>
-            </div>
-            <div class="foot">© 2017 Konoba Mul | Sva prava pridržana</div>
-          </div>
-          <span class="tag">Prije</span>
-        </div>
-        <div class="phone after">
-          <div class="screen new" aria-hidden="true">
-            <div class="pic"></div>
-            <div class="in">
-              <div class="name">Konoba Mul</div>
-              <div class="sub">Riba, roštilj i domaće slastice uz more</div>
-              <div class="meta">Otvoreno danas 12–23 h<br>Jelovnik s cijenama u eurima</div>
-              <div class="cta">Rezervirajte stol</div>
-              <div class="cta2">Nazovite nas</div>
-            </div>
-          </div>
-          <span class="tag">Poslije</span>
-        </div>
-      </div>
-      <figcaption class="demo-note">Primjer za izmišljenu konobu, onako kako izgleda na mobitelu.</figcaption>
-    </figure>
-  </div>
-
-  <section class="block white">
-    <div class="wrap">
-      <h2>Što dobiva vaša firma</h2>
-      <p class="intro">Većina gostiju i klijenata vas danas traži na mobitelu. Stranica mora brzo reći tko ste, što nudite i kako vas dobiti.</p>
-      <dl class="gets">
-        <div><dt>Izgleda dobro na mobitelu</dt><dd>Tekst se čita bez zumiranja, a gumbi za poziv i rezervaciju su odmah pri ruci.</dd></div>
-        <div><dt>Pronađu vas na Googleu</dt><dd>Stranica je ispravno postavljena za pretraživanje, s vašim adresom, radnim vremenom i djelatnošću.</dd></div>
-        <div><dt>Rezervacije i upiti online</dt><dd>Gost rezervira stol, a klijent se naruči na servis ili pregled i onda kad vi ne stignete javiti se na telefon.</dd></div>
-        <div><dt>Ažurne cijene i informacije</dt><dd>Jelovnik, cjenik i radno vrijeme u eurima i na jezicima koje trebate, uvijek točni.</dd></div>
-        <div><dt>Izmjene bez muke</dt><dd>Pošaljete mi poruku što treba promijeniti i to je gotovo, bez učenja ikakvih programa.</dd></div>
-        <div><dt>Hosting i domena riješeni</dt><dd>Stranica je brza i sigurna (https), a ja se brinem da sve radi.</dd></div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="wrap">
-      <h2>Kako to ide</h2>
-      <p class="intro">Ništa ne plaćate dok ne vidite kako bi vaša nova stranica izgledala.</p>
-      <ol class="steps">
-        <li><h3>Besplatan koncept</h3><p>Javite se i za dan-dva dobijete prijedlog naslovnice za vašu firmu, bez obveze.</p></li>
-        <li><h3>Dogovor</h3><p>Ako vam se sviđa, dogovorimo detalje u <a href="https://cal.com/manuel-stankovic/15min">kratkom razgovoru od 15 minuta</a>. Plaćate polovicu unaprijed i pošaljete logo, slike i tekstove.</p></li>
-        <li><h3>Izrada</h3><p>Stranica je gotova za oko tjedan dana. Pregledate je i tražite izmjene dok niste zadovoljni.</p></li>
-        <li><h3>Objava</h3><p>Plaćate ostatak, a stranica ide online na vašoj domeni. Za izmjene ste mi uvijek dostupni.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="block white" id="cijene">
-    <div class="wrap">
-      <h2>Cijene</h2>
-      <p class="intro">Jasno i unaprijed. Točnu cijenu dogovaramo nakon koncepta, ovisno o tome koliko stranica i funkcija trebate.</p>
-      
-      <div class="prices">
-        <div class="price main">
-          <h3>Nova web stranica</h3>
-          <p class="amount">od 350 € <small>jednokratno</small></p>
-          <p class="note">Polovica unaprijed, ostatak kad je stranica gotova.</p>
-          <ul>
-            <li>Dizajn po mjeri vaše firme</li>
-            <li>Prilagođeno mobitelima i Googleu</li>
-            <li>Obrazac za rezervacije ili upite</li>
-            <li>Postavljanje na vašu domenu</li>
-          </ul>
-        </div>
-        <div class="price side">
-          <h3>Hosting i održavanje</h3>
-          <p class="amount"><span class="money" data-k="host">25 €</span> <small>mjesečno</small></p>
-          <p class="note">Nije obavezno, ali tako ne morate brinuti ni o čemu.</p>
-          <ul>
-            <li>Brz i siguran hosting</li>
-            <li>Izmjene cijena, slika i teksta</li>
-            <li>Provjera da sve radi</li>
-          </ul>
+    <div class="showcase" aria-hidden="true">
+      <div class="scr">
+        <div class="sc-top"><b>Frizerski salon Mia</b> · studeni</div>
+        <div class="sc-body">
+          <div class="sc-card ok"><div class="ic">✓</div><div class="t"><b>Izvodi banke</b><span>Stiglo ✓</span></div><span class="chip ok">OK</span></div>
+          <div class="sc-card ok"><div class="ic">✓</div><div class="t"><b>Ulazni računi</b><span>Stiglo ✓</span></div><span class="chip ok">OK</span></div>
+          <div class="sc-card"><div class="ic">📄</div><div class="t"><b>Izlazni računi</b><span>Čeka se — podsjetnik poslan</span></div><span class="chip w">Čeka</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="block" id="paket">
-    <div class="wrap">
-      <h2>Složite svoj paket</h2>
-      <p class="intro">Odaberite što vašoj firmi treba. Sve se može uz novu stranicu ili zasebno, na stranici koju već imate.</p>
-      
-      <form class="pack" id="pack" onsubmit="return false">
-        <fieldset class="opts">
-          <legend class="sr">Složite svoj paket</legend>
-          <label class="opt">
-            <input type="checkbox" value="web" data-once-k="web" data-label="Nova web stranica" checked>
-            <span><span class="opt-title">Nova web stranica</span><span class="opt-desc">Moderna, brza i prilagođena mobitelima i Googleu.</span></span>
-            <span class="opt-price">od 350 €</span>
-          </label>
-          <label class="opt">
-            <input type="checkbox" value="booking" data-once-k="addon" data-month-k="addon_m" data-label="Online rezervacije i podsjetnici">
-            <span><span class="opt-title">Online rezervacije i podsjetnici<span class="badge">Novo</span></span><span class="opt-desc">Klijenti se sami naruče u slobodan termin, a dan prije dobiju podsjetnik. Manje propuštenih termina i manje telefoniranja.</span></span>
-            <span class="opt-price">od 150 € + 20 €/mj.</span>
-          </label>
-          <label class="opt">
-            <input type="checkbox" value="replies" data-once-k="addon" data-month-k="addon_m" data-label="Automatski odgovori na upite">
-            <span><span class="opt-title">Automatski odgovori na upite<span class="badge">Novo</span></span><span class="opt-desc">Česta pitanja o cijenama, radnom vremenu i terminima dobiju odgovor odmah, a svi upiti s weba slažu se na jedno mjesto.</span></span>
-            <span class="opt-price">od 150 € + 20 €/mj.</span>
-          </label>
-          <label class="opt">
-            <input type="checkbox" value="hosting" data-month-k="host" data-label="Hosting i održavanje">
-            <span><span class="opt-title">Hosting i održavanje</span><span class="opt-desc">Brz i siguran hosting, izmjene cijena, slika i teksta.</span></span>
-            <span class="opt-price">25 €/mj.</span>
-          </label>
-        </fieldset>
-        <div class="sum" aria-live="polite">
-          <h3>Vaš paket</h3>
-          <p class="sum-row"><span>Jednokratno</span><strong id="sumOnce"><span class="money" data-k="web">350 €</span></strong></p>
-          <p class="sum-row month"><span>Mjesečno</span><strong id="sumMonth">0 €</strong></p>
-          <p class="note">Okvirne cijene. Točnu cijenu dogovaramo nakon besplatnog koncepta.</p>
-          <p class="empty" id="packEmpty" hidden>Odaberite barem jednu opciju.</p>
-          <a class="btn" id="packSend" href="#kontakt">Pošaljite upit za ovaj paket</a>
-        </div>
-      </form>
+  <section class="block wrap" id="kako">
+    <div class="eyebrow">Kako pomaže</div>
+    <h2 class="sec">Mjesečno zatvaranje bez jurnjave za papirima</h2>
+    <p class="sec-lead">Najgori dio posla nije knjiženje — nego svaki mjesec pitati svakog klijenta „možete li poslati izvod?" po tri puta. To rješava Fresh Front.</p>
+    <div class="grid">
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <h3>Automatski podsjetnici</h3>
+        <p>Sustav sam podsjeća klijenta dok sve ne pošalje, pa stane. Vi ne morate zvati ni pisati.</p>
+      </div>
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h8l-1 8 10-12h-8z"/></svg></div>
+        <h3>Magic link, bez aplikacije</h3>
+        <p>Klijent dobije link, otvori ga na mobitelu i slika dokumente. Bez registracije, bez lozinke.</p>
+      </div>
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg></div>
+        <h3>Sve na jednom mjestu</h3>
+        <p>Jedna ploča pokazuje tko je predao, a tko kasni. Nema kopanja po mailu i WhatsAppu.</p>
+      </div>
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <h3>Checklist po klijentu</h3>
+        <p>Standardne stavke (izvodi, ulazni, izlazni, JOPPD…) plus vlastite stavke za svakog klijenta posebno.</p>
+      </div>
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h8l-1 8 10-12h-8z"/></svg></div>
+        <h3>Brže zatvaranje mjeseca</h3>
+        <p>Dokumenti stižu uredno i na vrijeme, pa knjiženje kreće ranije, a ne zadnji dan.</p>
+      </div>
+      <div class="feat">
+        <div class="fic"><svg viewBox="0 0 24 24"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg></div>
+        <h3>Prilagođeno Hrvatskoj</h3>
+        <p>Na hrvatskom, s dokumentima kakve stvarno tražite — i spremno za eRačun i Fiskalizaciju 2.0.</p>
+      </div>
     </div>
   </section>
 
-  <section class="contact" id="kontakt">
-    <div class="wrap">
-      <h2>Pogledajmo vašu stranicu</h2>
-      <p>Pošaljite mi adresu svoje stranice ili samo ime firme. Javim vam se s besplatnim konceptom nove naslovnice, a vi odlučite želite li nastaviti. Manuel Stanković, Fresh Front</p>
-      <form class="lead-form" id="leadForm" action="https://formspree.io/f/xbgdzyop" method="POST">
-        <input type="hidden" name="_subject" value="Novi upit s freshfront.eu">
-        <input type="hidden" name="jezik" value="hr">
-        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr" aria-hidden="true">
-        <div class="field">
-          <label for="f-name">Ime i prezime</label>
-          <input id="f-name" name="ime" type="text" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="f-site">Vaša stranica ili ime firme</label>
-          <input id="f-site" name="stranica_ili_firma" type="text" autocomplete="organization" required>
-        </div>
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input id="f-email" name="email" type="email" autocomplete="email" required>
-        </div>
-        <div class="field wide">
-          <label for="f-msg">Poruka (nije obavezno)</label>
-          <textarea id="f-msg" name="poruka" rows="4" placeholder="Npr. što vam najviše treba ili kada vas je najlakše dobiti"></textarea>
-        </div>
-        <div class="form-actions wide">
-          <button class="btn" type="submit" id="leadSend">Zatražite besplatan koncept</button>
-          <a class="btn ghost-light" href="https://cal.com/manuel-stankovic/15min">Rezervirajte razgovor od 15 min</a>
-        </div>
-        <p class="form-status wide" id="leadStatus" role="status" hidden></p>
-      </form>
-      <a class="mail" href="mailto:manuelstankovic3@gmail.com">Ili pišite izravno: manuelstankovic3@gmail.com</a>
+  <section class="block wrap">
+    <div class="steps">
+      <div class="eyebrow">Kako to ide</div>
+      <h2 class="sec">Tri koraka, postavljanje za 2 minute</h2>
+      <p class="sec-lead">Vi radite samo lagani dio — upišete klijenta. Sve ostalo ide samo.</p>
+      <div class="step-grid">
+        <div class="step"><div class="num">1</div><h3>Dodate klijenta</h3><p>Ime i email. To je sve što trebate upisati.</p></div>
+        <div class="step"><div class="num">2</div><h3>Označite dokumente</h3><p>Kvačicom odaberete što tražite ovaj mjesec i dodate vlastite stavke.</p></div>
+        <div class="step"><div class="num">3</div><h3>Klijent uploada</h3><p>On šalje s mobitela, vi pratite tko je gotov, a tko kasni.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="fisk">
+      <div class="big">2026</div>
+      <div>
+        <h3>Fiskalizacija 2.0 je tu — i donosi kaos s dokumentima</h3>
+        <p>Od 1. siječnja 2026. eRačun je obavezan, a do 2027. obuhvaća oko 320.000 poduzetnika. Knjigovodstveni servisi trpe najveći pritisak. Ovo je pravi trenutak da zamijenite moljakanje urednim sustavom.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="final wrap" id="demo">
+    <h2>Pokažite klijentima da ste korak ispred.</h2>
+    <p>Zatražite besplatan demo i vidite kako izgleda na vašim klijentima.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="mailto:manuelstankovic3@gmail.com?subject=Demo%20-%20skupljanje%20dokumenata">Zatražite demo ›</a>
+      <a class="btn ghost" href="https://cal.com/manuel-stankovic/15min" target="_blank" rel="noopener">Razgovor od 15 min</a>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">© 2026 Fresh Front, Pula</div>
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">F</span><span>Fresh Front</span></div>
+    <span class="spacer"></span>
+    <span>© 2026 Fresh Front · Pula, Hrvatska</span>
+    <a href="app/" style="font-weight:700;color:var(--orange-dark)">Prijava ›</a>
+  </div>
 </footer>
 
-<script>
-(function () {
-  var form = document.getElementById('pack');
-  if (!form) return;
-  var boxes = form.querySelectorAll('input[type=checkbox]');
-  var once = document.getElementById('sumOnce');
-  var month = document.getElementById('sumMonth');
-  var send = document.getElementById('packSend');
-  var empty = document.getElementById('packEmpty');
-  var prefix = "od";
-  var subject = "Upit za paket – Fresh Front";
-  var bodyIntro = "Pozdrav, zanima me ovaj paket:";
-  var monthWord = "mjesečno";
-  var prices = {"eur": {"cur": "€", "before": false, "web": 350, "addon": 150, "addon_m": 20, "host": 25}}, cur = "eur";
-  function money(n) { var p = prices[cur]; return p.before ? p.cur + n : n + ' ' + p.cur; }
-  function val(k) { return k ? prices[cur][k] || 0 : 0; }
-  var ids = Object.keys(prices);
-  if (ids.length > 1) {
-    var saved = null;
-    try { saved = localStorage.getItem('ff-cur'); } catch (e) {}
-    if (saved && prices[saved]) cur = saved;
-    else if (prices.usd && /^en-US$/i.test(navigator.language || '')) cur = 'usd';
-  }
-  function setCur(id) {
-    cur = id;
-    try { localStorage.setItem('ff-cur', id); } catch (e) {}
-    document.querySelectorAll('.money').forEach(function (el) { el.textContent = money(prices[cur][el.dataset.k]); });
-    document.querySelectorAll('.cur-switch button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.cur === cur ? 'true' : 'false'); });
-    update();
-  }
-  document.querySelectorAll('.cur-switch button').forEach(function (b) {
-    b.addEventListener('click', function () { setCur(b.dataset.cur); });
-  });
-  function update() {
-    var o = 0, m = 0, names = [];
-    boxes.forEach(function (b) {
-      if (!b.checked) return;
-      o += val(b.dataset.onceK); m += val(b.dataset.monthK); names.push('- ' + b.dataset.label);
-    });
-    once.textContent = (o ? prefix + ' ' : '') + money(o);
-    month.textContent = (m ? prefix + ' ' : '') + money(m);
-    empty.hidden = names.length > 0;
-    send.setAttribute('aria-disabled', names.length ? 'false' : 'true');
-    send.dataset.body = bodyIntro + '\n' + names.join('\n') + '\n' +
-      once.textContent + ' + ' + month.textContent + ' ' + monthWord;
-  }
-  send.addEventListener('click', function (e) {
-    if (send.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
-    var msg = document.getElementById('f-msg');
-    if (msg) msg.value = send.dataset.body || '';
-    setTimeout(function () { var n = document.getElementById('f-name'); if (n) n.focus({ preventScroll: true }); }, 400);
-  });
-  boxes.forEach(function (b) { b.addEventListener('change', update); });
-  setCur(cur);
-})();
-(function () {
-  var form = document.getElementById('leadForm');
-  if (!form || !window.fetch) return;
-  var btn = document.getElementById('leadSend');
-  var status = document.getElementById('leadStatus');
-  var txt = { sending: "Šaljem…", ok: "Hvala! Upit je stigao, javit ću vam se u roku od dan-dva.", err: "Upit nije poslan. Pokušajte ponovno ili pišite izravno na manuelstankovic3@gmail.com." };
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    btn.disabled = true; btn.textContent = txt.sending;
-    status.hidden = true; status.className = 'form-status wide';
-    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
-      .then(function (r) {
-        if (!r.ok) throw new Error('status ' + r.status);
-        form.reset();
-        status.textContent = txt.ok; status.classList.add('ok');
-      })
-      .catch(function () {
-        status.textContent = txt.err; status.classList.add('err');
-      })
-      .then(function () {
-        status.hidden = false; btn.disabled = false; btn.textContent = "Zatražite besplatan koncept";
-      });
-  });
-})();
-</script>
 </body>
 </html>
